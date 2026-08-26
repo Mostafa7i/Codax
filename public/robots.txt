@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+Allow: /
+
+Sitemap: https://codax-dev.web.app/sitemap.xml

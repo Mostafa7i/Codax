@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/* ── CSS Variables ─────────────────────────────────────────────────── */
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a2e;
+  --font-primary: "Noto Sans Arabic", "Cairo", sans-serif;
+
+  --base-color: white;
+  --base-variant: #e8e9ed;
+  --primary-color: #4b5573;
+  --secondColor: rgb(76, 0, 255);
+  --textColorBlue: #0082e6;
+  --mode: linear-gradient(to left, #111827, #1f2937);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+
+/* ── Base Reset ────────────────────────────────────────────────────── */
+html {
+  font-family: var(--font-primary);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── Dark Mode (opt-in class) ─────────────────────────────────────── */
+/* NOTE: لا نضع color: !important هنا لتجنب مشاكل الخط والألوان */
+.dark {
+  background: var(--mode);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 0px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(99, 102, 241, 0.25);
+  border-radius: 20px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(139, 92, 246, 0.4);
+}
+
+/* ── UI Utilities ──────────────────────────────────────────────────── */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+
+
+/* ── Typing cursor animation ───────────────────────────────────────── */
+.animate-crouser::after {
+  content: "";
+  animation: crouser 0.8s ease-in-out infinite;
+}
+
+@keyframes crouser {
+  0% {
+    content: "";
+    opacity: 0;
+  }
+  50% {
+    content: " | ";
+    opacity: 1;
+  }
+  100% {
+    content: "";
+    opacity: 0;
+  }
+}
