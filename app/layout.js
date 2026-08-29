@@ -9,6 +9,7 @@ import { InternetStatusProvider } from "./context/InternetStatusContext";
 import OfflineHandler from "./components/OfflineHandler";
 import MaintenanceGuard from "./components/MaintenanceGuard";
 import VersionWatcher from "./components/VersionWatcher";
+import RankingsWatcher from "./components/RankingsWatcher";
 import SecurityGuard from "./components/SecurityGuard";
 import "./globals.css";
 
@@ -213,6 +214,7 @@ export default function RootLayout({ children }) {
             <OfflineHandler>
               <SecurityGuard />
               <VersionWatcher />
+              <RankingsWatcher />
               <MaintenanceGuard>
                 <StudentAuthProvider>
                   <GroupContextProvider>

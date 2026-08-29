@@ -25,7 +25,8 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import StudentGithubLinksPopup from "../profile/components/StudentGithubLinksPopup";
-
+import { getAvatarBorder, getAvatarBadge } from "@/app/utils/avatarDecorations";
+import AvatarFrame from "@/app/utils/AvatarFrame";
 
 const DEFAULT_AVATAR = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><circle cx='12' cy='8' r='4'/><path d='M4 20c0-4 3.6-7 8-7s8 3 8 7'/></svg>`;
 
@@ -185,27 +186,21 @@ const GitHubButton = memo(function GitHubButton({ student }) {
   );
 });
 
-const RankBadge = memo(function RankBadge({ rank, theme }) {
-  if (!theme) {
+const RankBadge = memo(function RankBadge({ rank }) {
+
     return (
-      <span className="text-[13px] font-bold text-indigo-400 font-mono tabular-nums">
-        #{rank}
-      </span>
+      <>
+        {rank === 1 || rank === 2 || rank === 3 ? (
+          <span className="absolute hidden bg-linear-to-br from-yellow-300 via-yellow-400 to-yellow-100  text-black rounded-full w-5 h-5 right-0 top-10.5 shadow-[0_0_16px_-4px_rgba(203,213,225,0.35)] text-center  text-[12px] font-bold font-mono tabular-nums"></span>
+        ) : (
+          <span className="absolute bg-linear-to-br from-slate-500 via-slate-400 to-yellow-100  text-black rounded-full w-5 h-5 right-0 top-10.5 shadow-[0_0_16px_-4px_rgba(203,213,225,0.35)] text-center  text-[12px] font-bold font-mono tabular-nums">
+            {rank}
+          </span>
+        )}
+      </>
     );
-  }
-  return (
-    <span
-      className={`inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-linear-to-l ${theme.badge}`}
-    >
-      {rank === 1 ? (
-        <Trophy className="w-3 h-3" />
-      ) : (
-        <Medal className="w-3 h-3" />
-      )}
-      {theme.label}
-    </span>
-  );
-});
+  
+})
 
 /* ════════════════════════════════════════════
    Main
@@ -315,66 +310,74 @@ const StudentCardContent = ({
           onClick={handleImageClick}
           className="relative shrink-0 group focus:outline-none"
         >
-          {isFirst && (
-            <>
-              <div className="absolute -inset-2.5 rounded-full animate-spin [animation-duration:3s]">
-                <div className="w-full h-full rounded-full border-4 border-transparent border-t-yellow-400 border-b-amber-500" />
-              </div>
+          {(() => {
+            const customBorder = student.activeBorder
+              ? getAvatarBorder(student.activeBorder)
+              : null;
+            const borderClasses =
+              customBorder && customBorder.id !== "default"
+                ? `${customBorder.ringClass} ${customBorder.glowClass || ""} ${
+                    customBorder.animationClass || customBorder.pulseClass || ""
+                  }`
+                : theme
+                  ? `${theme.ring} ${theme.glow}`
+                  : "ring-slate-600/50";
 
-              <div className="absolute -inset-1 rounded-full bg-yellow-400/15 blur-md pointer-events-none" />
-            </>
-          )}
-          {cardConfig.isPerfectStudent && (
-            <>
-              <div className="absolute -inset-2.5 rounded-full animate-spin [animation-duration:2s]">
-                <div className="w-full h-full rounded-full border-4 border-transparent border-t-yellow-400 border-b-amber-500" />
-              </div>
-              <div className="absolute -inset-2 rounded-full animate-spin [animation-direction:reverse] [animation-duration:1.5s]">
-                <div className="w-full h-full rounded-full border-4 border-transparent border-l-yellow-500 border-r-yellow-500/80" />
-              </div>
-              <div className="absolute -inset-1 rounded-full bg-yellow-400 blur-md pointer-events-none" />
-            </>
-          )}
-
-          <div
-            className={`relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-offset-2 ring-offset-slate-900 group-hover:scale-105 transition-transform duration-200 ${
-              theme ? `${theme.ring} ${theme.glow}` : "ring-slate-600/50"
-            }`}
-          >
-            <img
-              loading="lazy"
-              src={student.profilePic || DEFAULT_AVATAR}
-              alt={student.name}
-              onError={handleImageError}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {isTop3 && (
-            <span
-              className={`absolute -bottom-1 -left-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black bg-linear-to-br ${theme.badge} shadow-md`}
-            >
-              {student.rank}
-            </span>
-          )}
+            return (
+              <AvatarFrame
+                frameStyle={customBorder?.frameStyle}
+                size={56}
+                className={`ring-2 ring-offset-2 ring-offset-slate-900 group-hover:scale-105 transition-transform duration-200 ${borderClasses}`}
+              >
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  src={student.profilePic || DEFAULT_AVATAR}
+                  alt={student.name || "Student"}
+                  onError={handleImageError}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              </AvatarFrame>
+            );
+          })()}
         </button>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-            <RankBadge rank={student.rank} theme={theme} />
-            {scoreIcon && (
-              <span className="text-xs leading-none">{scoreIcon}</span>
-            )}
+          <div className="flex justify-between">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <p
+                className="font-bold text-white text-sm truncate leading-snug"
+                title={student.name}
+              >
+                {student.name}
+              </p>
+              {(() => {
+                const activeBadgeObj = student.activeBadge
+                  ? getAvatarBadge(student.activeBadge)
+                  : null;
+                if (!activeBadgeObj) return null;
+                return (
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${activeBadgeObj.badgeClass}`}
+                    title={activeBadgeObj.description}
+                  >
+                    {activeBadgeObj.emoji} {activeBadgeObj.name}
+                  </span>
+                );
+              })()}
+            </div>
+            <div className="flex-col text-left">
+              <RankBadge rank={student.rank} />
+              <div>
+                {scoreIcon && (
+                  <span className="text-xs leading-none">{scoreIcon}</span>
+                )}
+              </div>
+            </div>
           </div>
-          <p
-            className="font-bold text-white text-sm truncate leading-snug"
-            title={student.name}
-          >
-            {student.name}
-          </p>
           {student.showBio !== false && student.bio && (
             <p
-              className="text-slate-500 text-[11px] truncate mt-0.5"
+              className="text-slate-500 text-[10px] truncate"
               title={student.bio}
             >
               {student.bio}
@@ -402,11 +405,16 @@ const StudentCardContent = ({
                 <div className="absolute -inset-1 rounded-full animate-pulse bg-lime-400/20 blur-md pointer-events-none" />
               </>
             )}
-            {student.combinedScore === 98 && (
-              <>
-                <div className="absolute -inset-1 animate-pulse rounded-full bg-lime-400/20 blur-md pointer-events-none" />
+          {isFirst && student.combinedScore >= 95 && (
+               <>
+             
+                <div className="absolute -inset-2 rounded-full animate-spin [animation-direction:reverse] [animation-duration:1.5s]">
+                  <div className="w-full h-full rounded-full border-4 border-transparent  border-r-green-500/80" />
+                </div>
+                <div className="absolute -inset-1 rounded-full animate-pulse bg-lime-400/20 blur-md pointer-events-none" />
               </>
-            )}
+          )}
+          
           </div>
         </div>
 

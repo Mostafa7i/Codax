@@ -14,7 +14,6 @@ import {
   where,
 } from "firebase/firestore";
 
-
 import { db } from "@/app/services/firebaseConfig";
 
 // ----------------------------------------------------
@@ -39,25 +38,47 @@ export function useNotifications(studentGroup) {
       const q = query(
         notificationsRef,
         where("group", "==", studentGroup),
-        orderBy("createdAt", "desc")
+        orderBy("createdAt", "desc"),
       );
 
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          const data = snapshot.docs.map((docSnap) => ({
+          const rawData = snapshot.docs.map((docSnap) => ({
             id: docSnap.id,
             ...docSnap.data(),
-            createdAt: docSnap.data().createdAt?.toDate ? docSnap.data().createdAt.toDate() : docSnap.data().createdAt,
+            createdAt: docSnap.data().createdAt?.toDate
+              ? docSnap.data().createdAt.toDate()
+              : docSnap.data().createdAt,
           }));
 
-          setNotifications(data);
+          // ── تصفية ومنع تكرار الإشعارات المتطابقة (سواء القديمة في Firestore أو الجديدة) ──
+          const seen = new Set();
+          const uniqueData = [];
+
+          for (const item of rawData) {
+            const rawMsg = (item.message || "").trim();
+            const timeMs =
+              item.createdAtMs ||
+              (item.createdAt instanceof Date ? item.createdAt.getTime() : 0);
+            const timeBucket = timeMs ? Math.floor(timeMs / 180000) : 0;
+            const dedupKey = item.signature
+              ? `${item.group}_${item.signature}_${timeBucket}`
+              : `${item.group}_${rawMsg}_${timeBucket}`;
+
+            if (!seen.has(dedupKey)) {
+              seen.add(dedupKey);
+              uniqueData.push(item);
+            }
+          }
+
+          setNotifications(uniqueData);
           setLoadingNotifications(false);
         },
         (err) => {
           console.error("Firestore onSnapshot error:", err);
           setLoadingNotifications(false);
-        }
+        },
       );
 
       return () => unsubscribe();
@@ -198,7 +219,7 @@ export function useReviewsRating(limitCount = 12) {
       const q = query(
         collection(db, "courseRatings"),
         orderBy("createdAt", "desc"),
-        limit(limitCount)
+        limit(limitCount),
       );
 
       const snap = await getDocs(q);
@@ -211,7 +232,10 @@ export function useReviewsRating(limitCount = 12) {
       setTotalReviews(data.length);
 
       if (data.length > 0) {
-        const sum = data.reduce((acc, curr) => acc + (Number(curr.rating) || 0), 0);
+        const sum = data.reduce(
+          (acc, curr) => acc + (Number(curr.rating) || 0),
+          0,
+        );
         const avg = (sum / data.length).toFixed(1);
         setAverageRating(avg);
       } else {
@@ -242,10 +266,6 @@ export function useReviewsRating(limitCount = 12) {
   };
 }
 
-
-
-
-
 // ----------------------------------------------------
 // 5. Group Total Lectures & Password Fetching Functions
 // ----------------------------------------------------
@@ -263,7 +283,10 @@ export async function fetchGroupSpecificTotalLectures(groupName) {
     }
     return 0;
   } catch (error) {
-    console.error(`Error fetching total lectures for group '${groupName}':`, error);
+    console.error(
+      `Error fetching total lectures for group '${groupName}':`,
+      error,
+    );
     return null;
   }
 }
@@ -275,7 +298,7 @@ export async function fetchStudentPassword(studentId) {
     const numId = Number(studentId);
     const q = query(
       collection(db, "students"),
-      where("id", "==", isNaN(numId) ? studentId : numId)
+      where("id", "==", isNaN(numId) ? studentId : numId),
     );
     const snap = await getDocs(q);
     if (!snap.empty) {
@@ -289,45 +312,33 @@ export async function fetchStudentPassword(studentId) {
 }
 // Rating ///////////////////////////////////////////////////////////////////////
 
-export async function fetchRating(){
-    const [name, setName] = useState("");
-    const [review, setReview] = useState("");
-    const [rating, setRating] = useState(0);
-    const [loading, setLoading] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+export async function fetchRating() {
+  const [name, setName] = useState("");
+  const [review, setReview] = useState("");
+  const [rating, setRating] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   try {
     await addDoc(collection(db, "courseRatings"), {
-        courseId,
-        name: name.trim() || "مجهول",
-        review: review.trim(),
-        rating,
-        createdAt: serverTimestamp(),
-      });
+      courseId,
+      name: name.trim() || "مجهول",
+      review: review.trim(),
+      rating,
+      createdAt: serverTimestamp(),
+    });
 
-      setSubmitted(true);
-      // إعادة تعيين الحقول
-      setName("");
-      setReview("");
-      setRating(0);
-    } catch (error) {
-      console.error("Error adding review: ", error);
-      alert("حدث خطأ أثناء إرسال التقييم، حاول مرة أخرى");
-    } finally {
-      setLoading(false);
-    }
+    setSubmitted(true);
+    // إعادة تعيين الحقول
+    setName("");
+    setReview("");
+    setRating(0);
+  } catch (error) {
+    console.error("Error adding review: ", error);
+    alert("حدث خطأ أثناء إرسال التقييم، حاول مرة أخرى");
+  } finally {
+    setLoading(false);
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 ////////// جلب الاحصائيات للطلاب//////////////////////////////////////////
 const topBy = (arr, getter, dir = "desc") => {
@@ -340,16 +351,12 @@ const topBy = (arr, getter, dir = "desc") => {
       (student) =>
         student._v !== null &&
         student._v !== undefined &&
-        !Number.isNaN(student._v)
+        !Number.isNaN(student._v),
     );
 
   if (!list.length) return null;
 
-  list.sort((a, b) =>
-    dir === "desc"
-      ? b._v - a._v
-      : a._v - b._v
-  );
+  list.sort((a, b) => (dir === "desc" ? b._v - a._v : a._v - b._v));
 
   return list[0];
 };
@@ -357,8 +364,7 @@ const topBy = (arr, getter, dir = "desc") => {
 export const useTopStats = (selectedGroup) => {
   const [stats, setStats] = useState(null);
   const [latestLectures, setLatestLectures] = useState({});
-  const [latestLectureForGroup, setLatestLectureForGroup] =
-    useState(0);
+  const [latestLectureForGroup, setLatestLectureForGroup] = useState(0);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -377,10 +383,7 @@ export const useTopStats = (selectedGroup) => {
       const studentsRef = collection(db, "students");
 
       const studentsQuery = selectedGroup
-        ? query(
-            studentsRef,
-            where("group", "==", selectedGroup)
-          )
+        ? query(studentsRef, where("group", "==", selectedGroup))
         : studentsRef;
 
       const snapshot = await getDocs(studentsQuery);
@@ -408,28 +411,20 @@ export const useTopStats = (selectedGroup) => {
 
         if (!group) return;
 
-        const lecture = Number(
-          student.startLecture || 0
-        );
+        const lecture = Number(student.startLecture || 0);
 
-        if (
-          !lecturesMap[group] ||
-          lecture > lecturesMap[group]
-        ) {
+        if (!lecturesMap[group] || lecture > lecturesMap[group]) {
           lecturesMap[group] = lecture;
         }
       });
 
       setLatestLectures(lecturesMap);
 
-      const currentLatestLecture =
-        selectedGroup
-          ? lecturesMap[selectedGroup] || 0
-          : 0;
+      const currentLatestLecture = selectedGroup
+        ? lecturesMap[selectedGroup] || 0
+        : 0;
 
-      setLatestLectureForGroup(
-        currentLatestLecture
-      );
+      setLatestLectureForGroup(currentLatestLecture);
 
       /*
        * =====================================================
@@ -451,12 +446,9 @@ export const useTopStats = (selectedGroup) => {
       const taskAgg = students.map((student) => ({
         ...student,
 
-        totalTaskScore: (
-          student.tasks || []
-        ).reduce(
-          (total, task) =>
-            total + Number(task.score || 0),
-          0
+        totalTaskScore: (student.tasks || []).reduce(
+          (total, task) => total + Number(task.score || 0),
+          0,
         ),
       }));
 
@@ -470,83 +462,53 @@ export const useTopStats = (selectedGroup) => {
         /*
          * الأكثر إعجاباً
          */
-        mostLiked: topBy(
-          students,
-          (student) =>
-            student.likedBy?.length || 0
-        ),
+        mostLiked: topBy(students, (student) => student.likedBy?.length || 0),
 
         /*
          * الأكثر Dislike
          */
         mostDisliked: topBy(
           students,
-          (student) =>
-            student.dislikedBy?.length || 0
+          (student) => student.dislikedBy?.length || 0,
         ),
 
         /*
          * أعلى نقاط إضافية
          */
-        highestScore: topBy(
-          students,
-          (student) =>
-            Number(student.score || 0)
-        ),
+        highestScore: topBy(students, (student) => Number(student.score || 0)),
 
         /*
          * أعلى درجات مهام
          */
-        highestTaskGrades: topBy(
-          taskAgg,
-          (student) =>
-            Number(student.totalTaskScore || 0)
+        highestTaskGrades: topBy(taskAgg, (student) =>
+          Number(student.totalTaskScore || 0),
         ),
 
         /*
          * الأكثر استخداماً للاحتياطي
          */
-        highestReserveUsage: topBy(
-          students,
-          (student) =>
-            Number(
-              student.reserveUsageCount || 0
-            )
+        highestReserveUsage: topBy(students, (student) =>
+          Number(student.reserveUsageCount || 0),
         ),
 
         /*
          * الأكثر غياباً
          */
-        higheAbsencest: topBy(
-          students,
-          (student) => {
-            const totalLectures =
-              currentLatestLecture -
-              Number(student.startLecture || 1) +
-              1;
+        higheAbsencest: topBy(students, (student) => {
+          const totalLectures =
+            currentLatestLecture - Number(student.startLecture || 1) + 1;
 
-            return (
-              totalLectures -
-              Number(
-                student.attendedLectures || 0
-              )
-            );
-          }
-        ),
+          return totalLectures - Number(student.attendedLectures || 0);
+        }),
       };
 
       setStats(calculatedStats);
     } catch (err) {
-      console.error(
-        "Error fetching top statistics:",
-        err
-      );
+      console.error("Error fetching top statistics:", err);
 
       setStats(null);
 
-      setError(
-        "حدث خطأ أثناء تحميل الإحصائيات."
-      );
+      setError("حدث خطأ أثناء تحميل الإحصائيات.");
     } finally {
       setLoading(false);
     }
@@ -587,10 +549,7 @@ export function useTaskDetails(selectedGroup) {
       try {
         const tasksRef = collection(db, "groupTasks");
 
-        const q = query(
-          tasksRef,
-          where("groupName", "==", selectedGroup)
-        );
+        const q = query(tasksRef, where("groupName", "==", selectedGroup));
 
         const snapshot = await getDocs(q);
 
@@ -622,88 +581,16 @@ export function useTaskDetails(selectedGroup) {
   };
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 5- calculations --------------------------------------------------------
 import { getTopStudents } from "../components/calculations.jsx";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ----------------------------------------------------
 // 6. useMainContentData Hook (المخصص لصفحة MainContent بالكامل)
 // ----------------------------------------------------
-export function useMainContentData(selectedGroup, initialSortMode = "combined") {
+export function useMainContentData(
+  selectedGroup,
+  initialSortMode = "combined",
+) {
   const [students, setStudents] = useState([]);
   const [totalLecturesForGroup, setTotalLecturesForGroup] = useState(null);
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -742,11 +629,12 @@ export function useMainContentData(selectedGroup, initialSortMode = "combined") 
       setHasError(false);
 
       try {
-        const totalLecturesPromise = fetchGroupSpecificTotalLectures(selectedGroup);
+        const totalLecturesPromise =
+          fetchGroupSpecificTotalLectures(selectedGroup);
 
         const q = query(
           collection(db, "students"),
-          where("group", "==", selectedGroup)
+          where("group", "==", selectedGroup),
         );
         const studentsPromise = getDocs(q);
 
@@ -780,7 +668,7 @@ export function useMainContentData(selectedGroup, initialSortMode = "combined") 
         setIsRefreshingData(false);
       }
     },
-    [selectedGroup]
+    [selectedGroup],
   );
 
   useEffect(() => {
@@ -800,7 +688,7 @@ export function useMainContentData(selectedGroup, initialSortMode = "combined") 
     }
     const qLower = searchQuery.toLowerCase().trim();
     return rankedStudents.filter((student) =>
-      student.name?.toLowerCase().includes(qLower)
+      student.name?.toLowerCase().includes(qLower),
     );
   }, [rankedStudents, searchQuery]);
 
@@ -841,7 +729,7 @@ export function useGroupStudents(selectedGroup) {
     try {
       const q = query(
         collection(db, "students"),
-        where("group", "==", selectedGroup)
+        where("group", "==", selectedGroup),
       );
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map((docSnap) => ({
@@ -869,9 +757,6 @@ export function useGroupStudents(selectedGroup) {
   };
 }
 
-
-
-
 // ////////////////////////////////////////////////////////////////////////////
 const MESSAGES_COLLECTION = "messages";
 
@@ -881,7 +766,7 @@ const MESSAGES_COLLECTION = "messages";
 export const subscribeToMessages = (onSuccess, onError) => {
   const q = query(
     collection(db, MESSAGES_COLLECTION),
-    orderBy("createdAt", "desc")
+    orderBy("createdAt", "desc"),
   );
 
   return onSnapshot(
@@ -896,7 +781,7 @@ export const subscribeToMessages = (onSuccess, onError) => {
     (error) => {
       console.error("Error fetching messages:", error);
       if (onError) onError(error);
-    }
+    },
   );
 };
 
@@ -907,7 +792,7 @@ export const markAllMessagesAsRead = async () => {
   try {
     const snap = await getDocs(collection(db, MESSAGES_COLLECTION));
     const unreadDocs = snap.docs.filter((d) => d.data().read === false);
-    
+
     if (unreadDocs.length === 0) return;
 
     // Firestore batch max limit is 500 operations
@@ -915,11 +800,11 @@ export const markAllMessagesAsRead = async () => {
     for (let i = 0; i < unreadDocs.length; i += BATCH_SIZE) {
       const batch = writeBatch(db);
       const chunk = unreadDocs.slice(i, i + BATCH_SIZE);
-      
+
       chunk.forEach((d) => {
         batch.update(doc(db, MESSAGES_COLLECTION, d.id), { read: true });
       });
-      
+
       await batch.commit();
     }
   } catch (err) {

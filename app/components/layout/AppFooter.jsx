@@ -35,7 +35,7 @@ const AppFooter = () => {
             <Link href="/" className="hover:text-indigo-400 transition flex items-center gap-2">
               <BookOpen size={14} /> الرئيسية
             </Link>
-            <Link href="/about" className="hover:text-indigo-400 transition flex items-center gap-2">
+            <Link href="/About" className="hover:text-indigo-400 transition flex items-center gap-2">
               <Info size={14} /> من نحن
             </Link>
 

@@ -22,7 +22,10 @@ import {
   Loader,
   MessageSquare,
   AlertTriangle,
+  Trophy,
+  Sparkles,
 } from "lucide-react";
+import GroupRankingsManager from "./GroupRankingsManager";
 
 // --- مكونات فرعية لتحسين العرض ---
 
@@ -79,6 +82,7 @@ const NotificationCard = memo(({ notif, onDelete }) => (
 
 // --- المكون الرئيسي ---
 const NotificationsControl = () => {
+  const [activeTab, setActiveTab] = useState("rankings"); // "rankings" | "manual"
   const [selectedGroup, setSelectedGroup] = useState("");
   const [title, setTitle] = useState("Codax");
   const [message, setMessage] = useState("");
@@ -87,7 +91,7 @@ const NotificationsControl = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const router = useRouter();
-  const { availableGroups , groupStatuses } = useGroupContext();
+  const { availableGroups, groupStatuses } = useGroupContext();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -104,24 +108,19 @@ const NotificationsControl = () => {
     return () => unsubscribe();
   }, [router]);
 
-
   useEffect(() => {
-  if (!groupStatuses) return;
+    if (!groupStatuses) return;
 
-  // هات المجموعات اللي حالتها true
-  const activeGroups = Object.keys(groupStatuses).filter(
-    (g) => groupStatuses[g] === true
-  );
+    const activeGroups = Object.keys(groupStatuses).filter(
+      (g) => groupStatuses[g] === true
+    );
 
-  // لو مفيش مجموعة فعّالة → بلاش تختار
-  if (activeGroups.length === 0) return;
+    if (activeGroups.length === 0) return;
 
-  // لو selectedGroup فاضي → اختار أول مجموعة فعّالة
-  if (!selectedGroup) {
-    setSelectedGroup(activeGroups[0]);
-  }
-}, [groupStatuses]);
-
+    if (!selectedGroup) {
+      setSelectedGroup(activeGroups[0]);
+    }
+  }, [groupStatuses, selectedGroup]);
 
   useEffect(() => {
     if (!user || !selectedGroup) return;
@@ -140,7 +139,9 @@ const NotificationsControl = () => {
           snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-            createdAt: doc.data().createdAt?.toDate(),
+            createdAt: doc.data().createdAt?.toDate
+              ? doc.data().createdAt.toDate()
+              : doc.data().createdAt,
           }))
         );
         setLoading(false);
@@ -155,7 +156,8 @@ const NotificationsControl = () => {
   }, [user, selectedGroup]);
 
   const handleSendNotification = async () => {
-    if (!title.trim() || !message.trim()) return;
+    if (!message.trim() || !selectedGroup) return;
+
     setSending(true);
     try {
       await addDoc(collection(db, "notificationsGroups"), {
@@ -163,18 +165,17 @@ const NotificationsControl = () => {
         message,
         group: selectedGroup,
         createdAt: serverTimestamp(),
-        read: false,
       });
-      setMessage(""); // فقط أفرغ الرسالة
+      setMessage("");
+      setTitle("Codax");
     } catch (error) {
-      console.error("خطأ أثناء إرسال الإشعار:", error);
+      console.error("Error sending notification:", error);
     } finally {
       setSending(false);
     }
   };
 
   const handleDeleteNotification = async (id) => {
-    if (!window.confirm("هل أنت متأكد من حذف هذا الإشعار؟")) return;
     try {
       await deleteDoc(doc(db, "notificationsGroups", id));
     } catch (error) {
@@ -186,111 +187,150 @@ const NotificationsControl = () => {
     return <div className="text-center p-8">جارٍ التحقق من الصلاحيات...</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-8" dir="rtl">
-      {/* 1. قسم إرسال الإشعارات */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-3">
-          <MessageSquare className="text-purple-500" />
-          إرسال إشعار جديد
-        </h2>
+    <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6" dir="rtl">
+      {/* ─── شريط التبديل بين الأقسام ─── */}
+      <div className="flex items-center gap-2 p-1.5 bg-gray-100 dark:bg-gray-800/80 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <button
+          onClick={() => setActiveTab("rankings")}
+          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+            activeTab === "rankings"
+              ? "bg-linear-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20"
+              : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          }`}
+        >
+          <Trophy className="w-4 h-4" />
+          <span>متابعة ترتيب الطلاب والإشعارات التلقائية</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("manual")}
+          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+            activeTab === "manual"
+              ? "bg-purple-600 text-white shadow-md shadow-purple-600/20"
+              : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          }`}
+        >
+          <MessageSquare className="w-4 h-4" />
+          <span>إرسال إشعار يدوي وسجل الإشعارات</span>
+        </button>
+      </div>
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              إلى مجموعة:
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {availableGroups.map((group) => (
-                <GroupTab
-                  key={group}
-                  group={group}
-                  selectedGroup={selectedGroup}
-                  onClick={setSelectedGroup}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="title"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              العنوان:
-            </label>
-            <input
-              id="title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+      {/* ─── قسم اختيار المجموعة المشترك ─── */}
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/60">
+        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">
+          المجموعة المحددة:
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {availableGroups.map((group) => (
+            <GroupTab
+              key={group}
+              group={group}
+              selectedGroup={selectedGroup}
+              onClick={setSelectedGroup}
             />
-          </div>
-
-          <div>
-            <label
-              htmlFor="message"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              نص الرسالة:
-            </label>
-            <textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
-              rows="4"
-            />
-          </div>
-
-          <button
-            onClick={handleSendNotification}
-            disabled={sending || !message.trim()}
-            className="w-full bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {sending ? (
-              <Loader size={20} className="animate-spin" />
-            ) : (
-              <Send size={18} />
-            )}
-            {sending ? "جاري الإرسال..." : "إرسال الإشعار"}
-          </button>
+          ))}
         </div>
       </div>
 
-      {/* 2. قسم الإشعارات الحالية */}
-      <div className="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-        <h2 className=" flex-wrap font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-3">
-          <Bell className="text-purple-500" />
-          الإشعارات الحالية لمجموعة:{" "}
-          <span className="text-purple-500">{selectedGroup}</span>
-        </h2>
+      {/* ─── التبويب 1: متابعة الترتيب التلقائي ─── */}
+      {activeTab === "rankings" && (
+        <GroupRankingsManager
+          selectedGroup={selectedGroup}
+          availableGroups={availableGroups}
+        />
+      )}
 
-        {loading ? (
-          <div className="flex justify-center items-center py-10">
-            <Loader className="animate-spin" />
-          </div>
-        ) : notifications.length === 0 ? (
-          <div className="text-center py-10 text-gray-500 dark:text-gray-400">
-            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 rounded-r-lg">
-              <div className="flex items-center gap-3">
-                <AlertTriangle className="text-yellow-500" />
-                <p>لا توجد إشعارات لعرضها في هذه المجموعة حتى الآن.</p>
+      {/* ─── التبويب 2: إرسال إشعار يدوي ─── */}
+      {activeTab === "manual" && (
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2.5">
+              <MessageSquare className="text-purple-500 w-5 h-5" />
+              إرسال إشعار يدوي جديد لمجموعة {selectedGroup}
+            </h2>
+
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="title"
+                  className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1"
+                >
+                  عنوان الإشعار:
+                </label>
+                <input
+                  id="title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full p-2.5 text-sm border border-gray-200 rounded-xl dark:bg-gray-900 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                />
               </div>
+
+              <div>
+                <label
+                  htmlFor="message"
+                  className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1"
+                >
+                  نص الرسالة:
+                </label>
+                <textarea
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full p-2.5 text-sm border border-gray-200 rounded-xl dark:bg-gray-900 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                  rows="4"
+                  placeholder="اكتب نص الإشعار هنا..."
+                />
+              </div>
+
+              <button
+                onClick={handleSendNotification}
+                disabled={sending || !message.trim()}
+                className="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-purple-600/20"
+              >
+                {sending ? (
+                  <Loader size={18} className="animate-spin" />
+                ) : (
+                  <Send size={16} />
+                )}
+                {sending ? "جاري الإرسال..." : "إرسال الإشعار للمجموعة"}
+              </button>
             </div>
           </div>
-        ) : (
-          <div className="space-y-4 max-h-[60vh] overflow-y-auto p-1">
-            {notifications.map((notif) => (
-              <NotificationCard
-                key={notif.id}
-                notif={notif}
-                onDelete={handleDeleteNotification}
-              />
-            ))}
+
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h2 className="font-bold text-base text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+              <Bell className="text-purple-500 w-4 h-4" />
+              سجل الإشعارات المرسلة لمجموعة:{" "}
+              <span className="text-purple-600 dark:text-purple-400">{selectedGroup}</span>
+            </h2>
+
+            {loading ? (
+              <div className="flex justify-center items-center py-10">
+                <Loader className="animate-spin text-purple-500" />
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-xl max-w-md mx-auto">
+                  <div className="flex items-center gap-2.5 justify-center text-amber-700 dark:text-amber-400 text-xs font-bold">
+                    <AlertTriangle className="w-4 h-4" />
+                    <p>لا توجد إشعارات سابقة في هذه المجموعة حتى الآن.</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3 max-h-[50vh] overflow-y-auto p-1">
+                {notifications.map((notif) => (
+                  <NotificationCard
+                    key={notif.id}
+                    notif={notif}
+                    onDelete={handleDeleteNotification}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -13,6 +13,7 @@ import {
   Megaphone,
   X,
   Layers,
+  AlertTriangle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNotifications } from "@/app/hooks/allHooks";
@@ -21,7 +22,12 @@ import { useNotifications } from "@/app/hooks/allHooks";
 function getNotificationBadge(title = "", message = "") {
   const text = `${title} ${message}`.toLowerCase();
 
-  if (text.includes("اختبار") || text.includes("امتحان") || text.includes("exam") || text.includes("quiz")) {
+  if (
+    text.includes("اختبار") ||
+    text.includes("امتحان") ||
+    text.includes("exam") ||
+    text.includes("quiz")
+  ) {
     return {
       type: "exam",
       label: "اختبار",
@@ -33,7 +39,12 @@ function getNotificationBadge(title = "", message = "") {
     };
   }
 
-  if (text.includes("مهمة") || text.includes("تاسك") || text.includes("task") || text.includes("مشروع")) {
+  if (
+    text.includes("مهمة") ||
+    text.includes("تاسك") ||
+    text.includes("task") ||
+    text.includes("مشروع")
+  ) {
     return {
       type: "task",
       label: "مهمة",
@@ -45,10 +56,51 @@ function getNotificationBadge(title = "", message = "") {
     };
   }
 
-  if (text.includes("نقاط") || text.includes("أوائل") || text.includes("مركز") || text.includes("ترتيب") || text.includes("فائز")) {
+  if (
+    text.includes("نقاط") ||
+    text.includes("أوائل") ||
+    text.includes("مركز") ||
+    text.includes("ترتيب") ||
+    text.includes("فائز") ||
+    text.includes("تراجع") ||
+    text.includes("صعود")
+  ) {
+    const hasPromotion =
+      text.includes("صعود") ||
+      text.includes("🟢") ||
+      text.includes("المتقدمين");
+    const hasDemotion =
+      text.includes("تراجع") ||
+      text.includes("🔴") ||
+      text.includes("المتراجعين");
+
+    if (hasDemotion && !hasPromotion) {
+      return {
+        type: "rank-down",
+        label: "تراجع ترتيب ⚠️",
+        icon: AlertTriangle,
+        gradient: "from-rose-600 to-amber-600",
+        bgSoft: "bg-rose-500/10 text-rose-400 border-rose-500/30",
+        accent: "text-rose-400",
+        dot: "bg-rose-500",
+      };
+    }
+
+    if (hasPromotion && !hasDemotion) {
+      return {
+        type: "rank-up",
+        label: "صعود ترتيب 🚀",
+        icon: Trophy,
+        gradient: "from-emerald-500 to-teal-600",
+        bgSoft: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+        accent: "text-emerald-400",
+        dot: "bg-emerald-500",
+      };
+    }
+
     return {
       type: "rank",
-      label: "إنجاز",
+      label: "تحديث الترتيب 🏆",
       icon: Trophy,
       gradient: "from-amber-500 to-orange-600",
       bgSoft: "bg-amber-500/10 text-amber-400 border-amber-500/30",
@@ -107,55 +159,173 @@ function formatNotificationDate(rawDate) {
   }
 }
 
-// تفكيك الرسائل المعقدة التي تحتوي على مواعيد (📅 يبدأ في: ... 🏁 ينتهي في: ...)
+// مكون مخصص لعرض إشعارات الترتيب بشكل منظم واحترافي
+function RankChangeDisplay({ message }) {
+  const lines = (message || "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+
+  const promotions = [];
+  const demotions = [];
+  let footer = "";
+
+  lines.forEach((line) => {
+    if (
+      line.startsWith("🟢") ||
+      line.includes("صعود في الترتيب") ||
+      line.includes("الطلاب المتقدمين") ||
+      (line.includes("تقدم(ت)") && !line.includes("تراجع"))
+    ) {
+      if (
+        !line.includes("الطلاب المتقدمين") &&
+        !line.includes("صعود في الترتيب:")
+      ) {
+        promotions.push(line.replace(/^[🟢•\s⬆️]+/, "").trim());
+      }
+    } else if (
+      line.startsWith("🔴") ||
+      line.includes("تراجع في الترتيب") ||
+      line.includes("الطلاب المتراجعين") ||
+      line.includes("تراجع(ت)")
+    ) {
+      if (
+        !line.includes("الطلاب المتراجعين") &&
+        !line.includes("تراجع في الترتيب:")
+      ) {
+        demotions.push(line.replace(/^[🔴•\s⬇️]+/, "").trim());
+      }
+    } else if (
+      line.includes("واصلوا") ||
+      line.includes("💪") ||
+      line.includes("المنافسة")
+    ) {
+      footer = line;
+    }
+  });
+
+  return (
+    <div className="mt-2.5 space-y-2.5 text-xs" dir="rtl">
+      {/* 🚀 قسم الطلاب المتقدمين (الصعود) */}
+      {promotions.length > 0 && (
+        <div className="rounded-xl bg-emerald-950/40 border border-emerald-500/30 p-2.5 space-y-1.5 shadow-sm">
+          <div className="flex items-center gap-1.5 text-emerald-400 font-black text-[11px] pb-1 border-b border-emerald-500/20">
+            <span className="text-sm">🚀</span>
+            <span>الطلاب المتقدمين في المراكز:</span>
+          </div>
+          <div className="space-y-1.5 pt-0.5">
+            {promotions.map((p, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2 bg-emerald-900/30 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg text-emerald-100"
+              >
+                <span className="shrink-0 inline-flex items-center justify-center gap-0.5 px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 font-black text-[10px]">
+                  🟢 ⬆️
+                </span>
+                <span className="font-bold text-white leading-tight wrap-break-word flex-1">
+                  {p}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ⚠️ قسم الطلاب المتراجعين (التراجع) */}
+      {demotions.length > 0 && (
+        <div className="rounded-xl bg-rose-950/30 border border-rose-500/30 p-2.5 space-y-1.5 shadow-sm">
+          <div className="flex items-center gap-1.5 text-rose-400 font-black text-[11px] pb-1 border-b border-rose-500/20">
+            <span className="text-sm">⚠️</span>
+            <span>الطلاب المتراجعين في المراكز:</span>
+          </div>
+          <div className="space-y-1.5 pt-0.5">
+            {demotions.map((d, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2 bg-rose-900/20 border border-rose-500/20 px-2.5 py-1.5 rounded-lg text-rose-200"
+              >
+                <span className="shrink-0 inline-flex items-center justify-center gap-0.5 px-2 py-0.5 rounded-md bg-rose-500/20 border border-rose-400/40 text-rose-300 font-black text-[10px]">
+                  🔴 ⬇️
+                </span>
+                <span className="font-semibold text-slate-200 leading-tight wrap-break-word flex-1">
+                  {d}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {footer && (
+        <p className="text-[11px] text-amber-300/90 font-bold text-center pt-1">
+          {footer}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// تفكيك وتنسيق الرسائل
 function FormattedMessage({ message }) {
   if (!message) return null;
 
-  // إذا كانت الرسالة تحتوي على فواصل تواريخ
+  // فحص إذا كان الإشعار خاصاً بتغير الترتيب
+  const isRankMessage =
+    message.includes("صعود") ||
+    message.includes("تراجع") ||
+    message.includes("🟢") ||
+    message.includes("🔴") ||
+    message.includes("ترتيب أوائل");
+
+  if (isRankMessage) {
+    return <RankChangeDisplay message={message} />;
+  }
+
+  // إذا كانت الرسالة تحتوي على فواصل تواريخ (مواعيد اختبارات / مهام)
   const parts = message.split(/(📅|🏁)/g).filter(Boolean);
 
-  if (parts.length <= 1) {
+  if (parts.length > 1) {
+    const mainText = parts[0]?.replace(/[📅🏁].*$/, "").trim();
+    const dateChips = [];
+
+    for (let i = 0; i < parts.length; i++) {
+      if (parts[i] === "📅" && parts[i + 1]) {
+        dateChips.push({ icon: "📅", text: parts[i + 1].trim() });
+        i++;
+      } else if (parts[i] === "🏁" && parts[i + 1]) {
+        dateChips.push({ icon: "🏁", text: parts[i + 1].trim() });
+        i++;
+      }
+    }
+
     return (
-      <p className="text-xs sm:text-sm text-slate-300 dark:text-slate-300 leading-relaxed font-normal">
-        {message}
-      </p>
+      <div className="space-y-1.5 mt-1">
+        {mainText && (
+          <p className="text-xs sm:text-sm text-slate-300 whitespace-pre-line leading-relaxed">
+            {mainText}
+          </p>
+        )}
+        {dateChips.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {dateChips.map((chip, idx) => (
+              <span
+                key={idx}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-800/80 border border-slate-700/60 text-slate-300"
+              >
+                <span>{chip.icon}</span>
+                <span>{chip.text}</span>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
     );
   }
 
-  const mainText = parts[0]?.replace(/[📅🏁].*$/, "").trim();
-  const dateChips = [];
-
-  for (let i = 0; i < parts.length; i++) {
-    if (parts[i] === "📅" && parts[i + 1]) {
-      dateChips.push({ icon: "📅", text: parts[i + 1].trim() });
-      i++;
-    } else if (parts[i] === "🏁" && parts[i + 1]) {
-      dateChips.push({ icon: "🏁", text: parts[i + 1].trim() });
-      i++;
-    }
-  }
-
   return (
-    <div className="space-y-1.5 mt-1">
-      {mainText && (
-        <p className="text-xs sm:text-sm text-slate-300 dark:text-slate-300 leading-relaxed">
-          {mainText}
-        </p>
-      )}
-      {dateChips.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {dateChips.map((chip, idx) => (
-            <span
-              key={idx}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-800/80 border border-slate-700/60 text-slate-300"
-            >
-              <span>{chip.icon}</span>
-              <span>{chip.text}</span>
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
+    <p className="text-xs sm:text-sm text-slate-300 whitespace-pre-line leading-relaxed font-normal mt-1">
+      {message}
+    </p>
   );
 }
 
@@ -185,7 +355,9 @@ const Notifications = ({ studentGroup }) => {
 
   // حساب غير المقروء
   useEffect(() => {
-    const unread = notifications.filter((n) => !readLocally.includes(n.id)).length;
+    const unread = notifications.filter(
+      (n) => !readLocally.includes(n.id),
+    ).length;
     setUnreadCount(unread);
   }, [notifications, readLocally]);
 
@@ -382,7 +554,9 @@ const Notifications = ({ studentGroup }) => {
                       <BellRing className="w-8 h-8 opacity-70" />
                     </div>
                     <h4 className="text-sm font-bold text-slate-200 mb-1">
-                      {filterTab === "unread" ? "لا توجد إشعارات غير مقروءة" : "لا توجد إشعارات حالياً"}
+                      {filterTab === "unread"
+                        ? "لا توجد إشعارات غير مقروءة"
+                        : "لا توجد إشعارات حالياً"}
                     </h4>
                     <p className="text-xs text-slate-400 max-w-xs">
                       {filterTab === "unread"
@@ -394,7 +568,10 @@ const Notifications = ({ studentGroup }) => {
                   <div className="p-2 space-y-1.5">
                     {filteredNotifications.map((notif) => {
                       const isUnread = !readLocally.includes(notif.id);
-                      const badge = getNotificationBadge(notif.title, notif.message);
+                      const badge = getNotificationBadge(
+                        notif.title,
+                        notif.message,
+                      );
                       const IconComponent = badge.icon;
 
                       return (
@@ -431,7 +608,9 @@ const Notifications = ({ studentGroup }) => {
 
                                 <div className="flex items-center gap-1 text-[11px] text-slate-400">
                                   <Clock className="w-3 h-3 text-slate-500" />
-                                  <span>{formatNotificationDate(notif.createdAt)}</span>
+                                  <span>
+                                    {formatNotificationDate(notif.createdAt)}
+                                  </span>
                                 </div>
                               </div>
 
@@ -460,7 +639,10 @@ const Notifications = ({ studentGroup }) => {
                 <div className="px-5 py-3 bg-slate-950/70 border-t border-slate-800/70 flex items-center justify-between text-xs text-slate-400">
                   <span className="flex items-center gap-1.5">
                     <Layers className="w-3.5 h-3.5 text-indigo-400" />
-                    المجموعة: <strong className="text-slate-200">{studentGroup || "عام"}</strong>
+                    المجموعة:{" "}
+                    <strong className="text-slate-200">
+                      {studentGroup || "عام"}
+                    </strong>
                   </span>
                   {unreadCount > 0 && (
                     <button
@@ -481,4 +663,3 @@ const Notifications = ({ studentGroup }) => {
 };
 
 export default React.memo(Notifications);
-

@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  lazy,
-  Suspense,
-} from "react";
+import React, { useState, useEffect, useCallback, lazy, Suspense, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import {
   Users,
@@ -41,6 +35,7 @@ import PasswordModal from "../(partsMainPage)/PasswordModal";
 // Sub-components
 import StudentHeader from "./components/StudentHeader";
 import TabNav from "./components/TabNav";
+import LuckyWheelModal from "@/app/components/LuckyWheelModal";
 
 // Tabs
 import OverviewTab from "./tabs/OverviewTab";
@@ -50,6 +45,7 @@ import ExamTab from "./tabs/ExamTab";
 import GiftTab from "./tabs/GiftTab";
 import RegistrationDataTab from "./tabs/RegistrationDataTab";
 import CertificateTab from "./tabs/CertificateTab";
+import StoreTab from "./tabs/StoreTab";
 
 const PointsRequestTab = lazy(() =>
   import("./components/PointsRequestTab")
@@ -85,9 +81,12 @@ const StudentDetails = () => {
   const [openNote, setOpenNote] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showModalAttendance, setShowModalAttendance] = useState(false);
+  const [showLuckyWheel, setShowLuckyWheel] = useState(false);
 
   const { groupStatuses } = useGroupContext();
   const status = groupStatuses ? groupStatuses[profile.studentGroup] : null;
+
+   const sectionRef = useRef(null);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -318,6 +317,17 @@ const StudentDetails = () => {
       confirmButtonText: "حسناً",
     });
   };
+  
+const handleStore = () => {
+  setActiveTab("store");
+
+  requestAnimationFrame(() => {
+    sectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  });
+};
 
   // شاشات التحميل والخطأ
   if (profile.loading) {
@@ -420,6 +430,8 @@ const StudentDetails = () => {
             attendancePercentage: profile.attendancePercentage,
           }}
           onUploadSuccess={profile.handleUploadSuccess}
+          onOpenLuckyWheel={() => setShowLuckyWheel(true)}
+          onOpenStore={handleStore}
         />
 
         {/* ── Tabs Navigation ── */}
@@ -465,6 +477,16 @@ const StudentDetails = () => {
               setOpenNote={setOpenNote}
             />
           )}
+
+      {activeTab === "store" && (
+  <div ref={sectionRef}>
+    <StoreTab
+      studentData={profile.studentData}
+      studentDocId={profile.studentDocId}
+      onOpenLuckyWheel={() => setShowLuckyWheel(true)}
+    />
+  </div>
+)}
 
           {activeTab === "tasks" && (
             <TasksTab
@@ -563,6 +585,19 @@ const StudentDetails = () => {
             />
           )}
         </div>
+
+        {/* ── Lucky Wheel Modal ── */}
+        <LuckyWheelModal
+          open={showLuckyWheel}
+          onClose={() => setShowLuckyWheel(false)}
+          studentDocId={profile.studentDocId}
+          studentScore={profile.studentData?.score || 0}
+          reserveAttendanceCount={profile.reserveAttendanceCount}
+          lastSpinTimestamp={profile.studentData?.lastSpinTimestamp}
+          paidSpinsCount={profile.studentData?.wheelPaidSpins || 0}
+          bonusSpinCount={profile.studentData?.wheelBonusSpins || 0}
+          onSpinSuccess={() => {}}
+        />
       </div>
     </div>
   );

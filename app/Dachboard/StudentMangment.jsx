@@ -60,7 +60,12 @@ export default function StudentMangment({
   const tabs = [
     { id: "controls", label: "التحكم", icon: Settings, color: "blue" },
     { id: "tasks", label: "المهام", icon: BookOpen, color: "violet" },
-    { id: "submissions", label: "التسليمات", icon: BarChart3, color: "emerald" },
+    {
+      id: "submissions",
+      label: "التسليمات",
+      icon: BarChart3,
+      color: "emerald",
+    },
     { id: "topTask", label: "أوائل التاسك", icon: Award, color: "amber" },
     { id: "topTest", label: "أوائل الاختبار", icon: Trophy, color: "rose" },
   ];
@@ -73,11 +78,20 @@ export default function StudentMangment({
     rose: "text-rose-600 dark:text-rose-400",
   };
 
-  const SectionHeader = ({ onClick, isExpanded, icon: Icon, title, iconColor = "text-blue-600", accent = "blue" }) => {
+  const SectionHeader = ({
+    onClick,
+    isExpanded,
+    icon: Icon,
+    title,
+    iconColor = "text-blue-600",
+    accent = "blue",
+  }) => {
     const accentMap = {
       blue: "from-blue-500/10 to-blue-600/5 dark:from-blue-500/20 dark:to-blue-600/10",
-      green: "from-emerald-500/10 to-emerald-600/5 dark:from-emerald-500/20 dark:to-emerald-600/10",
-      purple: "from-violet-500/10 to-violet-600/5 dark:from-violet-500/20 dark:to-violet-600/10",
+      green:
+        "from-emerald-500/10 to-emerald-600/5 dark:from-emerald-500/20 dark:to-emerald-600/10",
+      purple:
+        "from-violet-500/10 to-violet-600/5 dark:from-violet-500/20 dark:to-violet-600/10",
     };
     return (
       <button
@@ -94,17 +108,27 @@ export default function StudentMangment({
           </span>
           {title}
         </span>
-        <span className={`p-1.5 rounded-lg transition-all ${isExpanded ? "bg-white dark:bg-gray-700 shadow-sm" : ""}`}>
-          {isExpanded
-            ? <ChevronUp className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            : <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          }
+        <span
+          className={`p-1.5 rounded-lg transition-all ${isExpanded ? "bg-white dark:bg-gray-700 shadow-sm" : ""}`}
+        >
+          {isExpanded ? (
+            <ChevronUp className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          )}
         </span>
       </button>
     );
   };
 
-  const ActionButton = ({ onClick, disabled, icon: Icon, label, gradient, size = "normal" }) => (
+  const ActionButton = ({
+    onClick,
+    disabled,
+    icon: Icon,
+    label,
+    gradient,
+    size = "normal",
+  }) => (
     <button
       onClick={onClick}
       disabled={disabled}
@@ -120,7 +144,6 @@ export default function StudentMangment({
   return (
     <div className="min-h-screen dark:bg-transparent" dir="rtl">
       <div className="max-w-7xl mx-auto space-y-4 pb-8">
-
         {/* HERO HEADER */}
         <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 shadow-2xl shadow-blue-500/30 p-6">
           <div className="absolute top-0 left-0 w-48 h-48 bg-white/5 rounded-full -translate-x-16 -translate-y-16 blur-2xl" />
@@ -134,7 +157,9 @@ export default function StudentMangment({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Sparkles className="w-4 h-4 text-blue-200" />
-                  <span className="text-blue-200 text-xs font-semibold tracking-widest uppercase">لوحة الإدارة</span>
+                  <span className="text-blue-200 text-xs font-semibold tracking-widest uppercase">
+                    لوحة الإدارة
+                  </span>
                 </div>
                 <h1 className="text-2xl md:text-3xl font-black text-white leading-tight">
                   مركز إدارة الطلاب
@@ -145,16 +170,22 @@ export default function StudentMangment({
             <div className="flex flex-wrap gap-2 mb-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5">
                 <Users className="w-3.5 h-3.5 text-blue-200" />
-                <span className="text-sm text-white font-semibold">{students.length} طالب</span>
+                <span className="text-sm text-white font-semibold">
+                  {students.length} طالب
+                </span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5">
                 <Layers className="w-3.5 h-3.5 text-blue-200" />
-                <span className="text-sm text-white font-semibold">{availableGroups.length} مجموعة</span>
+                <span className="text-sm text-white font-semibold">
+                  {availableGroups.length} مجموعة
+                </span>
               </div>
               {selectedGroup && (
                 <div className="flex items-center gap-2 bg-emerald-400/20 border border-emerald-300/30 rounded-full px-4 py-1.5">
                   <Zap className="w-3.5 h-3.5 text-emerald-300" />
-                  <span className="text-sm text-emerald-200 font-semibold">{selectedGroup} — نشطة</span>
+                  <span className="text-sm text-emerald-200 font-semibold">
+                    {selectedGroup} — نشطة
+                  </span>
                 </div>
               )}
             </div>
@@ -185,7 +216,9 @@ export default function StudentMangment({
             <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
               <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-gray-800 dark:text-gray-100 text-sm">المجموعات النشطة</h3>
+            <h3 className="font-bold text-gray-800 dark:text-gray-100 text-sm">
+              المجموعات النشطة
+            </h3>
             <span className="mr-auto bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
               {availableGroups.length}
             </span>
@@ -235,14 +268,21 @@ export default function StudentMangment({
                   )}
                   <div className="p-3 relative z-10">
                     <div className="flex items-start justify-between mb-2 gap-1">
-                      <span className={`font-bold text-sm leading-tight ${
-                        isSelected ? "text-blue-700 dark:text-blue-300" : "text-gray-800 dark:text-gray-100"
-                      }`}>
+                      <span
+                        className={`font-bold text-sm leading-tight ${
+                          isSelected
+                            ? "text-blue-700 dark:text-blue-300"
+                            : "text-gray-800 dark:text-gray-100"
+                        }`}
+                      >
                         {group}
                       </span>
                       <button
                         type="button"
-                        onClick={(e) => { e.stopPropagation(); toggleStatus(); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleStatus();
+                        }}
                         className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold transition-all hover:scale-105 ${
                           status
                             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
@@ -297,7 +337,8 @@ export default function StudentMangment({
                       onClick={() => setGroupActiveTab(tab.id)}
                       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs whitespace-nowrap transition-all shrink-0 ${
                         isActive
-                          ? "bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600 " + tabColorMap[tab.color]
+                          ? "bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600 " +
+                            tabColorMap[tab.color]
                           : "text-gray-500 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-gray-700/50 hover:text-gray-700 dark:hover:text-gray-200"
                       }`}
                     >
@@ -383,7 +424,9 @@ export default function StudentMangment({
                       {isUpdateSuccess && (
                         <div className="mt-3 flex items-center gap-2 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700/40 p-3 rounded-xl">
                           <CheckCircle className="w-4 h-4 shrink-0" />
-                          <span className="text-sm font-semibold">تم تحديث عدد المحاضرات بنجاح!</span>
+                          <span className="text-sm font-semibold">
+                            تم تحديث عدد المحاضرات بنجاح!
+                          </span>
                         </div>
                       )}
                     </div>
@@ -440,10 +483,16 @@ export default function StudentMangment({
                       </div>
                       <TrendingUp className="w-4 h-4 text-blue-200" />
                     </div>
-                    <p className="text-blue-100 text-xs font-semibold mb-1.5">إجمالي الاشتراكات</p>
+                    <p className="text-blue-100 text-xs font-semibold mb-1.5">
+                      إجمالي الاشتراكات
+                    </p>
                     <p className="text-white text-2xl font-black leading-none">
-                      {financialSummary?.totalRevenue ? String(financialSummary.totalRevenue) : "0"}
-                      <span className="text-sm font-semibold text-blue-200 mr-1">ج.م</span>
+                      {financialSummary?.totalRevenue
+                        ? String(financialSummary.totalRevenue)
+                        : "0"}
+                      <span className="text-sm font-semibold text-blue-200 mr-1">
+                        ج.م
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -457,10 +506,16 @@ export default function StudentMangment({
                       </div>
                       <CheckCircle className="w-4 h-4 text-emerald-200" />
                     </div>
-                    <p className="text-emerald-100 text-xs font-semibold mb-1.5">إجمالي المدفوع</p>
+                    <p className="text-emerald-100 text-xs font-semibold mb-1.5">
+                      إجمالي المدفوع
+                    </p>
                     <p className="text-white text-2xl font-black leading-none">
-                      {financialSummary?.totalPaid ? String(financialSummary.totalPaid) : "0"}
-                      <span className="text-sm font-semibold text-emerald-200 mr-1">ج.م</span>
+                      {financialSummary?.totalPaid
+                        ? String(financialSummary.totalPaid)
+                        : "0"}
+                      <span className="text-sm font-semibold text-emerald-200 mr-1">
+                        ج.م
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -474,10 +529,16 @@ export default function StudentMangment({
                       </div>
                       <XCircle className="w-4 h-4 text-rose-200" />
                     </div>
-                    <p className="text-rose-100 text-xs font-semibold mb-1.5">إجمالي المتبقي</p>
+                    <p className="text-rose-100 text-xs font-semibold mb-1.5">
+                      إجمالي المتبقي
+                    </p>
                     <p className="text-white text-2xl font-black leading-none">
-                      {financialSummary?.totalRemaining ? String(financialSummary.totalRemaining) : "0"}
-                      <span className="text-sm font-semibold text-rose-200 mr-1">ج.م</span>
+                      {financialSummary?.totalRemaining
+                        ? String(financialSummary.totalRemaining)
+                        : "0"}
+                      <span className="text-sm font-semibold text-rose-200 mr-1">
+                        ج.م
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -551,7 +612,6 @@ export default function StudentMangment({
             )}
           </div>
         </div>
-
       </div>
     </div>
   );

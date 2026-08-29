@@ -1,24 +1,22 @@
 module.exports = {
   compact: true,
-  controlFlowFlattening: true,
-  controlFlowFlatteningThreshold: 0.25,
-  deadCodeInjection: false, // تعطيل الحقن الميت لتسريع البناء وتجنب التضخم
-  debugProtection: false,   // تجنب تجميد أدوات الفحص للمطور
+  controlFlowFlattening: false,
+  deadCodeInjection: false,
+  debugProtection: false,
   disableConsoleOutput: false,
   identifierNamesGenerator: "hexadecimal",
   log: false,
-  numbersToExpressions: true,
+  numbersToExpressions: false,
   renameGlobals: false,
   selfDefending: false,
   simplify: true,
-  splitStrings: true,
-  splitStringsChunkLength: 8,
+  splitStrings: false,
   stringArray: true,
-  stringArrayEncoding: ["base64"],
-  stringArrayIndexShift: true,
+  stringArrayEncoding: [], // تعطيل base64 لأنه يسبب خطأ charAt في بيئة المتصفح
+  stringArrayIndexShift: false,
   stringArrayWrappersCount: 1,
-  stringArrayWrappersType: "function",
-  stringArrayThreshold: 0.75,
-  transformObjectKeys: true,
+  stringArrayWrappersType: "variable",
+  stringArrayThreshold: 0.5,
+  transformObjectKeys: false, // ممنوع تشفير مفاتيح الكائنات لأنها تكسر React 19 و Next.js
   unicodeEscapeSequence: false,
 };

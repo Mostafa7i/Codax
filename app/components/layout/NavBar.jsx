@@ -171,8 +171,8 @@ export default function NavBar({ currentUser }) {
 
           {/* ─── الجانب الأيسر (الإشعارات وقائمة الموبايل) ─── */}
           <div className="flex items-center gap-3">
-            {/* الإشعارات */}
-            {isNotificationPage && (
+            {/* الإشعارات (تظهر فقط عند فتح المجموعات واختيار مجموعة) */}
+            {isNotificationPage && selectedGroup && (
               <Notifications studentGroup={selectedGroup} />
             )}
 

@@ -173,22 +173,38 @@ const StudentsDashboard = () => {
 
       let initialTasks = [];
       if (!groupSnapshot.empty) {
-        // إذا وجدنا طلاباً في المجموعة
-        const sampleStudent = groupSnapshot.docs[0].data();
-        const sampleTasks = sampleStudent.tasks || [];
-
-        if (sampleTasks.length > 0) {
-          // ✅ الخطوة 2: البحث عن التاسك صاحب أعلى ID (آخر تاسك)
-          const latestTask = sampleTasks.reduce((latest, current) => {
-            return current.id > latest.id ? current : latest;
+        // ✅ جمع كافة المهام الفريدة من جميع طلاب المجموعة لضمان نسخ كل التاسكات
+        const groupTasksMap = new Map();
+        groupSnapshot.docs.forEach((d) => {
+          const sTasks = d.data().tasks || [];
+          sTasks.forEach((t) => {
+            if (t && t.name && !groupTasksMap.has(t.name.trim())) {
+              groupTasksMap.set(t.name.trim(), {
+                id: t.id,
+                name: t.name,
+                score: 0,
+                submissionType: t.submissionType || "file",
+                enabled: false, // مقفول افتراضياً للطالب الجديد
+              });
+            }
           });
-          // إضافة آخر تاسك فقط للطالب الجديد مع درجة 0
-          initialTasks = [{ ...latestTask, score: 0 }];
-        }
+        });
+
+        initialTasks = Array.from(groupTasksMap.values()).sort(
+          (a, b) => (Number(a.id) || 0) - (Number(b.id) || 0),
+        );
       }
-      // ✅ الخطوة 3: إذا لم يتم العثور على أي تاسكات، أنشئ تاسكاً افتراضياً
+      // إذا لم يتم العثور على أي تاسكات في المجموعة، أنشئ تاسكاً افتراضياً مقفولاً
       if (initialTasks.length === 0) {
-        initialTasks = [{ id: 1, name: "Task - 1", score: 0 }];
+        initialTasks = [
+          {
+            id: 1,
+            name: "Task - 1",
+            score: 0,
+            submissionType: "file",
+            enabled: false,
+          },
+        ];
       }
       const studentRef = doc(db, "students", formValues.phone);
 
@@ -1059,8 +1075,9 @@ const StudentsDashboard = () => {
     }
   };
 
-  const handleAddTask = () => {
-    if (newTask.name.trim() === "") return;
+  const handleAddTask = (taskData = null) => {
+    const taskToAdd = taskData || newTask;
+    if (!taskToAdd.name || taskToAdd.name.trim() === "") return;
     setEditedData((prev) => {
       const currentTasks = prev.tasks || [];
       const maxId = currentTasks.reduce(
@@ -1069,10 +1086,18 @@ const StudentsDashboard = () => {
       );
       return {
         ...prev,
-        tasks: [...currentTasks, { id: maxId + 1, ...newTask }],
+        tasks: [
+          ...currentTasks,
+          {
+            id: maxId + 1,
+            name: taskToAdd.name.trim(),
+            score: Number(taskToAdd.score) || 0,
+            submissionType: taskToAdd.submissionType || "file",
+          },
+        ],
       };
     });
-    setNewTask({ name: "", score: 0 });
+    setNewTask({ name: "", score: 0, submissionType: "file" });
   };
 
   const handleDeleteTask = (taskIndex) => {
@@ -1106,7 +1131,26 @@ const StudentsDashboard = () => {
     }
 
     try {
-      // ضمان أن جميع المهام تمتلك ID فريد
+      // دالة مساعدة لتنظيف أي حقول undefined لتجنب أخطاء Firestore
+      const sanitizeData = (obj) => {
+        if (obj === null || obj === undefined) return null;
+        if (Array.isArray(obj)) {
+          return obj.map(sanitizeData);
+        }
+        if (typeof obj === "object") {
+          const cleaned = {};
+          Object.entries(obj).forEach(([key, val]) => {
+            if (key === "docId") return; // لا نحفظ docId كحقل داخل المستند
+            if (val !== undefined) {
+              cleaned[key] = sanitizeData(val);
+            }
+          });
+          return cleaned;
+        }
+        return obj;
+      };
+
+      // ضمان أن جميع المهام تمتلك ID فريد وبيانات نظيفة
       let sanitizedTasks = editedData.tasks;
       if (Array.isArray(sanitizedTasks)) {
         const seenIds = new Set();
@@ -1122,7 +1166,22 @@ const StudentsDashboard = () => {
           } else {
             seenIds.add(tid);
           }
-          return { ...t, id: tid };
+          const taskObj = {
+            id: tid,
+            name: t.name || `Task - ${idx + 1}`,
+            score: Number(t.score) || 0,
+            submissionType: t.submissionType || "file",
+            enabled: t.enabled !== false,
+          };
+          if (t.isExam !== undefined) taskObj.isExam = Boolean(t.isExam);
+          if (t.type !== undefined) taskObj.type = t.type;
+          if (t.notes) taskObj.notes = t.notes;
+          if (t.submittedFile) taskObj.submittedFile = t.submittedFile;
+          if (t.submittedLink) taskObj.submittedLink = t.submittedLink;
+          if (t.submittedAt) taskObj.submittedAt = t.submittedAt;
+          if (t.submitted !== undefined)
+            taskObj.submitted = Boolean(t.submitted);
+          return taskObj;
         });
       }
 
@@ -1130,20 +1189,20 @@ const StudentsDashboard = () => {
       const studentRef = doc(db, "students", selectedStudent.docId);
 
       // 4. إعداد البيانات المحدثة مع تاريخ الحفظ
-      const dataToUpdate = {
+      const rawDataToUpdate = {
         ...editedData, // كل البيانات المعدلة
         tasks: sanitizedTasks || editedData.tasks,
         remainingAmount:
           (editedData.totalPrice || 0) - (editedData.paidAmount || 0),
         lastUpdate: new Date().toLocaleString("ar-EG", {
-          // إضافة تاريخ التحديث
-          day: "numeric", // يوم رقمي (١، ٢، إلخ)
-          month: "long", // اسم الشهر كامل (يونيو، يوليو)
-          // year: 'numeric', // سنة رقمية
-          hour: "2-digit", // ساعة بصيغة ١٢ ساعة
-          minute: "2-digit", // دقائق
+          day: "numeric",
+          month: "long",
+          hour: "2-digit",
+          minute: "2-digit",
         }),
       };
+
+      const dataToUpdate = sanitizeData(rawDataToUpdate);
 
       // 5. حفظ البيانات في Firebase
       await updateDoc(studentRef, dataToUpdate);

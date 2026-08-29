@@ -55,7 +55,9 @@ function AdminGuard({ children }) {
         setStatus("denied");
         const currentPath =
           typeof window !== "undefined" ? window.location.pathname : "/admin";
-        router.replace(`/auth/Login?redirect=${encodeURIComponent(currentPath)}`);
+        router.replace(
+          `/auth/Login?redirect=${encodeURIComponent(currentPath)}`,
+        );
         return;
       }
 
@@ -63,7 +65,7 @@ function AdminGuard({ children }) {
         // تحقق من collection admins
         const q = query(
           collection(db, "admins"),
-          where("email", "==", user.email?.toLowerCase())
+          where("email", "==", user.email?.toLowerCase()),
         );
         const snap = await getDocs(q);
 
@@ -125,34 +127,147 @@ function DashboardLayout({ children }) {
   const [complaintsBox, setComplaintsBox] = useState(0);
   const [pendingPointsRequests, setPendingPointsRequests] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadTasksSubmissions, setUnreadTasksSubmissions] = useState(0);
 
   useEffect(() => {
     const subs = [];
 
-    const sub = (q, setter) =>
-      onSnapshot(q, (snap) => setter(snap.size));
+    const sub = (q, setter) => onSnapshot(q, (snap) => setter(snap.size));
 
-    subs.push(sub(query(collection(db, "likesStudents"), where("read", "==", false)), setLikesUnread));
-    subs.push(sub(query(collection(db, "dislikesStudents"), where("read", "==", false)), setDislikesUnread));
-    subs.push(sub(query(collection(db, "NewStudents"), where("read", "==", false)), setRegister));
-    subs.push(sub(query(collection(db, "messages"), where("read", "==", false)), setComplaintsBox));
-    subs.push(sub(query(collection(db, "pointsRequests"), where("status", "==", "pending")), setPendingPointsRequests));
+    subs.push(
+      sub(
+        query(collection(db, "likesStudents"), where("read", "==", false)),
+        setLikesUnread,
+      ),
+    );
+    subs.push(
+      sub(
+        query(collection(db, "dislikesStudents"), where("read", "==", false)),
+        setDislikesUnread,
+      ),
+    );
+    subs.push(
+      sub(
+        query(collection(db, "NewStudents"), where("read", "==", false)),
+        setRegister,
+      ),
+    );
+    subs.push(
+      sub(
+        query(collection(db, "messages"), where("read", "==", false)),
+        setComplaintsBox,
+      ),
+    );
+    subs.push(
+      sub(
+        query(
+          collection(db, "pointsRequests"),
+          where("status", "==", "pending"),
+        ),
+        setPendingPointsRequests,
+      ),
+    );
+
+    // استماع للتسليمات المعلقة للمهام
+    const studentsSub = onSnapshot(collection(db, "students"), (snap) => {
+      let pendingCount = 0;
+      snap.docs.forEach((d) => {
+        const data = d.data();
+        if (
+          data.zipFile?.url &&
+          (!data.zipFile.score || data.zipFile.score === 0)
+        ) {
+          pendingCount++;
+        }
+        if (Array.isArray(data.tasks)) {
+          data.tasks.forEach((t) => {
+            if (
+              (t.submittedFile?.url || t.submittedLink) &&
+              (!t.score || t.score === 0)
+            ) {
+              pendingCount++;
+            }
+          });
+        }
+      });
+
+      if (typeof window !== "undefined") {
+        if (pathname === "/admin/zip-files") {
+          localStorage.setItem(
+            "admin_last_viewed_tasks_count",
+            String(pendingCount),
+          );
+          setUnreadTasksSubmissions(0);
+        } else {
+          const lastViewed = Number(
+            localStorage.getItem("admin_last_viewed_tasks_count") || 0,
+          );
+          const diff = pendingCount - lastViewed;
+          setUnreadTasksSubmissions(
+            diff > 0
+              ? diff
+              : pendingCount > 0 && !lastViewed
+                ? pendingCount
+                : 0,
+          );
+        }
+      }
+    });
+    subs.push(studentsSub);
 
     return () => subs.forEach((u) => u());
-  }, []);
+  }, [pathname]);
+
+  // تصفير عداد إشعارات المهام فور دخول الصفحة
+  useEffect(() => {
+    if (pathname === "/admin/zip-files" && typeof window !== "undefined") {
+      setUnreadTasksSubmissions(0);
+    }
+  }, [pathname]);
 
   const notificationsCount = likesUnread + dislikesUnread;
 
   const navigation = useMemo(
     () => [
-      { name: "التحكم في الطلاب", href: "/admin/students", icon: SlidersHorizontal, notify: unreadMessages },
-      { name: "الطلاب الجدد", href: "/admin/new-students", icon: UserCheck, notify: register },
-      { name: "ردود الفعل", href: "/admin/reactions", icon: MessageCircleHeart, notify: notificationsCount },
-      { name: "صندوق الشكاوي", href: "/admin/messages", icon: PackageOpen, notify: complaintsBox },
+      {
+        name: "التحكم في الطلاب",
+        href: "/admin/students",
+        icon: SlidersHorizontal,
+        notify: unreadMessages,
+      },
+      {
+        name: "الطلاب الجدد",
+        href: "/admin/new-students",
+        icon: UserCheck,
+        notify: register,
+      },
+      {
+        name: "ردود الفعل",
+        href: "/admin/reactions",
+        icon: MessageCircleHeart,
+        notify: notificationsCount,
+      },
+      {
+        name: "صندوق الشكاوي",
+        href: "/admin/messages",
+        icon: PackageOpen,
+        notify: complaintsBox,
+      },
       { name: "الإشعارات", href: "/admin/notifications", icon: BellRing },
-      { name: "المهام", href: "/admin/zip-files", icon: FileArchive },
+      {
+        name: "المهام",
+        href: "/admin/zip-files",
+        icon: FileArchive,
+        notify: unreadTasksSubmissions,
+      },
+      { name: "عجلة الحظ", href: "/admin/lucky-wheel", icon: Banknote },
       { name: "الحسابات", href: "/admin/installments", icon: Banknote },
-      { name: "طلبات النقاط", href: "/admin/points-requests", icon: Coins, notify: pendingPointsRequests },
+      {
+        name: "طلبات النقاط",
+        href: "/admin/points-requests",
+        icon: Coins,
+        notify: pendingPointsRequests,
+      },
       { name: "الحالة اللحظية", href: "/admin/activity", icon: Radio },
       { name: "الامتحانات", href: "/admin/exams", icon: BookOpenText },
       { name: "الكؤوس والنقاط", href: "/admin/trophy", icon: Trophy },
@@ -165,7 +280,14 @@ function DashboardLayout({ children }) {
       { name: "الأدمن", href: "/admin/admins", icon: Shield },
       { name: "الزوار اللحظيين", href: "/admin/visitors", icon: Users },
     ],
-    [unreadMessages, notificationsCount, register, complaintsBox, pendingPointsRequests]
+    [
+      unreadMessages,
+      notificationsCount,
+      register,
+      complaintsBox,
+      pendingPointsRequests,
+      unreadTasksSubmissions,
+    ],
   );
 
   const handleLogout = useCallback(async () => {
@@ -177,10 +299,15 @@ function DashboardLayout({ children }) {
   const sidebarBase = `fixed inset-y-0 right-0 z-50 h-full bg-white dark:bg-gray-950 shadow-2xl border-l border-gray-200 dark:border-gray-800
     transition-all duration-300 flex flex-col lg:static lg:inset-auto lg:translate-x-0`;
   const sidebarWidth = isSidebarCollapsed ? "lg:w-20" : "lg:w-72";
-  const sidebarMobile = isMobileMenuOpen ? "translate-x-0 w-72" : "translate-x-full";
+  const sidebarMobile = isMobileMenuOpen
+    ? "translate-x-0 w-72"
+    : "translate-x-full";
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden" dir="rtl">
+    <div
+      className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden"
+      dir="rtl"
+    >
       {/* Mobile overlay */}
       {isMobileMenuOpen && (
         <div
@@ -202,10 +329,16 @@ function DashboardLayout({ children }) {
       <aside className={`${sidebarBase} ${sidebarWidth} ${sidebarMobile}`}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 shrink-0">
-          <div className={`flex items-center gap-3 ${isSidebarCollapsed && "lg:hidden"}`}>
-            <Link title="الرئيسية" href={"/"}><Home  className="w-8 h-8 text-indigo-600" /></Link>
-            
-            <h1 className="text-xl font-bold text-gray-800 dark:text-white">لوحة التحكم</h1>
+          <div
+            className={`flex items-center gap-3 ${isSidebarCollapsed && "lg:hidden"}`}
+          >
+            <Link title="الرئيسية" href={"/"}>
+              <Home className="w-8 h-8 text-indigo-600" />
+            </Link>
+
+            <h1 className="text-xl font-bold text-gray-800 dark:text-white">
+              لوحة التحكم
+            </h1>
           </div>
           <button
             onClick={() => setIsSidebarCollapsed((p) => !p)}
@@ -229,22 +362,28 @@ function DashboardLayout({ children }) {
         <nav className="flex-1 overflow-y-auto p-3 space-y-1">
           {navigation.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href || pathname.startsWith(item.href + "/");
+            const active =
+              pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`group relative flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium transition-all
-                  ${active
-                    ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  ${
+                    active
+                      ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }
                   ${isSidebarCollapsed ? "lg:justify-center" : ""}
                 `}
               >
-                <Icon className={`w-5 h-5 shrink-0 ${active ? "text-white" : "text-gray-500 group-hover:text-indigo-600"}`} />
-                <span className={`truncate ${isSidebarCollapsed ? "lg:hidden" : ""}`}>
+                <Icon
+                  className={`w-5 h-5 shrink-0 ${active ? "text-white" : "text-gray-500 group-hover:text-indigo-600"}`}
+                />
+                <span
+                  className={`truncate ${isSidebarCollapsed ? "lg:hidden" : ""}`}
+                >
                   {item.name}
                 </span>
                 {item.notify > 0 && (
@@ -259,7 +398,9 @@ function DashboardLayout({ children }) {
 
         {/* Footer */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-800 shrink-0">
-          <div className={`flex items-center gap-3 mb-4 ${isSidebarCollapsed ? "lg:justify-center" : ""}`}>
+          <div
+            className={`flex items-center gap-3 mb-4 ${isSidebarCollapsed ? "lg:justify-center" : ""}`}
+          >
             <div className="w-10 h-10 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shrink-0">
               {auth.currentUser?.email?.[0]?.toUpperCase() ?? "A"}
             </div>
@@ -267,7 +408,9 @@ function DashboardLayout({ children }) {
               <p className="font-semibold text-sm truncate text-gray-800 dark:text-white">
                 {auth.currentUser?.displayName || "الأدمن"}
               </p>
-              <p className="text-xs text-gray-500 truncate">{auth.currentUser?.email}</p>
+              <p className="text-xs text-gray-500 truncate">
+                {auth.currentUser?.email}
+              </p>
             </div>
           </div>
           <button
@@ -276,15 +419,15 @@ function DashboardLayout({ children }) {
               ${isSidebarCollapsed ? "lg:justify-center" : ""}`}
           >
             <LogOut className="w-5 h-5" />
-            <span className={isSidebarCollapsed ? "lg:hidden" : ""}>تسجيل الخروج</span>
+            <span className={isSidebarCollapsed ? "lg:hidden" : ""}>
+              تسجيل الخروج
+            </span>
           </button>
         </div>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-        {children}
-      </main>
+      <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
     </div>
   );
 }

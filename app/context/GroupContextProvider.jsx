@@ -1,7 +1,13 @@
-'use client';
+"use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { db } from "../services/firebaseConfig";
-import { collection, getDocs, onSnapshot, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 
 export const GroupContext = createContext();
 
@@ -9,15 +15,15 @@ export const useGroupContext = () => {
   const context = useContext(GroupContext);
   if (!context) {
     // قيمة افتراضية آمنة في حالة استخدام الـ Hook خارج المزود
-    return { 
-      groups: [], 
-      selectedGroup: null, 
-      setSelectedGroup: () => {}, 
+    return {
+      groups: [],
+      selectedGroup: null,
+      setSelectedGroup: () => {},
       isLoadingGroups: true,
       groupStatuses: {},
       availableGroups: [],
       groupLectures: {},
-      setGroupLectures: () => {}
+      setGroupLectures: () => {},
     };
   }
   return context;
@@ -35,22 +41,28 @@ export const GroupContextProvider = ({ children }) => {
   // استعادة المجموعة المحددة من localStorage بعد التحميل على العميل (لتفادي Hydration Mismatch)
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem('selectedGroup');
+      const saved = localStorage.getItem("selectedGroup");
       if (saved) {
         setSelectedGroup(saved);
       }
     }
   }, []);
 
-  // onSnapshot لجلب المحاضرات
+  // onSnapshot لجلب المحاضرات وحالات المجموعات معاً
   useEffect(() => {
     try {
       const lecturesRef = doc(db, "lectures", "groups");
       const unsubscribe = onSnapshot(lecturesRef, (docSnap) => {
         if (docSnap.exists()) {
-          const data = docSnap.data();
+          const data = docSnap.data() || {};
           setGroupLectures(data);
           setAvailableGroups(Object.keys(data));
+
+          const statuses = {};
+          Object.keys(data).forEach((groupName) => {
+            statuses[groupName] = data[groupName]?.status ?? true;
+          });
+          setGroupStatuses(statuses);
         } else {
           console.warn("Document 'groups' not found in 'lectures' collection");
         }
@@ -77,37 +89,32 @@ export const GroupContextProvider = ({ children }) => {
           const numA = parseInt(a, 10);
           const numB = parseInt(b, 10);
           if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-          return String(a).localeCompare(String(b), undefined, { numeric: true });
+          return String(a).localeCompare(String(b), undefined, {
+            numeric: true,
+          });
         });
         setGroups(uniqueGroups);
 
-        const savedGroup = typeof window !== "undefined" ? localStorage.getItem('selectedGroup') : null;
+        const savedGroup =
+          typeof window !== "undefined"
+            ? localStorage.getItem("selectedGroup")
+            : null;
 
         if (!savedGroup && uniqueGroups.length > 0) {
           setSelectedGroup(uniqueGroups[0]);
           if (typeof window !== "undefined") {
-            localStorage.setItem('selectedGroup', uniqueGroups[0]);
+            localStorage.setItem("selectedGroup", uniqueGroups[0]);
           }
-        } else if (savedGroup && !uniqueGroups.includes(savedGroup) && uniqueGroups.length > 0) {
+        } else if (
+          savedGroup &&
+          !uniqueGroups.includes(savedGroup) &&
+          uniqueGroups.length > 0
+        ) {
           setSelectedGroup(uniqueGroups[0]);
           if (typeof window !== "undefined") {
-            localStorage.setItem('selectedGroup', uniqueGroups[0]);
+            localStorage.setItem("selectedGroup", uniqueGroups[0]);
           }
         }
-
-        // جلب حالات المجموعات
-        const groupsDocSnap = await getDoc(doc(db, "lectures", "groups"));
-        if (groupsDocSnap.exists()) {
-          const data = groupsDocSnap.data();
-          const statuses = {};
-          Object.keys(data).forEach((groupName) => {
-            statuses[groupName] = data[groupName]?.status ?? true;
-          });
-          setGroupStatuses(statuses);
-        } else {
-          setGroupStatuses({});
-        }
-
       } catch (error) {
         console.error("❌ خطأ أثناء جلب المجموعات:", error.message);
       } finally {
@@ -121,9 +128,9 @@ export const GroupContextProvider = ({ children }) => {
   const updateSelectedGroup = (group) => {
     if (typeof window !== "undefined") {
       if (group) {
-        localStorage.setItem('selectedGroup', group);
+        localStorage.setItem("selectedGroup", group);
       } else {
-        localStorage.removeItem('selectedGroup');
+        localStorage.removeItem("selectedGroup");
       }
     }
     setSelectedGroup(group);
@@ -137,7 +144,7 @@ export const GroupContextProvider = ({ children }) => {
     isLoadingGroups,
     availableGroups,
     setGroupLectures,
-    groupLectures
+    groupLectures,
   };
 
   return (

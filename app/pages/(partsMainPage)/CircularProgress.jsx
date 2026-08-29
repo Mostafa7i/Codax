@@ -65,7 +65,10 @@ const CircularProgress = React.memo(function CircularProgress({ studentCir }) {
       </svg>
 
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-sm font-bold tabular-nums" style={{ color: colorStart }}>
+        <span
+          className="text-sm font-bold tabular-nums"
+          style={{ color: colorStart }}
+        >
           {Number.isInteger(display) ? display : display.toFixed(1)}%
         </span>
       </div>
@@ -150,9 +153,15 @@ function getTotalScoreMeta(score) {
   return { gradient: ["#dc2626", "#f87171"], text: "text-red-500" };
 }
 
-export const TotalScoreCircle = React.memo(function TotalScoreCircle({ tasks = [] }) {
-  const totalTasks = tasks.length;
-  const totalScore = tasks.reduce((sum, task) => sum + (Number(task.score) || 0), 0);
+export const TotalScoreCircle = React.memo(function TotalScoreCircle({
+  tasks = [],
+}) {
+  const activeTasks = tasks.filter((t) => t && t.enabled !== false);
+  const totalTasks = activeTasks.length;
+  const totalScore = activeTasks.reduce(
+    (sum, task) => sum + (Number(task.score) || 0),
+    0,
+  );
   const maxScore = totalTasks * 100;
 
   const percentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
@@ -173,9 +182,14 @@ export const TotalScoreCircle = React.memo(function TotalScoreCircle({ tasks = [
         />
       </div>
 
-      <div className={`mt-1.5 text-xs font-semibold text-center tabular-nums ${textColor}`}>
+      <div
+        className={`mt-1.5 text-xs font-semibold text-center tabular-nums ${textColor}`}
+      >
         {totalScore} / <span className="text-slate-500">{maxScore}</span>
-        <span className="text-slate-400 font-medium"> ({percentageFixed}%)</span>
+        <span className="text-slate-400 font-medium">
+          {" "}
+          ({percentageFixed}%)
+        </span>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   doc,
   updateDoc,
@@ -15,6 +15,8 @@ import { db } from "@/app/services/firebaseConfig";
 import {
   calculateStudentAverage,
   calculateAttendancePercentage,
+  buildGroupMasterTasks,
+  syncStudentTasksWithMaster,
 } from "@/app/components/calculations";
 import {
   updateStudentEnglishName,
@@ -91,7 +93,7 @@ export function useStudentProfile(studentId) {
     const studentsRef = collection(db, "students");
     const studentQuery = query(
       studentsRef,
-      where("id", "==", !isNaN(numericId) ? numericId : studentId)
+      where("id", "==", !isNaN(numericId) ? numericId : studentId),
     );
 
     const unsubscribe = onSnapshot(
@@ -104,8 +106,8 @@ export function useStudentProfile(studentId) {
 
           setHasStartedQuiz(
             Boolean(
-              data.quizStartTime && Object.keys(data.quizStartTime).length > 0
-            )
+              data.quizStartTime && Object.keys(data.quizStartTime).length > 0,
+            ),
           );
           setShowTime(data.showTime !== false);
           setShowIcons(data.showScoreIcons !== false);
@@ -126,11 +128,65 @@ export function useStudentProfile(studentId) {
         console.error("Firestore student snapshot error:", err);
         setError("حدث خطأ أثناء تحميل بيانات الطالب");
         setLoading(false);
-      }
+      },
     );
 
     return () => unsubscribe();
   }, [studentId]);
+
+  // ── 1.1 مطابقة وترتيب مهام الطالب مع النموذج المرجعي للمجموعة لمنع التكرار نهائياً والترتيب التام ──
+  useEffect(() => {
+    if (!studentGroup) return;
+
+    const groupQuery = query(
+      collection(db, "students"),
+      where("group", "==", studentGroup),
+    );
+
+    const unsubGroup = onSnapshot(
+      groupQuery,
+      (snap) => {
+        if (snap.empty) return;
+
+        const groupStudents = snap.docs.map((d) => ({
+          docId: d.id,
+          ...d.data(),
+        }));
+
+        const masterTasks = buildGroupMasterTasks(groupStudents);
+        if (masterTasks.length === 0) return;
+
+        setStudentData((prev) => {
+          if (!prev) return prev;
+          const currentTasks = Array.isArray(prev.tasks) ? prev.tasks : [];
+          const alignedTasks = syncStudentTasksWithMaster(
+            currentTasks,
+            masterTasks,
+          );
+
+          // التحقق إذا كانت هناك حاجة فعلية لتحديث الحالة لتجنب إعادة الريندر غير الضروري
+          const isSameLength = alignedTasks.length === currentTasks.length;
+          const isSame =
+            isSameLength &&
+            alignedTasks.every(
+              (t, i) =>
+                t.name === currentTasks[i]?.name &&
+                t.enabled === currentTasks[i]?.enabled &&
+                t.score === currentTasks[i]?.score,
+            );
+
+          if (isSame) return prev;
+
+          return { ...prev, tasks: alignedTasks };
+        });
+      },
+      (err) => {
+        console.warn("[useStudentProfile] Group tasks sync warning:", err);
+      },
+    );
+
+    return () => unsubGroup();
+  }, [studentGroup]);
 
   // ── 2. جلب سجل استخدام النقاط الاحتياطية ──
   useEffect(() => {
@@ -141,12 +197,12 @@ export function useStudentProfile(studentId) {
           db,
           "students",
           studentDocId,
-          "reserveUsageLogs"
+          "reserveUsageLogs",
         );
         const q = query(logRef, where("type", "==", "subtract"));
         const snapshot = await getDocs(q);
         setStudentData((prev) =>
-          prev ? { ...prev, reserveUsageCount: snapshot.size } : prev
+          prev ? { ...prev, reserveUsageCount: snapshot.size } : prev,
         );
       } catch (err) {
         console.error("Error fetching reserve usage count:", err);
@@ -172,7 +228,7 @@ export function useStudentProfile(studentId) {
             tasks[0].submittedAt = studentData.zipFile.uploadedAt
               ? studentData.zipFile.uploadedAt.seconds
                 ? new Date(
-                    studentData.zipFile.uploadedAt.seconds * 1000
+                    studentData.zipFile.uploadedAt.seconds * 1000,
                   ).toISOString()
                 : new Date(studentData.zipFile.uploadedAt).toISOString()
               : new Date().toISOString();
@@ -198,7 +254,7 @@ export function useStudentProfile(studentId) {
     const phoneToQuery = studentDocId || String(studentId);
     const q1 = query(
       collection(db, "NewStudents"),
-      where("phone", "==", phoneToQuery)
+      where("phone", "==", phoneToQuery),
     );
 
     const unsubscribe = onSnapshot(q1, (snap) => {
@@ -208,7 +264,7 @@ export function useStudentProfile(studentId) {
       } else {
         const q2 = query(
           collection(db, "NewStudents"),
-          where("phone", "==", String(studentId))
+          where("phone", "==", String(studentId)),
         );
         getDocs(q2)
           .then((snap2) => {
@@ -220,13 +276,13 @@ export function useStudentProfile(studentId) {
             } else if (studentData?.name) {
               const q3 = query(
                 collection(db, "NewStudents"),
-                where("arabicName", "==", studentData.name)
+                where("arabicName", "==", studentData.name),
               );
               getDocs(q3).then((snap3) => {
                 setNewStudentData(
                   !snap3.empty
                     ? { id: snap3.docs[0].id, ...snap3.docs[0].data() }
-                    : null
+                    : null,
                 );
                 setLoadingNewStudent(false);
               });
@@ -264,7 +320,7 @@ export function useStudentProfile(studentId) {
     if (!studentGroup) return;
     const quizRef = query(
       collection(db, "quizze"),
-      where("group", "==", studentGroup)
+      where("group", "==", studentGroup),
     );
     const unsubscribe = onSnapshot(quizRef, (snapshot) => {
       if (snapshot.empty) {
@@ -345,7 +401,7 @@ export function useStudentProfile(studentId) {
 
     const qExams = query(
       collection(db, "exams"),
-      where("status", "==", "published")
+      where("status", "==", "published"),
     );
     const unsubAll = onSnapshot(qExams, async (snapshot) => {
       let activeFound = false;
@@ -399,17 +455,17 @@ export function useStudentProfile(studentId) {
       const newAverage = calculateStudentAverage(studentData.tasks || []);
       const newAttendancePercentage = calculateAttendancePercentage(
         studentData.attendedLectures || 0,
-        studentAvailableLectures
+        studentAvailableLectures,
       );
       const extraPoints =
         typeof studentData.score === "number" ? studentData.score : 0;
       const boostPercentage = Math.min(Math.floor(extraPoints / 40), 5);
       const combinedScoreWithoutBoost = Math.round(
-        newAverage * 0.6 + newAttendancePercentage * 0.4
+        newAverage * 0.6 + newAttendancePercentage * 0.4,
       );
       const newCombined = Math.min(
         combinedScoreWithoutBoost + boostPercentage,
-        100
+        100,
       );
 
       setTotalLectures(latestLecture);
@@ -421,16 +477,18 @@ export function useStudentProfile(studentId) {
     }
   }, [studentData, latestLecture]);
 
-  // ── Handlers ──
+  // ── Handlers & Memoized Calculations ──
 
-  const getAttendanceStats = useCallback(() => {
+  const { absences, total } = useMemo(() => {
     if (!studentData || !latestLecture) return { absences: 0, total: 0 };
-    const total = latestLecture - (studentData.startLecture || 0) + 1;
-    const attended = studentData.attendedLectures || 0;
-    return { total, absences: Math.max(0, total - attended) };
+    const totalCount = latestLecture - (studentData.startLecture || 0) + 1;
+    const attended = Number(studentData.attendedLectures) || 0;
+    return { total: Math.max(0, totalCount), absences: Math.max(0, totalCount - attended) };
   }, [studentData, latestLecture]);
 
-  const { absences, total } = getAttendanceStats();
+  const getAttendanceStats = useCallback(() => {
+    return { absences, total };
+  }, [absences, total]);
 
   const getRankTitle = useCallback(() => {
     if (
@@ -454,8 +512,10 @@ export function useStudentProfile(studentId) {
     }
   }, [combinedScore, attendancePercentage, latestLecture]);
 
-  const isPerfectStudent =
-    combinedScore >= 99 && attendancePercentage >= 100 && latestLecture >= 10;
+  const isPerfectStudent = useMemo(
+    () => combinedScore >= 99 && attendancePercentage >= 100 && latestLecture >= 10,
+    [combinedScore, attendancePercentage, latestLecture]
+  );
 
   const handleSaveEnglishName = async () => {
     const trimmed = editedEnglishName.trim();
@@ -588,7 +648,7 @@ export function useStudentProfile(studentId) {
       Swal.fire(
         "خطأ",
         "كلمة المرور يجب أن لا تقل عن 5 أحرف ولا تزيد عن 10 أحرف.",
-        "error"
+        "error",
       );
       return;
     }

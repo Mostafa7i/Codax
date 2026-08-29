@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React from "react";
 import { motion } from "framer-motion";
 import { Star, MessageCircle, Quote, Sparkles, BadgeCheck } from "lucide-react";
@@ -42,17 +42,22 @@ export function ReviewCard({ review, expanded, toggle, index }) {
         })
       : "—";
 
-  const rating = Number(review.rating) || 5;
+  const rating = Number(review?.rating) || 5;
   const isTop = rating >= 5;
-  const name =
-    !review.name || review.name === "مجهول" ? "طالب مجهول" : review.name;
+  const rawName = review?.name;
+  const name = !rawName || rawName === "مجهول" ? "طالب مجهول" : String(rawName);
+  const initialChar = name.charAt(0) || "ط";
 
   return (
     <motion.article
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-30px" }}
-      transition={{ duration: 0.5, delay: Math.min(index * 0.06, 0.3), ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: 0.5,
+        delay: Math.min(index * 0.06, 0.3),
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className={`group relative  overflow-hidden rounded-2xl border p-5 sm:p-6 transition-all duration-400
         ${
           isTop
@@ -88,7 +93,7 @@ export function ReviewCard({ review, expanded, toggle, index }) {
                     : "bg-slate-800 text-slate-300 border border-slate-700"
                 }`}
             >
-              {name.charAt(0)}
+              {initialChar}
               {isTop && (
                 <span className="absolute -bottom-0.5 -left-0.5 w-4 h-4 rounded-full bg-slate-950 flex items-center justify-center">
                   <BadgeCheck className="w-3 h-3 text-amber-400" />
@@ -100,7 +105,9 @@ export function ReviewCard({ review, expanded, toggle, index }) {
               <p className="text-slate-100 font-bold text-sm truncate flex items-center gap-1.5">
                 {name}
               </p>
-              <p className="text-slate-500 text-[11px] mt-0.5">{formattedDate}</p>
+              <p className="text-slate-500 text-[11px] mt-0.5">
+                {formattedDate}
+              </p>
             </div>
           </div>
 

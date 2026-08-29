@@ -5,7 +5,9 @@ let JavaScriptObfuscator;
 try {
   JavaScriptObfuscator = require("javascript-obfuscator");
 } catch (e) {
-  console.log("⚠️ [Obfuscator] javascript-obfuscator غير مثبت، تم تخطي تشفير الكود.");
+  console.log(
+    "⚠️ [Obfuscator] javascript-obfuscator غير مثبت، تم تخطي تشفير الكود.",
+  );
   process.exit(0);
 }
 
@@ -18,17 +20,19 @@ let obfuscationOptions = {
   disableConsoleOutput: false,
   identifierNamesGenerator: "hexadecimal",
   log: false,
-  numbersToExpressions: true,
+  numbersToExpressions: false,
   renameGlobals: false,
   selfDefending: false,
   simplify: true,
-  splitStrings: true,
-  splitStringsChunkLength: 10,
+  splitStrings: false,
   stringArray: true,
-  stringArrayEncoding: ["base64"],
-  stringArrayThreshold: 0.75,
-  transformObjectKeys: true,
-  unicodeEscapeSequence: true,
+  stringArrayEncoding: [],
+  stringArrayIndexShift: false,
+  stringArrayWrappersCount: 1,
+  stringArrayWrappersType: "variable",
+  stringArrayThreshold: 0.5,
+  transformObjectKeys: false,
+  unicodeEscapeSequence: false,
 };
 
 if (fs.existsSync(configPath)) {
@@ -66,7 +70,9 @@ function getAllFiles(dirPath, arrayOfFiles = []) {
 }
 
 try {
-  console.log("🛡️ [Obfuscator] جارٍ تشفير ملفات JavaScript للتطبيق لحماية الكود المصدري...");
+  console.log(
+    "🛡️ [Obfuscator] جارٍ تشفير ملفات JavaScript للتطبيق لحماية الكود المصدري...",
+  );
   const jsFiles = getAllFiles(targetDir);
   let obfuscatedCount = 0;
 
@@ -87,7 +93,10 @@ try {
       }
 
       const code = fs.readFileSync(filePath, "utf8");
-      const obfuscationResult = JavaScriptObfuscator.obfuscate(code, obfuscationOptions);
+      const obfuscationResult = JavaScriptObfuscator.obfuscate(
+        code,
+        obfuscationOptions,
+      );
       fs.writeFileSync(filePath, obfuscationResult.getObfuscatedCode(), "utf8");
       obfuscatedCount++;
     } catch (err) {
@@ -95,7 +104,9 @@ try {
     }
   });
 
-  console.log(`✅ [Obfuscator] تم تشفير ${obfuscatedCount} ملف كود مصدري بنجاح وبسرعة فائقة!`);
+  console.log(
+    `✅ [Obfuscator] تم تشفير ${obfuscatedCount} ملف كود مصدري بنجاح وبسرعة فائقة!`,
+  );
 } catch (e) {
   console.error("❌ خطأ عام أثناء التشفير:", e.message);
 }

@@ -12,15 +12,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/app/services/firebaseConfig";
 import Swal from "sweetalert2";
-import {
-  Award,
-  Crown,
-  Loader2,
-  Save,
-  Eye,
-  EyeOff,
-  Sparkles,
-} from "lucide-react";
+import { Award, Crown, Loader2, Eye, EyeOff, Sparkles } from "lucide-react";
 import { getTopStudents } from "@/app/components/calculations";
 import ComplaintBox from "@/app/pages/profile/components/ComplaintBox";
 
@@ -54,7 +46,7 @@ const StudentBio = ({ studentId }) => {
       try {
         const q = query(
           collection(db, "students"),
-          where("id", "==", Number(studentId))
+          where("id", "==", Number(studentId)),
         );
         const snapshot = await getDocs(q);
 
@@ -82,7 +74,7 @@ const StudentBio = ({ studentId }) => {
         // جلب عدد المحاضرات + طلاب المجموعة
         const [groupSnap, lecturesDoc] = await Promise.all([
           getDocs(
-            query(collection(db, "students"), where("group", "==", data.group))
+            query(collection(db, "students"), where("group", "==", data.group)),
           ),
           getDoc(doc(db, "lectures", "groups")),
         ]);
@@ -95,7 +87,7 @@ const StudentBio = ({ studentId }) => {
 
         const rankedList = getTopStudents(groupStudents, latestLecture);
         const currentStudent = rankedList.find(
-          (s) => s.id === Number(studentId)
+          (s) => s.id === Number(studentId),
         );
 
         setRank(currentStudent?.rank || null);
@@ -140,7 +132,7 @@ const StudentBio = ({ studentId }) => {
         setIsSaving(false);
       }
     },
-    [studentDocId, isSaving, studentData?.bio]
+    [studentDocId, isSaving, studentData?.bio],
   );
 
   // تأثير الحفظ التلقائي مع تأخير (Debounce)
@@ -220,7 +212,7 @@ const StudentBio = ({ studentId }) => {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full p-6 bg-gradient-to-br from-slate-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-2xl"
+      className="w-full p-4 rounded-3xl shadow-2xl"
     >
       {/* الهيدر */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-8">
@@ -232,33 +224,36 @@ const StudentBio = ({ studentId }) => {
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="flex items-center gap-4 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 p-2 rounded-3xl shadow-xl"
+          className="flex items-center gap-4 bg-linear-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 p-2 rounded-3xl shadow-xl"
         >
           <RankIcon />
-          <div className="text-right">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              الترتيب{" "}
-              <span className="text-lg">
-                {" "}
-                {rank == 1 ||  rank == 2 || rank == 3
-                  ? "😎"
-                  :rank == 4 ?
-                  "☺️"
-                  :rank == 5 ?
-                  "😌"
-                  :rank == 6 ?
-                  "🙂"
-                  :rank == 7 ?
-                  "😐"
-                  :rank == 8 ?
-                  "😥"
-                  :rank == 9?
-                  "😔"
-                  :rank == 10?
-                  "😠"
-                  : "😡"}
-              </span>{" "}
-            </p>
+          <div className="text-right flex flex-col gap-2 items-center">
+            <span className="text-lg">
+              {" "}
+              {rank == 1 ? (
+                "😎☝️"
+              ) : rank == 2 ? (
+                "☺️✌️"
+              ) : rank == 3 ? (
+                "👌😌"
+              ) : rank == 4 ? (
+                "☺️"
+              ) : rank == 5 ? (
+                "😌"
+              ) : rank == 6 ? (
+                "🙂"
+              ) : rank == 7 ? (
+                "😐"
+              ) : rank == 8 ? (
+                "😥"
+              ) : rank == 9 ? (
+                "😔"
+              ) : rank == 10 ? (
+                "😠"
+              ) : (
+                <span className="animate-pulse">😡</span>
+              )}
+            </span>{" "}
             <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
               {rankDisplay}
             </p>
@@ -276,9 +271,9 @@ const StudentBio = ({ studentId }) => {
         transition={{ delay: 0.3 }}
         className="mt-8 space-y-5"
       >
-        <fieldset className="border border-gray-300 dark:border-gray-600 rounded-2xl p-5 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+        <fieldset className="border border-gray-300 dark:border-gray-600 rounded-2xl p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
           <legend className="px-4 text-lg font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
-            نبذة عنك (اختياري)
+            نبذة عنك <span className="text-xs text-gray-400">(اختياري)</span>
           </legend>
 
           <textarea
@@ -286,8 +281,8 @@ const StudentBio = ({ studentId }) => {
             onChange={handleBioChange}
             placeholder="مثال: مبرمج ويب "
             maxLength={maxLength}
-            rows={2}
-            className="w-full resize-none bg-transparent outline-none text-gray-800 dark:text-gray-200 placeholder-gray-500 text-lg"
+            rows={1}
+            className="w-full resize-none bg-transparent outline-none text-gray-800 dark:text-gray-200 placeholder-gray-500 text-md"
             disabled={isSaving}
           />
         </fieldset>
@@ -299,8 +294,8 @@ const StudentBio = ({ studentId }) => {
                 charCount >= maxLength * 0.9
                   ? "text-red-500"
                   : charCount >= maxLength * 0.7
-                  ? "text-orange-500"
-                  : "text-green-600"
+                    ? "text-orange-500"
+                    : "text-green-600"
               }
             >
               {charCount}

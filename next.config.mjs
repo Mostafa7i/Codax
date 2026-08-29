@@ -2,8 +2,7 @@
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
-  output: 'export',
-  distDir: 'out',
+  output: "export",
   images: {
     unoptimized: true,
   },

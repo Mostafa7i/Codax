@@ -15,13 +15,19 @@ import {
 import ProgressBar from "../components/ProgressBar";
 
 const TextEffect = lazy(() =>
-  import("@/app/components/TextEffect..jsx").then((mod) => ({ default: mod.default || mod })).catch(() => ({ default: () => null }))
+  import("@/app/components/TextEffect..jsx")
+    .then((mod) => ({ default: mod.default || mod }))
+    .catch(() => ({ default: () => null })),
 );
 const TransferPoints = lazy(() =>
-  import("../components/TransferPoints").then((mod) => ({ default: mod.default || mod })).catch(() => ({ default: () => null }))
+  import("../components/TransferPoints")
+    .then((mod) => ({ default: mod.default || mod }))
+    .catch(() => ({ default: () => null })),
 );
 const Subscription = lazy(() =>
-  import("../components/Subscription").then((mod) => ({ default: mod.default || mod })).catch(() => ({ default: () => null }))
+  import("../components/Subscription")
+    .then((mod) => ({ default: mod.default || mod }))
+    .catch(() => ({ default: () => null })),
 );
 
 import { ReserveAttendance } from "@/app/pages/(partsMainPage)/ReserveAttendance";
@@ -54,6 +60,7 @@ export default function OverviewTab({
   setShowModal,
   openNote,
   setOpenNote,
+  cardConfig,
 }) {
   return (
     <div className="space-y-5">
@@ -68,8 +75,12 @@ export default function OverviewTab({
             <AlertTriangle className="text-red-500 w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-red-600 dark:text-red-400">تنبيه إداري</h3>
-            <p className="text-red-700 dark:text-red-300 text-sm mt-0.5">{studentData?.warning}</p>
+            <h3 className="font-bold text-red-600 dark:text-red-400">
+              تنبيه إداري
+            </h3>
+            <p className="text-red-700 dark:text-red-300 text-sm mt-0.5">
+              {studentData?.warning}
+            </p>
           </div>
           <div className="mr-auto">
             <Suspense fallback={null}>
@@ -94,13 +105,16 @@ export default function OverviewTab({
               state.combinedScore >= 85
                 ? "text-emerald-500"
                 : state.combinedScore >= 65
-                ? "text-amber-500"
-                : "text-red-500",
+                  ? "text-amber-500"
+                  : "text-red-500",
           },
           {
             label: "نسبة الحضور",
             value: `${state.attendancePercentage}%`,
-            color: state.attendancePercentage >= 80 ? "text-sky-500" : "text-orange-500",
+            color:
+              state.attendancePercentage >= 80
+                ? "text-sky-500"
+                : "text-orange-500",
           },
           {
             label: "النقاط المكتسبة",
@@ -108,8 +122,13 @@ export default function OverviewTab({
             color: "text-violet-500",
           },
         ].map((item, i) => (
-          <div key={i} className="flex flex-col items-center justify-center py-4 px-3 text-center">
-            <span className={`text-2xl font-black ${item.color}`}>{item.value}</span>
+          <div
+            key={i}
+            className="flex flex-col items-center justify-center py-4 px-3 text-center"
+          >
+            <span className={`text-2xl font-black ${item.color}`}>
+              {item.value}
+            </span>
             <span className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 font-medium">
               {item.label}
             </span>
@@ -124,57 +143,153 @@ export default function OverviewTab({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.05 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col"
+          className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden flex flex-col "
         >
-          <div className="px-5 pt-5 pb-4 flex items-center justify-between border-b border-gray-50 dark:border-gray-700/50">
+          {/* Header */}
+          <div className="px-5 pt-5 pb-4 flex items-center justify-between border-b border-gray-700/50">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 bg-sky-50 dark:bg-sky-900/20 rounded-lg flex items-center justify-center">
-                <CalendarCheck style={{ width: 18, height: 18 }} className="text-sky-500" />
+                <CalendarCheck
+                  style={{ width: 18, height: 18 }}
+                  className="text-sky-500"
+                />
               </div>
               <div>
                 <p className="font-bold text-gray-700 dark:text-gray-200 text-sm leading-tight">
                   سجل الحضور
                 </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">تتبع حضورك وغيابك</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  تتبع حضورك وغيابك
+                </p>
               </div>
             </div>
             <span
               className={`text-xs font-bold px-2.5 py-1 rounded-full ${
                 absences === 0
-                  ? "bg-emerald-50 text-emerald-600"
+                  ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
                   : absences <= 3
-                  ? "bg-amber-50 text-amber-600"
-                  : "bg-red-50 text-red-600"
+                    ? "bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
+                    : "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
               }`}
             >
               {absences === 0 ? "ملتزم" : `${absences} غياب`}
             </span>
           </div>
-          <div className="p-5 flex flex-col gap-4 flex-1">
-            <div className="flex items-end gap-1.5">
-              <span className="text-4xl font-black text-gray-800 dark:text-white">
-                {studentData?.attendedLectures || 0}
-              </span>
-              <span className="text-gray-400 dark:text-gray-500 text-base mb-1">
-                / {total} محاضرة
-              </span>
-            </div>
-            <div>
-              <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-                <span>نسبة الحضور</span>
-                <span className="font-bold">{state.attendancePercentage}%</span>
+
+          <div className="p-4 flex align-content-center place-content-center items-center justify-center  flex-col gap-5 flex-1">
+            {/* الرقم الكبير + الدائرة */}
+            <div className="flex items-center gap-5">
+              {/* Circular Progress - نسبة الحضور */}
+              {(() => {
+                const pct = Math.min(
+                  Math.max(state.attendancePercentage || 0, 0),
+                  100,
+                );
+                const r = 52;
+                const circ = 2 * Math.PI * r;
+                const offset = circ - (pct / 100) * circ;
+
+                // لون حسب النسبة
+                const strokeColor =
+                  pct >= 90
+                    ? "#10b981" // أخضر
+                    : pct >= 75
+                      ? "#0ea5e9" // سماوي
+                      : pct >= 50
+                        ? "#f59e0b" // أصفر
+                        : "#ef4444"; // أحمر
+
+                return (
+                  <div
+                    className="relative shrink-0"
+                    style={{ width: 120, height: 120 }}
+                  >
+                    <svg
+                      width="120"
+                      height="120"
+                      viewBox="0 0 120 120"
+                      style={{ transform: "rotate(-90deg)" }}
+                    >
+                      {/* الخلفية */}
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r={r}
+                        fill="none"
+                        stroke="currentColor"
+                        className="text-gray-100 dark:text-gray-700"
+                        strokeWidth="12"
+                      />
+                      {/* التقدم */}
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r={r}
+                        fill="none"
+                        stroke={strokeColor}
+                        strokeWidth="12"
+                        strokeLinecap="round"
+                        strokeDasharray={circ}
+                        strokeDashoffset={offset}
+                        style={{
+                          transition:
+                            "stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1), stroke 0.4s ease",
+                        }}
+                      />
+                    </svg>
+
+                    {/* الرقم في المنتصف */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-2xl font-black text-gray-800 dark:text-white leading-none">
+                        {Math.round(pct)}%
+                      </span>
+                      <span className="text-[11px] text-gray-400 mt-0.5">
+                        حضور
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* المعلومات الجانبية */}
+              <div className="flex flex-col gap-3 flex-1 min-w-0">
+                <div>
+                  <p className="text-xs text-gray-400 mb-0.5">المحاضرات</p>
+                  <p className="text-2xl font-black text-gray-800 dark:text-white leading-none">
+                    {total - absences}
+                    <span className="text-base font-medium text-gray-400">
+                      {" "}
+                      / {total}
+                    </span>
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl px-3 py-2 border border-emerald-100 dark:border-emerald-800/30">
+                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                      حضور
+                    </p>
+                    <p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">
+                      {total - absences}
+                    </p>
+                  </div>
+                  <div className="bg-red-50 dark:bg-red-900/20 rounded-xl px-3 py-2 border border-red-100 dark:border-red-800/30">
+                    <p className="text-[11px] text-red-500 dark:text-red-400 font-medium">
+                      غياب
+                    </p>
+                    <p className="text-lg font-bold text-red-600 dark:text-red-300">
+                      {absences}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-                <div
-                  className="bg-sky-500 h-2.5 rounded-full transition-all duration-700"
-                  style={{ width: `${state.attendancePercentage}%` }}
-                />
-              </div>
             </div>
+
+            {/* تنبيه الحجب */}
             <div className="mt-auto bg-sky-50 dark:bg-sky-900/10 rounded-xl p-3 border border-sky-100 dark:border-sky-800/20">
               <p className="text-xs text-sky-700 dark:text-sky-300 leading-relaxed">
-                بتعرفك بكام محاضرة حضرتها من الإجمالي. الحجب بيحصل لو غبت أكتر من{" "}
-                <strong>12 مرة</strong> في الكورس.
+                بتعرفك بكام محاضرة حضرتها من الإجمالي. الحجب بيحصل لو غبت أكتر
+                من <strong>12 مرة</strong> في الكورس.
               </p>
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-sky-100 dark:border-sky-800/20">
                 <span className="text-xs text-gray-500">المتاح قبل الحجب</span>
@@ -183,6 +298,8 @@ export default function OverviewTab({
                 </span>
               </div>
             </div>
+
+            {/* زر الاسترداد */}
             <button
               onClick={() => setShowModalAttendance(true)}
               className="w-full flex justify-center items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white font-semibold text-sm py-2.5 rounded-xl transition-all shadow-sm shadow-sky-500/20"
@@ -191,7 +308,7 @@ export default function OverviewTab({
             </button>
           </div>
         </motion.div>
-
+        {/* --------------------------------------------------------------------------------------------------------------------- */}
         {/* Card 2: Points + SVG Donut */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -202,13 +319,18 @@ export default function OverviewTab({
           <div className="px-5 pt-5 pb-4 flex items-center justify-between border-b border-gray-50 dark:border-gray-700/50">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center">
-                <Coins style={{ width: 18, height: 18 }} className="text-amber-500" />
+                <Coins
+                  style={{ width: 18, height: 18 }}
+                  className="text-amber-500"
+                />
               </div>
               <div>
                 <p className="font-bold text-gray-700 dark:text-gray-200 text-sm leading-tight">
                   نقاط المكافآت
                 </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">نقاطك التراكمية في الكورس</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  نقاطك التراكمية في الكورس
+                </p>
               </div>
             </div>
             {(studentData?.score || 0) >= 40 && (
@@ -230,7 +352,10 @@ export default function OverviewTab({
                 score >= 200 ? "#f59e0b" : score >= 80 ? "#fb923c" : "#fcd34d";
               return (
                 <div className="flex items-center gap-5">
-                  <div className="relative shrink-0" style={{ width: 120, height: 120 }}>
+                  <div
+                    className="relative shrink-0"
+                    style={{ width: 120, height: 120 }}
+                  >
                     <svg
                       width="120"
                       height="120"
@@ -256,7 +381,8 @@ export default function OverviewTab({
                         strokeDasharray={circ}
                         strokeDashoffset={offset}
                         style={{
-                          transition: "stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)",
+                          transition:
+                            "stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)",
                         }}
                       />
                     </svg>
@@ -264,7 +390,9 @@ export default function OverviewTab({
                       <span className="text-xl font-black text-gray-800 dark:text-white leading-none">
                         {score}
                       </span>
-                      <span className="text-xs text-gray-400">/ {maxScore}</span>
+                      <span className="text-xs text-gray-400">
+                        / {maxScore}
+                      </span>
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 flex-1">
@@ -272,7 +400,9 @@ export default function OverviewTab({
                       <p className="text-xs text-gray-400">إجمالي النقاط</p>
                       <p className="text-2xl font-black text-gray-800 dark:text-white">
                         {score}{" "}
-                        <span className="text-sm font-normal text-gray-400">نقطة</span>
+                        <span className="text-sm font-normal text-gray-400">
+                          نقطة
+                        </span>
                       </p>
                     </div>
                     <div className="h-px bg-gray-100 dark:bg-gray-700" />
@@ -286,7 +416,9 @@ export default function OverviewTab({
                         </>
                       ) : (
                         <>
-                          اجمع <strong className="text-amber-500">40 نقطة</strong> للحصول على +1%
+                          اجمع{" "}
+                          <strong className="text-amber-500">40 نقطة</strong>{" "}
+                          للحصول على +1%
                         </>
                       )}
                     </p>
@@ -305,7 +437,10 @@ export default function OverviewTab({
                               : "bg-gray-50 dark:bg-gray-700/30 border-gray-100 dark:border-gray-700/20 text-gray-300 dark:text-gray-600"
                           }`}
                         >
-                          {lbl} <span className="font-normal opacity-70">({pts}pt)</span>
+                          {lbl}{" "}
+                          <span className="font-normal opacity-70">
+                            ({pts}pt)
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -315,7 +450,8 @@ export default function OverviewTab({
             })()}
             <div className="mt-auto bg-amber-50 dark:bg-amber-900/10 rounded-xl p-3 border border-amber-100 dark:border-amber-800/20">
               <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
-                النقاط بتتراكم من مشاركتك في الكورس. كل <strong>40 نقطة</strong> بتضيف 1% على نسبتك الإجمالية!
+                النقاط بتتراكم من مشاركتك في الكورس. كل <strong>40 نقطة</strong>{" "}
+                بتضيف 1% على نسبتك الإجمالية!
               </p>
             </div>
             <button
@@ -337,13 +473,18 @@ export default function OverviewTab({
           <div className="px-5 pt-5 pb-4 flex items-center justify-between border-b border-gray-50 dark:border-gray-700/50">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 bg-violet-50 dark:bg-violet-900/20 rounded-lg flex items-center justify-center">
-                <Target style={{ width: 18, height: 18 }} className="text-violet-500" />
+                <Target
+                  style={{ width: 18, height: 18 }}
+                  className="text-violet-500"
+                />
               </div>
               <div>
                 <p className="font-bold text-gray-700 dark:text-gray-200 text-sm leading-tight">
                   الأداء الأكاديمي
                 </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">متوسطك ودرجاتك الكلية</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  متوسطك ودرجاتك الكلية
+                </p>
               </div>
             </div>
             {studentData.attendedLectures > 5 && (
@@ -356,7 +497,9 @@ export default function OverviewTab({
                 <button
                   onClick={toggleIcons}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                    showIcons ? "bg-emerald-400" : "bg-gray-300 dark:bg-gray-600"
+                    showIcons
+                      ? "bg-emerald-400"
+                      : "bg-gray-300 dark:bg-gray-600"
                   }`}
                 >
                   <span
@@ -370,10 +513,52 @@ export default function OverviewTab({
           </div>
           <div className="p-5 flex flex-col gap-4 flex-1">
             <div className="flex items-end gap-1.5">
-              <span className="text-4xl font-black text-gray-800 dark:text-white">
+              <span className="text-4xl relative flex items-center gap-2 w-15 h-15 font-black text-gray-800 dark:text-white">
                 {state.combinedScore}
+                <span className="text-lg font-medium text-gray-400 mb-0.5">
+                  %
+                </span>
+
+                {state.combinedScore >= 95 ? (
+                  <>
+                    <div className="absolute -inset-3.5 rounded-full animate-spin [animation-duration:2s]">
+                      <div className="w-full h-full rounded-full border-4 border-transparent border-t-lime-500 border-b-lime-500" />
+                    </div>
+                    <div className="absolute -inset-2 rounded-full animate-spin [animation-direction:reverse] [animation-duration:1.5s]">
+                      <div className="w-full h-full rounded-full border-4 border-transparent border-l-green-500 border-r-green-500/80" />
+                    </div>
+                    <div className="absolute -inset-1 rounded-full animate-pulse bg-lime-400/20 blur-md pointer-events-none" />
+                  </>
+                ) : state.combinedScore >= 85 ? (
+                  <>
+                    <div className="absolute -inset-2 rounded-full animate-spin [animation-direction:reverse] [animation-duration:1.5s]">
+                      <div className="w-full h-full rounded-full border-4 border-transparent border-l-green-500 border-r-green-500/80" />
+                    </div>
+                    <div className="absolute -inset-1 rounded-full animate-pulse bg-green-400/20 blur-md pointer-events-none" />
+                  </>
+                ) : state.combinedScore >= 75 ? (
+                  <>
+                    <div className="absolute -inset-2 rounded-full animate-spin [animation-direction:reverse] [animation-duration:1.5s]">
+                      <div className="w-full h-full rounded-full border-4 border-transparent border-l-yellow-500 border-r-yellow-500/80" />
+                    </div>
+                    <div className="absolute -inset-1 rounded-full animate-pulse bg-yellow-400/20 blur-md pointer-events-none" />
+                  </>
+                ) : state.combinedScore > 60 ? (
+                  <>
+                    <div className="absolute -inset-2 rounded-full animate-spin [animation-direction:reverse] [animation-duration:1.5s]">
+                      <div className="w-full h-full rounded-full border-4 border-transparent border-l-orange-500 border-r-orange-500/80" />
+                    </div>
+                    <div className="absolute -inset-1 rounded-full animate-pulse bg-orange-400/20 blur-md pointer-events-none" />
+                  </>
+                ) : (
+                  <>
+                    <div className="absolute -inset-2 rounded-full animate-spin [animation-direction:reverse] [animation-duration:1.5s]">
+                      <div className="w-full h-full rounded-full border-4 border-transparent border-l-red-500 border-r-red-500/80" />
+                    </div>
+                    <div className="absolute -inset-1 rounded-full animate-pulse bg-red-400/20 blur-md pointer-events-none" />
+                  </>
+                )}
               </span>
-              <span className="text-lg font-medium text-gray-400 mb-0.5">%</span>
             </div>
             <div className="flex flex-col gap-3">
               <div>
@@ -383,16 +568,16 @@ export default function OverviewTab({
                 </div>
                 <ProgressBar value={state.combinedScore} segments={true} />
               </div>
-              <div>
-                <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-                  <span>متوسط الدرجات الخام</span>
-                  <span className="text-gray-300">(الاختبارات فقط)</span>
-                </div>
-                <ProgressBar value={state.average} />
-              </div>
             </div>
             <div className="grid grid-cols-4 gap-1">
               {[
+                {
+                  label: "اسطوري",
+                  color:
+                    "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700/30",
+                  active: state.combinedScore >= 98,
+                  range: "98+",
+                },
                 {
                   label: "ممتاز",
                   color:
@@ -456,11 +641,18 @@ export default function OverviewTab({
         >
           <div className="px-5 pt-5 pb-4 flex items-center gap-2.5 border-b border-gray-50 dark:border-gray-700/50">
             <div className="w-9 h-9 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center">
-              <LayoutGrid style={{ width: 18, height: 18 }} className="text-indigo-500" />
+              <LayoutGrid
+                style={{ width: 18, height: 18 }}
+                className="text-indigo-500"
+              />
             </div>
             <div>
-              <p className="font-bold text-gray-700 dark:text-gray-200 text-sm">تفاصيل الاشتراك</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">بيانات دفعك وحالة سدادك</p>
+              <p className="font-bold text-gray-700 dark:text-gray-200 text-sm">
+                تفاصيل الاشتراك
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                بيانات دفعك وحالة سدادك
+              </p>
             </div>
           </div>
           <div className="p-5 flex flex-col gap-3">
@@ -468,7 +660,9 @@ export default function OverviewTab({
               <Subscription studentData={studentData} studentId={studentId} />
             </Suspense>
             <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
-              <span className="text-sm text-gray-600 dark:text-gray-400">حالة النشاط</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                حالة النشاط
+              </span>
               <button
                 onClick={toggleActiveTime}
                 className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${
@@ -502,11 +696,18 @@ export default function OverviewTab({
           <div className="px-5 pt-5 pb-4 flex items-center justify-between border-b border-gray-50 dark:border-gray-700/50">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 bg-orange-50 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
-                <MessageSquare style={{ width: 18, height: 18 }} className="text-orange-500" />
+                <MessageSquare
+                  style={{ width: 18, height: 18 }}
+                  className="text-orange-500"
+                />
               </div>
               <div>
-                <p className="font-bold text-gray-700 dark:text-gray-200 text-sm">ملاحظات الإدارة</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">رسائل ومتابعة CodaX</p>
+                <p className="font-bold text-gray-700 dark:text-gray-200 text-sm">
+                  ملاحظات الإدارة
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  رسائل ومتابعة CodaX
+                </p>
               </div>
             </div>
             {studentData.note && (
