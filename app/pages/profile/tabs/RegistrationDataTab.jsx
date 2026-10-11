@@ -60,17 +60,17 @@ export default function RegistrationDataTab({
       dir="rtl"
     >
       {/* Header Summary Card */}
-      <div className="bg-gradient-to-br from-indigo-950 via-purple-950 to-indigo-900 border border-indigo-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden text-right">
+      <div className="bg-linear-to-br from-indigo-950 via-purple-950 to-indigo-900 border border-indigo-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden text-right">
         <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
 
         <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-black text-white flex items-center gap-2 mb-1">
+            <h2 className="text-2xl font-black text-slate-100 flex items-center gap-2 mb-1">
               <UserCheck className="text-indigo-400 w-7 h-7" />
               بيانات التسجيل الرسمية
             </h2>
-            <p className="text-gray-400 text-sm">
+            <p className="text-slate-400 text-sm">
               هذه هي البيانات التي قمت بإدخالها أثناء التسجيل في CodaX
             </p>
           </div>
@@ -98,9 +98,9 @@ export default function RegistrationDataTab({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-right">
           {/* 1. Personal Information Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-xl space-y-4">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 pb-2 border-b border-gray-100 dark:border-gray-700/50 flex items-center gap-2">
-              <span className="p-1.5 bg-blue-50 dark:bg-blue-900/40 rounded-lg text-blue-500">
+          <div className="bg-gray-800 rounded-3xl p-6 border border-gray-700 shadow-xl space-y-4">
+            <h3 className="text-lg font-bold text-slate-100 mb-2 pb-2 border-b border-gray-700/50 flex items-center gap-2">
+              <span className="p-1.5 bg-blue-900/40 rounded-lg text-blue-500">
                 👤
               </span>
               البيانات الشخصية والاتصال
@@ -113,9 +113,9 @@ export default function RegistrationDataTab({
               />
 
               {/* English Name - Editable */}
-              <div className="flex flex-col border-b border-gray-100 dark:border-gray-700/50 py-2.5">
+              <div className="flex flex-col border-b border-gray-700/50 py-2.5">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-500 dark:text-gray-400 font-semibold">
+                  <span className="text-slate-400 font-semibold">
                     الاسم بالكامل (إنجليزي)
                   </span>
                   {isEditingEnglishName ? (
@@ -127,27 +127,27 @@ export default function RegistrationDataTab({
                           const val = e.target.value.replace(/[^A-Za-z\s]/g, "");
                           setEditedEnglishName(val);
                         }}
-                        className="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-2 py-1 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full text-left"
+                        className="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full text-left"
                         dir="ltr"
                         placeholder="Full English Name"
                       />
                       <button
                         onClick={handleSaveEnglishName}
                         disabled={isSavingEnglishName}
-                        className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-2 py-1 text-xs font-bold transition disabled:opacity-50 flex-shrink-0"
+                        className="hover:bg-green-700 text-slate-100 rounded-lg px-2 py-1 text-xs font-bold transition disabled:opacity-50 shrink-0"
                       >
                         {isSavingEnglishName ? "حفظ..." : "حفظ"}
                       </button>
                       <button
                         onClick={() => setIsEditingEnglishName(false)}
-                        className="bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-2 py-1 text-xs font-bold transition flex-shrink-0"
+                        className="bg-slate-9000 hover:bg-gray-600 text-slate-100 rounded-lg px-2 py-1 text-xs font-bold transition shrink-0"
                       >
                         إلغاء
                       </button>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1.5 justify-end">
-                      <span className="text-gray-800 dark:text-gray-200 font-bold text-left">
+                      <span className="text-gray-200 font-bold text-left">
                         {newStudentData?.englishName || studentData?.englishName || "-"}
                       </span>
                       <button
@@ -157,7 +157,7 @@ export default function RegistrationDataTab({
                           );
                           setIsEditingEnglishName(true);
                         }}
-                        className="text-indigo-500 hover:text-indigo-600 p-1 transition"
+                        className="hover:text-indigo-600 p-1 transition"
                         title="تعديل الاسم"
                       >
                         <Pencil className="w-3.5 h-3.5" />
@@ -166,7 +166,7 @@ export default function RegistrationDataTab({
                   )}
                 </div>
                 <div
-                  className="text-[10px] text-amber-500 dark:text-amber-400 font-semibold mt-1 text-left"
+                  className="text-[10px] text-amber-400 font-semibold mt-1 text-left"
                   dir="rtl"
                 >
                   ⚠️ هذا الاسم سيُكتب في الشهادة (يُقبل الحروف الإنجليزية فقط).
@@ -190,8 +190,8 @@ export default function RegistrationDataTab({
               />
 
               {/* College - Editable */}
-              <div className="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-700/50 text-sm">
-                <span className="text-gray-500 dark:text-gray-400 font-semibold">
+              <div className="flex justify-between items-center py-2.5 border-b border-gray-700/50 text-sm">
+                <span className="text-slate-400 font-semibold">
                   الكلية / الدراسة
                 </span>
                 {isEditingCollege ? (
@@ -200,26 +200,26 @@ export default function RegistrationDataTab({
                       type="text"
                       value={editedCollege}
                       onChange={(e) => setEditedCollege(e.target.value)}
-                      className="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-2 py-1 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full text-right"
+                      className="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full text-right"
                       placeholder="الكلية / الدراسة"
                     />
                     <button
                       onClick={handleSaveCollege}
                       disabled={isSavingCollege}
-                      className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-2 py-1 text-xs font-bold transition disabled:opacity-50 flex-shrink-0"
+                      className="hover:bg-green-700 text-slate-100 rounded-lg px-2 py-1 text-xs font-bold transition disabled:opacity-50 shrink-0"
                     >
                       {isSavingCollege ? "حفظ..." : "حفظ"}
                     </button>
                     <button
                       onClick={() => setIsEditingCollege(false)}
-                      className="bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-2 py-1 text-xs font-bold transition flex-shrink-0"
+                      className="bg-slate-9000 hover:bg-gray-600 text-slate-100 rounded-lg px-2 py-1 text-xs font-bold transition shrink-0"
                     >
                       إلغاء
                     </button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1.5 justify-end">
-                    <span className="text-gray-800 dark:text-gray-200 font-bold text-left">
+                    <span className="text-gray-200 font-bold text-left">
                       {newStudentData?.college || studentData?.college || "-"}
                     </span>
                     <button
@@ -229,7 +229,7 @@ export default function RegistrationDataTab({
                         );
                         setIsEditingCollege(true);
                       }}
-                      className="text-indigo-500 hover:text-indigo-600 p-1 transition"
+                      className="hover:text-indigo-600 p-1 transition"
                       title="تعديل الكلية"
                     >
                       <Pencil className="w-3.5 h-3.5" />
@@ -239,8 +239,8 @@ export default function RegistrationDataTab({
               </div>
 
               {/* City - Editable */}
-              <div className="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-700/50 text-sm">
-                <span className="text-gray-500 dark:text-gray-400 font-semibold">
+              <div className="flex justify-between items-center py-2.5 border-b border-gray-700/50 text-sm">
+                <span className="text-slate-400 font-semibold">
                   محل الإقامة
                 </span>
                 {isEditingCity ? (
@@ -249,26 +249,26 @@ export default function RegistrationDataTab({
                       type="text"
                       value={editedCity}
                       onChange={(e) => setEditedCity(e.target.value)}
-                      className="bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-2 py-1 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full text-right"
+                      className="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full text-right"
                       placeholder="محل الإقامة"
                     />
                     <button
                       onClick={handleSaveCity}
                       disabled={isSavingCity}
-                      className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-2 py-1 text-xs font-bold transition disabled:opacity-50 flex-shrink-0"
+                      className="hover:bg-green-700 text-slate-100 rounded-lg px-2 py-1 text-xs font-bold transition disabled:opacity-50 shrink-0"
                     >
                       {isSavingCity ? "حفظ..." : "حفظ"}
                     </button>
                     <button
                       onClick={() => setIsEditingCity(false)}
-                      className="bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-2 py-1 text-xs font-bold transition flex-shrink-0"
+                      className="bg-slate-9000 hover:bg-gray-600 text-slate-100 rounded-lg px-2 py-1 text-xs font-bold transition shrink-0"
                     >
                       إلغاء
                     </button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1.5 justify-end">
-                    <span className="text-gray-800 dark:text-gray-200 font-bold text-left">
+                    <span className="text-gray-200 font-bold text-left">
                       {newStudentData?.city || studentData?.city || "-"}
                     </span>
                     <button
@@ -278,7 +278,7 @@ export default function RegistrationDataTab({
                         );
                         setIsEditingCity(true);
                       }}
-                      className="text-indigo-500 hover:text-indigo-600 p-1 transition"
+                      className="hover:text-indigo-600 p-1 transition"
                       title="تعديل محل الإقامة"
                     >
                       <Pencil className="w-3.5 h-3.5" />
@@ -290,9 +290,9 @@ export default function RegistrationDataTab({
           </div>
 
           {/* 2. Course & Track Details */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-xl space-y-4">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 pb-2 border-b border-gray-100 dark:border-gray-700/50 flex items-center gap-2">
-              <span className="p-1.5 bg-purple-50 dark:bg-purple-900/40 rounded-lg text-purple-500">
+          <div className="bg-gray-800 rounded-3xl p-6 border border-gray-700 shadow-xl space-y-4">
+            <h3 className="text-lg font-bold text-slate-100 mb-2 pb-2 border-b border-gray-700/50 flex items-center gap-2">
+              <span className="p-1.5 bg-purple-900/40 rounded-lg text-purple-500">
                 📚
               </span>
               تفاصيل الكورس والاشتراك
@@ -309,12 +309,12 @@ export default function RegistrationDataTab({
               />
 
               {/* Study Method - interactive toggle */}
-              <div className="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-700/50 text-sm">
-                <span className="text-gray-500 dark:text-gray-400 font-semibold">
+              <div className="flex justify-between items-center py-2.5 border-b border-gray-700/50 text-sm">
+                <span className="text-slate-400 font-semibold">
                   طريقة الدراسة
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-800 dark:text-gray-200 font-bold">
+                  <span className="text-gray-200 font-bold">
                     {(newStudentData?.studyMethod || studentData?.studyMethod) ===
                     "offline"
                       ? "حضوري 🏫"
@@ -323,7 +323,7 @@ export default function RegistrationDataTab({
                   <button
                     onClick={handleChangeStudyMethod}
                     disabled={isChangingStudyMethod}
-                    className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition font-bold disabled:opacity-50"
+                    className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg text-indigo-400 border border-indigo-800/50 hover:bg-indigo-900/60 transition font-bold disabled:opacity-50"
                     title="تغيير طريقة الحضور"
                   >
                     {isChangingStudyMethod ? (
@@ -391,9 +391,9 @@ export default function RegistrationDataTab({
           </div>
 
           {/* 3. Account Settings & Security */}
-          <div className="md:col-span-2 bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-xl space-y-6">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 pb-2 border-b border-gray-100 dark:border-gray-700/50 flex items-center gap-2">
-              <span className="p-1.5 bg-indigo-50 dark:bg-indigo-900/40 rounded-lg text-indigo-500">
+          <div className="md:col-span-2 bg-gray-800 rounded-3xl p-6 border border-gray-700 shadow-xl space-y-6">
+            <h3 className="text-lg font-bold text-slate-100 mb-2 pb-2 border-b border-gray-700/50 flex items-center gap-2">
+              <span className="p-1.5 bg-indigo-900/40 rounded-lg text-indigo-500">
                 ⚙️
               </span>
               إعدادات الحساب والأمان
@@ -401,13 +401,13 @@ export default function RegistrationDataTab({
 
             <div>
               {/* Password Change Form */}
-              <div className="bg-gray-50 dark:bg-gray-900/30 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 flex flex-col space-y-4">
-                <h4 className="font-bold text-gray-700 dark:text-gray-300 text-sm">
+              <div className="bg-gray-900/30 p-6 rounded-2xl border border-gray-800 flex flex-col space-y-4">
+                <h4 className="font-bold text-gray-300 text-sm">
                   تغيير كلمة المرور
                 </h4>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-gray-500 dark:text-gray-400 font-semibold block">
+                  <label className="text-xs text-slate-400 font-semibold block">
                     كلمة المرور الجديدة
                   </label>
                   <div className="relative">
@@ -416,17 +416,17 @@ export default function RegistrationDataTab({
                       value={localPassword}
                       onChange={(e) => setLocalPassword(e.target.value)}
                       placeholder="اكتب كلمة المرور الجديدة"
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-right pr-4 pl-10"
+                      className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-right pr-4 pl-10"
                     />
                     <button
                       type="button"
                       onClick={() => setShowLocalPassword(!showLocalPassword)}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 hover:text-gray-200 transition"
                     >
                       {showLocalPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
-                  <span className="text-[10px] text-gray-400 block">
+                  <span className="text-[10px] text-slate-400 block">
                     * يجب أن تكون بين 5 و 10 أحرف.
                   </span>
                 </div>
@@ -434,7 +434,7 @@ export default function RegistrationDataTab({
                 <button
                   onClick={handleLocalPasswordSave}
                   disabled={isSavingPassword}
-                  className="w-full py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl text-sm font-bold shadow-md transition disabled:opacity-50"
+                  className="w-full py-2.5 bg-linear-to-r hover:from-blue-600 hover:to-indigo-700 text-slate-100 rounded-xl text-sm font-bold shadow-md transition disabled:opacity-50"
                 >
                   {isSavingPassword ? "جاري الحفظ..." : "تحديث كلمة المرور"}
                 </button>
@@ -444,11 +444,11 @@ export default function RegistrationDataTab({
 
           {/* 4. Notes & Administrative Remarks */}
           {(newStudentData?.note || studentData?.note) && (
-            <div className="md:col-span-2 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900/30 rounded-3xl p-6 shadow-md space-y-2">
-              <h4 className="text-yellow-800 dark:text-yellow-400 font-bold text-sm flex items-center gap-1.5">
+            <div className="md:col-span-2 bg-yellow-950/20 border border-yellow-900/30 rounded-3xl p-6 shadow-md space-y-2">
+              <h4 className="text-yellow-400 font-bold text-sm flex items-center gap-1.5">
                 <span>📝</span> ملاحظات إدارة CodaX:
               </h4>
-              <p className="text-yellow-900 dark:text-yellow-200/90 text-sm leading-relaxed italic">
+              <p className="text-yellow-200/90 text-sm leading-relaxed italic">
                 {newStudentData?.note || studentData?.note}
               </p>
             </div>

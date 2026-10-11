@@ -7,7 +7,7 @@ import {
   query,
   orderBy,
   deleteDoc,
-  doc 
+  doc,
 } from "firebase/firestore";
 import {
   Gift,
@@ -46,6 +46,18 @@ const GiftTypeDisplay = ({ type, amount }) => {
       color: "text-purple-600",
       bg: "bg-purple-100",
       label: "بطاقة VIP",
+    },
+    green_card: {
+      icon: CreditCard,
+      color: "text-emerald-700",
+      bg: "bg-emerald-100",
+      label: "Green Card",
+    },
+    blue_card: {
+      icon: CreditCard,
+      color: "text-sky-700",
+      bg: "bg-sky-100",
+      label: "Blue Card",
     },
   };
 
@@ -133,7 +145,7 @@ const GiftsLogDashboard = () => {
   const handelDelete = async (giftId) => {
     if (
       !window.confirm(
-        "هل أنت متأكد من حذف هذه الهدية نهائياً؟ هذا الإجراء لا يمكن التراجع عنه."
+        "هل أنت متأكد من حذف هذه الهدية نهائياً؟ هذا الإجراء لا يمكن التراجع عنه.",
       )
     ) {
       return;
@@ -175,7 +187,7 @@ const GiftsLogDashboard = () => {
   const totalPages = Math.ceil(filteredLogs.length / ITEMS_PER_PAGE);
   const paginatedLogs = filteredLogs.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   if (loading) {
@@ -189,7 +201,7 @@ const GiftsLogDashboard = () => {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6" dir="rtl">
       {/* العنوان */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-2xl p-6 shadow-xl">
+      <div className="bg-linear-to-r from-purple-600 to-indigo-600 text-white rounded-2xl p-6 shadow-xl">
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <Gift size={36} />
           سجل المكافآت والجوائز
@@ -253,6 +265,8 @@ const GiftsLogDashboard = () => {
             <option value="all">كل الأنواع</option>
             <option value="points">نقاط</option>
             <option value="vip">VIP</option>
+            <option value="green_card">Green Card</option>
+            <option value="blue_card">Blue Card</option>
             <option value="attendance">حضور احتياطي</option>
           </select>
           <select
@@ -299,7 +313,9 @@ const GiftsLogDashboard = () => {
                 <th className="px-6 py-4 text-right text-xs font-bold text-gray-600 dark:text-gray-300">
                   الرسالة
                 </th>
-                <th className="px-6 py-4 text-right text-xs font-bold text-gray-600 dark:text-gray-300">إجراءات</th>
+                <th className="px-6 py-4 text-right text-xs font-bold text-gray-600 dark:text-gray-300">
+                  إجراءات
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -355,19 +371,29 @@ const GiftsLogDashboard = () => {
                       {log.message || "—"}
                     </td>
                     <td className="px-6 py-4 text-left">
-  <button
-    onClick={() => handelDelete(log.id)}
-    className="text-red-600 hover:text-red-800 font-medium text-sm flex items-center gap-1 transition"
-    title="حذف الهدية نهائياً"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-    </svg>
-    حذف
-  </button>
-</td>
+                      <button
+                        onClick={() => handelDelete(log.id)}
+                        className="text-red-600 hover:text-red-800 font-medium text-sm flex items-center gap-1 transition"
+                        title="حذف الهدية نهائياً"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                        حذف
+                      </button>
+                    </td>
                   </tr>
-                  
                 ))
               )}
             </tbody>
@@ -408,17 +434,28 @@ const GiftsLogDashboard = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-    <StatusBadge isOpened={log.isOpened} />
-    <button
-      onClick={() => handelDelete(log.id)}
-      className="text-red-600 hover:bg-red-50 p-2 rounded-lg transition"
-      title="حذف الهدية"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-      </svg>
-    </button>
-  </div>
+                    <StatusBadge isOpened={log.isOpened} />
+                    <button
+                      onClick={() => handelDelete(log.id)}
+                      className="text-red-600 hover:bg-red-50 p-2 rounded-lg transition"
+                      title="حذف الهدية"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap justify-between items-center text-sm">

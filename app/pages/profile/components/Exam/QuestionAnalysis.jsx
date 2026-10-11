@@ -13,7 +13,7 @@ const QuestionAnalysis = ({ analysis }) => {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="bg-slate-800 rounded-lg shadow-lg overflow-hidden">
       <div className="p-4 border-b">
         <h2 className="text-xl font-bold text-gray-800">تحليل أداء الأسئلة</h2>
       </div>
@@ -35,7 +35,7 @@ const QuestionAnalysis = ({ analysis }) => {
             <div className="flex items-center gap-4">
               <div className="flex-1 bg-gray-200 rounded-full h-6 overflow-hidden">
                 <div
-                  className="bg-green-500 h-full text-white text-xs flex items-center justify-center"
+                  className="bg-green-500 h-full text-slate-100 text-xs flex items-center justify-center"
                   style={{ width: `${item.correctPercentage}%` }}
                 >
                   {item.correctPercentage.toFixed(0)}%

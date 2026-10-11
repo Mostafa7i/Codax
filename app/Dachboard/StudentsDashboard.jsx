@@ -1757,7 +1757,7 @@ const StudentsDashboard = () => {
                       ${
                         index % 2 === 0
                           ? "bg-white dark:bg-gray-900"
-                          : " dark:bg-gray-850"
+                          : " dark:bg-gray-900"
                       }
                     `}
                   >

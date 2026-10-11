@@ -138,12 +138,12 @@ const TransferPoints = ({ studentId }) => {
     <div className="w-full max-w-lg mx-auto" dir="rtl">
       <div className="bg-slate-900 border border-slate-700/70 rounded-2xl overflow-hidden shadow-xl">
         {/* Header */}
-        <div className="bg-gradient-to-l from-blue-600 to-indigo-600 px-5 py-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
-            <Gift className="w-5 h-5 text-white" />
+        <div className="bg-linear-to-l from-blue-600 to-indigo-600 px-5 py-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-slate-800/15 flex items-center justify-center">
+            <Gift className="w-5 h-5 text-slate-100" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">تحويل النقاط</h2>
+            <h2 className="text-lg font-bold text-slate-100">تحويل النقاط</h2>
             <p className="text-blue-100 text-xs">أرسل نقاط لزملائك</p>
           </div>
         </div>
@@ -198,7 +198,7 @@ const TransferPoints = ({ studentId }) => {
                 if (!e.target.value) setRecipientId("");
               }}
               placeholder="اكتب اسم الطالب..."
-              className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 placeholder:text-slate-500"
+              className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 placeholder:text-slate-500"
             />
 
             {/* Search Results */}
@@ -252,7 +252,7 @@ const TransferPoints = ({ studentId }) => {
               placeholder="مثال: 10"
               value={points}
               onChange={(e) => setPoints(e.target.value)}
-              className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 placeholder:text-slate-500"
+              className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 placeholder:text-slate-500"
             />
           </div>
 
@@ -260,7 +260,7 @@ const TransferPoints = ({ studentId }) => {
           <button
             onClick={handleTransfer}
             disabled={isTransferring}
-            className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-l from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-blue-600/20 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
+            className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-linear-to-l hover:from-blue-500 hover:to-indigo-500 text-slate-100 font-bold text-sm shadow-lg shadow-blue-600/20 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
           >
             {isTransferring ? (
               <>

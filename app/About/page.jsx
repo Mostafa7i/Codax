@@ -65,7 +65,7 @@ const ContactCard = ({ href, icon: Icon, label, value, color, external = true })
 );
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-const page = () => {
+const Page = () => {
   const navigate = useRouter();
 
   // Scroll to top when page mounts
@@ -452,4 +452,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

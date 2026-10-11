@@ -8,6 +8,7 @@
     "build": "node scripts/generateVersion.cjs && next build",
     "deploy:hosting": "node -e \"try{fs.rmSync('.firebase',{recursive:true,force:true})}catch(e){}\" && firebase deploy --only hosting",
     "d:r": "npm run build && npm run deploy:hosting && node scripts/updateVersion.cjs",
+    "repair-git": "node scripts/repairGitIndex.cjs",
     "start": "next start",
     "lint": "eslint"
   },

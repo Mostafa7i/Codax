@@ -195,15 +195,15 @@ const ZipUploader = ({ studentId, studentDocId }) => {
 
   // ─────────────────────────────────────────────────────────
   return (
-    <div className="mt-6 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-800">
+    <div className="mt-6 rounded-2xl overflow-hidden border border-gray-700 shadow-sm bg-gray-800">
 
       {/* Header */}
       <div className="flex items-center gap-3 px-5 py-4 bg-linear-to-r from-violet-600 to-indigo-600">
-        <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
-          <FileArchive className="w-5 h-5 text-white" />
+        <div className="w-9 h-9 bg-slate-800/20 rounded-xl flex items-center justify-center shrink-0">
+          <FileArchive className="w-5 h-5 text-slate-100" />
         </div>
         <div>
-          <h4 className="font-bold text-white text-sm">رفع تاسك مضغوط</h4>
+          <h4 className="font-bold text-slate-100 text-sm">رفع تاسك مضغوط</h4>
           <p className="text-violet-200 text-xs">.zip · .rar · .7z · الحد الأقصى {MAX_FILE_SIZE / 1024 / 1024} MB</p>
         </div>
       </div>
@@ -211,21 +211,21 @@ const ZipUploader = ({ studentId, studentDocId }) => {
       <div className="p-5 space-y-3">
 
         {/* Loading skeleton */}
-        {loadingExisting && <div className="h-16 rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse" />}
+        {loadingExisting && <div className="h-16 rounded-xl bg-gray-700 animate-pulse" />}
 
         {/* ── ملف موجود مسبقاً ── */}
         {!loadingExisting && existingFile && !showDeleteConfirm && (
-          <div className="flex flex-wrap justify-between items-center gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 rounded-xl">
+          <div className="flex flex-wrap justify-between items-center gap-3 p-4 bg-emerald-900/20 border border-emerald-800/40 rounded-xl">
             <div>
-              <div className="text-sm flex items-center gap-2 mb-1  font-bold text-gray-800 dark:text-white truncate">
-            <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl flex items-center justify-center shrink-0">
-              <FileArchive className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <div className="text-sm flex items-center gap-2 mb-1  font-bold text-slate-100 truncate">
+            <div className="w-10 h-10 bg-emerald-900/40 rounded-xl flex items-center justify-center shrink-0">
+              <FileArchive className="w-5 h-5 text-emerald-400" />
             </div>
                 {existingFile.name || "ملف مرفوع"}
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
                 {existingFile.size && (
-                  <span className="bg-white dark:bg-gray-700 px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-600 font-medium">
+                  <span className="bg-gray-700 px-1.5 py-0.5 rounded border border-gray-600 font-medium">
                     {formatSize(existingFile.size)}
                   </span>
                 )}
@@ -237,13 +237,13 @@ const ZipUploader = ({ studentId, studentDocId }) => {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => handleDownload(existingFile.url, existingFile.name)}
-                className="flex items-center gap-1.5 px-3 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 hover:bg-violet-700 text-slate-100 text-xs font-bold rounded-lg transition-colors"
               >
                 <Download className="w-3.5 h-3.5" /> تنزيل
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 transition-colors"
+                className="p-2 hover:text-red-500 hover:rounded-lg border border-gray-600 bg-gray-700 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -253,22 +253,22 @@ const ZipUploader = ({ studentId, studentDocId }) => {
 
         {/* ── تأكيد الحذف ── */}
         {showDeleteConfirm && (
-          <div className="p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-xl text-center">
-            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="p-2 bg-red-900/20 border border-red-800/40 rounded-xl text-center">
+            <div className="w-12 h-12 bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-3">
               <Trash2 className="w-6 h-6 text-red-500" />
             </div>
-            <p className="font-bold text-gray-800 dark:text-white text-sm mb-1">حذف الملف المضغوط؟</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">لن تتمكن من استرداد الملف بعد الحذف</p>
+            <p className="font-bold text-slate-100 text-sm mb-1">حذف الملف المضغوط؟</p>
+            <p className="text-xs text-gray-400 mb-4">لن تتمكن من استرداد الملف بعد الحذف</p>
             <div className="flex gap-2">
               <button
                 onClick={handleDelete} disabled={deleting}
-                className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 disabled:opacity-60 text-white font-bold rounded-xl text-sm transition-colors"
+                className="flex-1 py-2.5 hover:bg-red-600 disabled:opacity-60 text-slate-100 font-bold rounded-xl text-sm transition-colors"
               >
                 {deleting ? "جاري الحذف..." : "نعم، احذف"}
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)} disabled={deleting}
-                className="flex-1 py-2.5 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold rounded-xl text-sm border border-gray-200 dark:border-gray-600 transition-colors hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="flex-1 py-2.5 bg-slate-800 text-gray-300 font-bold rounded-xl text-sm border border-gray-600 transition-colors hover:bg-gray-600"
               >
                 إلغاء
               </button>
@@ -291,32 +291,32 @@ const ZipUploader = ({ studentId, studentDocId }) => {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="w-full border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-violet-400 dark:hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/10 rounded-xl py-10 flex flex-col items-center gap-3 transition-all group"
+                className="w-full border-2 border-dashed hover:border-violet-500 hover:bg-violet-900/10 rounded-xl py-10 flex flex-col items-center gap-3 transition-all group"
               >
-                <div className="w-14 h-14 bg-gray-100 dark:bg-gray-700 group-hover:bg-violet-100 dark:group-hover:bg-violet-900/30 rounded-2xl flex items-center justify-center transition-colors">
-                  <Upload className="w-7 h-7 text-gray-400 group-hover:text-violet-500 transition-colors" />
+                <div className="w-14 h-14 group-hover:bg-violet-900/30 rounded-2xl flex items-center justify-center transition-colors">
+                  <Upload className="w-7 h-7 group-hover:text-violet-500 transition-colors" />
                 </div>
                 <div>
-                  <p className="font-bold text-gray-700 dark:text-gray-200 text-sm">اضغط لاختيار الملف</p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">.zip / .rar / .7z / .tar / .gz</p>
+                  <p className="font-bold text-gray-200 text-sm">اضغط لاختيار الملف</p>
+                  <p className="text-xs text-gray-500 mt-0.5">.zip / .rar / .7z / .tar / .gz</p>
                 </div>
               </button>
             )}
 
             {/* حالة: تم اختيار ملف - جاهز للرفع */}
             {file && (
-              <div className="border border-violet-200 dark:border-violet-800/50 bg-violet-50 dark:bg-violet-900/10 rounded-xl p-4">
+              <div className="border border-violet-800/50 bg-violet-900/10 rounded-xl p-4">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-violet-100 dark:bg-violet-900/40 rounded-xl flex items-center justify-center shrink-0">
-                    <FileArchive className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                  <div className="w-10 h-10 bg-violet-900/40 rounded-xl flex items-center justify-center shrink-0">
+                    <FileArchive className="w-5 h-5 text-violet-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-gray-800 dark:text-white truncate">{file.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{formatSize(file.size)}</p>
+                    <p className="text-sm font-bold text-slate-100 truncate">{file.name}</p>
+                    <p className="text-xs text-gray-400">{formatSize(file.size)}</p>
                   </div>
                   <button
                     onClick={clearFile}
-                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                    className="p-1.5 hover:text-red-500 hover:bg-red-900/30 rounded-lg transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -325,13 +325,13 @@ const ZipUploader = ({ studentId, studentDocId }) => {
                 {/* شريط التقدم */}
                 {uploading && (
                   <div className="mb-3">
-                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1.5">
+                    <div className="flex justify-between text-xs text-gray-400 mb-1.5">
                       <span className="flex items-center gap-1">
                         <CloudUpload className="w-3 h-3 animate-pulse" /> جاري الرفع...
                       </span>
                       <span className="font-bold text-violet-600">{progress}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                    <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
                       <div
                         className="h-full bg-linear-to-r from-violet-500 to-indigo-500 rounded-full transition-all duration-300"
                         style={{ width: `${progress}%` }}
@@ -342,7 +342,7 @@ const ZipUploader = ({ studentId, studentDocId }) => {
 
                 <button
                   onClick={handleUpload} disabled={uploading}
-                  className="w-full py-2.5 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 text-white font-bold rounded-xl text-sm transition-all shadow-sm flex items-center justify-center gap-2"
+                  className="w-full py-2.5 bg-linear-to-r hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 text-slate-100 font-bold rounded-xl text-sm transition-all shadow-sm flex items-center justify-center gap-2"
                 >
                   {uploading
                     ? <><CloudUpload className="w-4 h-4 animate-pulse" /> جاري الرفع...</>
@@ -356,12 +356,12 @@ const ZipUploader = ({ studentId, studentDocId }) => {
 
         {/* رسائل الحالة */}
         {error && (
-          <div className="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-xl text-red-600 dark:text-red-400 text-sm">
+          <div className="flex items-start gap-2 p-3 bg-red-900/20 border border-red-800/40 rounded-xl text-red-400 text-sm">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" /> <span>{error}</span>
           </div>
         )}
         {success && (
-          <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 rounded-xl text-green-600 dark:text-green-400 text-sm">
+          <div className="flex items-center gap-2 p-3 bg-green-900/20 border border-green-800/40 rounded-xl text-green-400 text-sm">
             <CheckCircle2 className="w-4 h-4 shrink-0" /> {success}
           </div>
         )}

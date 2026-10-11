@@ -1,73 +1,80 @@
-import React from 'react';
-import { Clock, ShieldCheck, AlertTriangle, Loader } from "lucide-react";
+"use client";
+import React from "react";
+import { Clock, ShieldCheck, AlertTriangle, Loader2 } from "lucide-react";
 
 // --- المكون الرئيسي ---
 export const ReserveAttendance = ({
-  reserveCount,
-  absences,
+  reserveCount = 0,
+  absences = 0,
   onUseReserve,
-  isLoading,
-  reserveUsageCount,
+  isLoading = false,
+  reserveUsageCount = 0,
 }) => {
   const canUseReserve = reserveCount > 0 && absences > 0;
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-3 rounded-2xl  border-gray-200 dark:border-gray-700 space-y-4">
-      
+    <div className="bg-slate-900 border border-slate-800/80 p-4 rounded-3xl space-y-4 text-right dir-rtl">
       {/* 1. الهيدر الرئيسي */}
       <div className="flex items-center gap-3">
-        <div className="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-xl">
-          <Clock size={24} className="text-blue-500" />
+        <div className="w-10 h-10 bg-sky-500/15 border border-sky-500/30 rounded-2xl flex items-center justify-center text-sky-400 shrink-0">
+          <Clock size={20} />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-gray-800 dark:text-white">الحضور الاحتياطي</h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            استخدم رصيدك لتعويض أيام الغياب.
+          <h3 className="text-base font-bold text-slate-100">
+            الحضور الاحتياطي
+          </h3>
+          <p className="text-xs text-slate-400">
+            استخدم رصيدك المكتسب لتعويض أيام الغياب تلقائياً.
           </p>
         </div>
       </div>
 
       {/* 2. عرض الإحصائيات */}
       <div className="grid grid-cols-2 gap-2 text-center">
-        <div className="bg-gray-100 dark:bg-gray-700/50 p-2 rounded-lg">
-          <p className="text-sm  text-gray-600 dark:text-gray-300">رصيدك الحالي</p>
-          <p className={`text-2xl font-bold ${reserveCount > 0 ? 'text-green-500' : 'text-gray-500'}`}>
-            {reserveCount}
+        <div className="bg-slate-800/60 border border-slate-700/50 p-3 rounded-2xl">
+          <p className="text-xs text-slate-400 font-medium">رصيدك الحالي</p>
+          <p
+            className={`text-2xl font-black mt-0.5 ${
+              reserveCount > 0 ? "text-emerald-400" : "text-slate-500"
+            }`}
+          >
+            {reserveCount}{" "}
+            <span className="text-xs font-normal text-slate-400">حضور</span>
           </p>
         </div>
-        <div className="bg-gray-100 dark:bg-gray-700/50 p-2 rounded-lg">
-          <p className="text-sm text-gray-600 dark:text-gray-300">مرات الاستخدام</p>
-          <p className="text-2xl font-bold text-gray-700 dark:text-white">
+        <div className="bg-slate-800/60 border border-slate-700/50 p-3 rounded-2xl">
+          <p className="text-xs text-slate-400 font-medium">مرات الاستخدام</p>
+          <p className="text-2xl font-black text-slate-200 mt-0.5">
             {reserveUsageCount}
           </p>
         </div>
       </div>
 
       {/* 3. زر الإجراء */}
-      <div className="pt-2">
+      <div className="pt-1">
         <button
+          type="button"
           onClick={onUseReserve}
           disabled={!canUseReserve || isLoading}
           className={`
-            w-full py-3 px-4 rounded-xl text-white text-sm font-semibold transition-all duration-300
-            flex items-center justify-center gap-2
-            transform hover:scale-105 active:scale-100
-            shadow-lg hover:shadow-xl
-            ${canUseReserve
-              ? "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-              : "bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-80"
+            w-full py-3 px-4 rounded-2xl text-slate-100 text-xs sm:text-sm font-bold transition-all duration-300
+            flex items-center justify-center gap-2 shadow-lg cursor-pointer
+            ${
+              canUseReserve
+                ? "bg-linear-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 hover:scale-101 active:scale-98 shadow-sky-500/25"
+                : "bg-slate-800 text-slate-500 border border-slate-700/50 cursor-not-allowed opacity-70"
             }
           `}
         >
           {isLoading ? (
             <>
-              <Loader size={18} className="animate-spin" />
+              <Loader2 size={16} className="animate-spin" />
               <span>جاري المعالجة...</span>
             </>
           ) : (
             <>
-              <ShieldCheck size={18} />
-              <span>استخدام 1 حضور لتعويض غياب</span>
+              <ShieldCheck size={16} />
+              <span>استخدام 1 رصيد لتعويض غياب</span>
             </>
           )}
         </button>
@@ -75,28 +82,27 @@ export const ReserveAttendance = ({
 
       {/* 4. رسالة توضيحية في حالة عدم إمكانية الاستخدام */}
       {!canUseReserve && (
-        <div className="flex items-center gap-2 text-xs p-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300">
-          <AlertTriangle size={24} />
-          {reserveCount === 0 
-            ? "لا يوجد لديك رصيد من الحضور الاحتياطي."
-            : "لا يوجد لديك أيام غياب لتعويضها."
-          }
+        <div className="flex items-center gap-2 text-xs p-3 rounded-2xl bg-amber-950/20 border border-amber-800/30 text-amber-300">
+          <AlertTriangle size={18} className="shrink-0" />
+          <p className="text-[11px] leading-relaxed">
+            {reserveCount === 0
+              ? "لا يوجد لديك رصيد من الحضور الاحتياطي حالياً."
+              : "لا يوجد لديك أيام غياب لتعويضها، سجلك منتظم!"}
+          </p>
         </div>
       )}
     </div>
   );
 };
 
-// --- المكون المساعد (يبقى كما هو) ---
-export const StatCard = ({
-  label,
-  value,
-  colorClass,
-}) => (
-  <div className={`p-2 rounded drop-shadow`}>
-    <div className="flex justify-between items-center">
-      <span className="text-gray-700 dark:text-gray-300">{label}</span>
-      <span className={`font-semibold ${colorClass}`}>{value}</span>
+// --- المكون المساعد ---
+export const StatCard = ({ label, value, colorClass }) => (
+  <div className="p-2.5 rounded-xl bg-slate-800/50 border border-slate-700/40">
+    <div className="flex justify-between items-center text-xs">
+      <span className="text-slate-400">{label}</span>
+      <span className={`font-bold ${colorClass}`}>{value}</span>
     </div>
   </div>
 );
+
+export default ReserveAttendance;

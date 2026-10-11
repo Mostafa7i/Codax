@@ -47,11 +47,11 @@ ChartJS.register(
 
 const RankBadge = ({ rank }) => {
   const configs = {
-    1: { bg: "bg-gradient-to-br from-yellow-400 to-amber-500", text: "text-white", shadow: "shadow-amber-200" },
-    2: { bg: "bg-gradient-to-br from-slate-400 to-slate-500", text: "text-white", shadow: "shadow-slate-200" },
-    3: { bg: "bg-gradient-to-br from-amber-600 to-amber-800", text: "text-white", shadow: "shadow-amber-200" },
+    1: { bg: "bg-linear-to-br from-yellow-400 to-amber-500", text: "text-slate-100", shadow: "shadow-amber-200" },
+    2: { bg: "bg-linear-to-br from-slate-400 to-slate-500", text: "text-slate-100", shadow: "shadow-slate-200" },
+    3: { bg: "bg-linear-to-br from-amber-600 to-amber-800", text: "text-slate-100", shadow: "shadow-amber-200" },
   };
-  const cfg = configs[rank] || { bg: "bg-gray-100 dark:bg-gray-700", text: "text-gray-600 dark:text-gray-300", shadow: "" };
+  const cfg = configs[rank] || { bg: "bg-gray-700", text: "text-gray-300", shadow: "" };
   return (
     <span className={`inline-flex items-center justify-center w-9 h-9 rounded-full font-bold text-sm ${cfg.bg} ${cfg.text} shadow-lg ${cfg.shadow}`}>
       {rank === 1 ? <Award size={15} /> : rank}
@@ -59,15 +59,15 @@ const RankBadge = ({ rank }) => {
   );
 };
 
-const StatCard = ({ icon, label, value, colorClass = "text-indigo-600", gradient = "from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/20" }) => (
-  <div className={`bg-gradient-to-br ${gradient} p-5 rounded-2xl border border-white/60 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5`}>
+const StatCard = ({ icon, label, value, colorClass = "text-indigo-600", gradient = "from-indigo-900/30 to-indigo-800/20" }) => (
+  <div className={`bg-linear-to-br ${gradient} p-5 rounded-2xl border border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5`}>
     <div className="flex items-start justify-between mb-3">
-      <div className={`p-2.5 rounded-xl bg-white dark:bg-gray-800 shadow-sm`}>
+      <div className={`p-2.5 rounded-xl bg-gray-800 shadow-sm`}>
         {React.cloneElement(icon, { className: colorClass, size: 22 })}
       </div>
       <p className={`text-3xl font-black ${colorClass}`}>{value}</p>
     </div>
-    <p className="text-sm font-semibold text-gray-600 dark:text-gray-400">{label}</p>
+    <p className="text-sm font-semibold text-gray-400">{label}</p>
   </div>
 );
 
@@ -79,17 +79,17 @@ const ExamSelector = ({ examId, setExamId, exams, onNew, onDelete }) => (
         <select
           value={examId}
           onChange={(e) => setExamId(e.target.value)}
-          className="w-full pr-9 pl-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none appearance-none shadow-sm"
+          className="w-full pr-9 pl-4 py-3 bg-gray-800 border border-gray-600 text-slate-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none appearance-none shadow-sm"
           disabled={!exams.length}
         >
-          <option value="" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">{exams.length ? "— اختر امتحانًا —" : "لا توجد امتحانات"}</option>
-          {exams.map(e => <option key={e.id} value={e.id} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">{e.title || e.id}</option>)}
+          <option value="" className="bg-gray-800 text-slate-100">{exams.length ? "— اختر امتحانًا —" : "لا توجد امتحانات"}</option>
+          {exams.map(e => <option key={e.id} value={e.id} className="bg-gray-800 text-slate-100">{e.title || e.id}</option>)}
         </select>
       </div>
       <button
         type="button"
         onClick={onNew}
-        className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-sm font-extrabold shadow-sm hover:shadow transition-all"
+        className="inline-flex items-center gap-2 px-5 py-3 bg-linear-to-r hover:from-emerald-700 hover:to-teal-700 text-slate-100 rounded-xl text-sm font-extrabold shadow-sm hover:shadow transition-all"
       >
         <Plus size={16} /> امتحان جديد
       </button>
@@ -97,7 +97,7 @@ const ExamSelector = ({ examId, setExamId, exams, onNew, onDelete }) => (
         type="button"
         onClick={onDelete}
         disabled={!examId}
-        className="inline-flex items-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-xl text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+        className="inline-flex items-center gap-2 px-4 py-3 bg-slate-800 hover:bg-red-950/40 text-red-400 border border-red-800 rounded-xl text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
       >
         <Trash2 size={16} /> حذف
       </button>
@@ -155,14 +155,14 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50/90 to-purple-50/90 dark:from-gray-800 dark:to-gray-850 p-5 rounded-2xl border-2 border-indigo-300 dark:border-indigo-600 space-y-4 shadow-md">
+    <div className="bg-linear-to-br from-gray-800 to-gray-900 p-5 rounded-2xl border-2 border-indigo-600 space-y-4 shadow-md">
       <div className="space-y-1.5">
-        <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">نص السؤال</label>
+        <label className="block text-xs font-bold text-gray-300">نص السؤال</label>
         <textarea
           value={editData.text}
           dir={dirValue}
           onChange={(e) => handleFieldChange('text', e.target.value)}
-          className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none resize-none transition font-medium placeholder:text-gray-400"
+          className="w-full p-3 border border-gray-600 rounded-xl bg-gray-700 text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none resize-none transition font-medium placeholder:text-gray-400"
           rows="3"
           placeholder="نص السؤال..."
         />
@@ -170,18 +170,18 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
 
       {/* قسم الصورة */}
          
-          <div className="space-y-2 p-3 bg-white/70 dark:bg-gray-700/50 rounded-xl border border-indigo-100 dark:border-gray-600">
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-              <Image size={15} className="text-indigo-600 dark:text-indigo-400" /> صورة السؤال (اختياري)
+          <div className="space-y-2 p-3 bg-gray-700/50 rounded-xl border border-gray-600">
+            <label className="block text-xs font-bold text-gray-300 flex items-center gap-1.5">
+              <Image size={15} className="text-indigo-400" /> صورة السؤال (اختياري)
             </label>
 
             {editData.image ? (
               <div className="relative group inline-block">
-                <img src={editData.image} alt="Question" className="max-h-48 rounded-lg object-contain border border-gray-200 dark:border-gray-600 shadow-sm" />
+                <img src={editData.image} alt="Question" className="max-h-48 rounded-lg object-contain border border-gray-600 shadow-sm" />
                 <button
                   type="button"
                   onClick={() => handleFieldChange('image', '')}
-                  className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-md transition"
+                  className="absolute top-2 right-2 hover:bg-red-700 text-slate-100 p-1.5 rounded-full shadow-md transition"
                   title="إزالة الصورة"
                 >
                   <X size={14} />
@@ -199,7 +199,7 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+                  className="px-3.5 py-2 hover:bg-indigo-900/60 text-indigo-300 border border-indigo-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
                 >
                   <Upload size={14} /> رفع صورة من الجهاز
                 </button>
@@ -209,7 +209,7 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
                   value={editData.image || ''}
                   onChange={(e) => handleFieldChange('image', e.target.value)}
                   placeholder="https://example.com/image.jpg"
-                  className="flex-1 min-w-[200px] px-3 py-1.5 text-xs bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="flex-1 min-w-[200px] px-3 py-1.5 text-xs bg-gray-700 text-slate-100 border border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-indigo-400"
                 />
               </div>
             )}
@@ -217,19 +217,19 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
 
 
       <div className="flex items-center gap-3">
-        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">الدرجة:</label>
+        <label className="text-sm font-bold text-gray-300">الدرجة:</label>
         <input
           type="number"
           value={editData.marks}
           onChange={(e) => handleFieldChange('marks', parseInt(e.target.value) || 0)}
-          className="w-24 p-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-center font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition"
+          className="w-24 p-2 border border-gray-600 rounded-xl bg-gray-700 text-slate-100 text-center font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition"
         />
       </div>
 
       {editData.type === 'multiple' && (
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <p className="text-sm font-bold text-gray-700 dark:text-gray-300">الخيارات: <span className="text-indigo-600 dark:text-indigo-400">(حدد الإجابة الصحيحة وتستطيع إعادة الترتيب بالـ Drag & Drop)</span></p>
+            <p className="text-sm font-bold text-gray-300">الخيارات: <span className="text-indigo-400">(حدد الإجابة الصحيحة وتستطيع إعادة الترتيب بالـ Drag & Drop)</span></p>
           </div>
           {editData.options.map((opt, i) => (
             <div
@@ -257,14 +257,14 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
                 setDraggedIdx(null);
                 setDragOverIdx(null);
               }}
-              className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all duration-200 ${draggedIdx === i ? 'opacity-40 border-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' :
-                dragOverIdx === i ? 'border-indigo-500 ring-2 ring-indigo-400 bg-indigo-50/60 dark:bg-indigo-900/20' :
+              className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all duration-200 ${draggedIdx === i ? 'opacity-40 border-indigo-400 bg-indigo-900/30' :
+                dragOverIdx === i ? 'border-indigo-500 ring-2 ring-indigo-400 bg-indigo-900/20' :
                   editData.correctAnswer === i
-                    ? 'border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/40 dark:border-emerald-600 shadow-sm'
-                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+                    ? 'bg-emerald-950/40 border-emerald-600 shadow-sm'
+                    : 'border-gray-600 bg-gray-700'
                 }`}
             >
-              <div className="text-gray-400 hover:text-indigo-600 cursor-grab active:cursor-grabbing p-1 flex-shrink-0" title="اسحب لإعادة الترتيب">
+              <div className="hover:text-indigo-600 cursor-grab active:cursor-grabbing p-1 flex-shrink-0" title="اسحب لإعادة الترتيب">
                 <GripVertical size={16} />
               </div>
 
@@ -279,7 +279,7 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
               <input
                 type="text" dir={dirValue} value={opt}
                 onChange={(e) => handleOptionChange(i, e.target.value)}
-                className="flex-1 bg-transparent text-gray-900 dark:text-white text-sm outline-none font-medium"
+                className="flex-1 bg-transparent text-slate-100 text-sm outline-none font-medium"
                 placeholder={`الخيار ${i + 1}`}
               />
 
@@ -291,7 +291,7 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
                     const { options: newOptions, correctAnswer: newCorrect } = reorderOptions(editData.options, editData.correctAnswer, i, i - 1);
                     setEditData(prev => ({ ...prev, options: newOptions, correctAnswer: newCorrect }));
                   }}
-                  className="p-1 text-gray-400 hover:text-indigo-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-1 hover:text-indigo-600 hover:bg-gray-600 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                   title="تحريك لأعلى"
                 >
                   <ChevronUp size={14} />
@@ -303,7 +303,7 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
                     const { options: newOptions, correctAnswer: newCorrect } = reorderOptions(editData.options, editData.correctAnswer, i, i + 1);
                     setEditData(prev => ({ ...prev, options: newOptions, correctAnswer: newCorrect }));
                   }}
-                  className="p-1 text-gray-400 hover:text-indigo-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-1 hover:text-indigo-600 hover:bg-gray-600 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                   title="تحريك لأسفل"
                 >
                   <ChevronDown size={14} />
@@ -311,21 +311,21 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
               </div>
 
               {editData.options.length > 2 && (
-                <button type="button" onClick={() => removeOption(i)} className="text-red-500 hover:text-red-700 p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition flex-shrink-0">
+                <button type="button" onClick={() => removeOption(i)} className="hover:text-red-700 p-1 rounded-lg hover:bg-red-900/30 transition flex-shrink-0">
                   <Trash2 size={14} />
                 </button>
               )}
             </div>
           ))}
-          <button type="button" onClick={addOption} className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-bold flex items-center gap-1">
+          <button type="button" onClick={addOption} className="text-xs text-indigo-400 hover:underline font-bold flex items-center gap-1">
             <Plus size={12} /> إضافة خيار جديد
           </button>
         </div>
       )}
 
-      <div className="flex gap-2 justify-end pt-3 border-t border-indigo-200 dark:border-gray-700">
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition">إلغاء</button>
-        <button type="button" onClick={() => onSave(editData)} className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-bold shadow-md hover:shadow-lg transition flex items-center gap-1">
+      <div className="flex gap-2 justify-end pt-3 border-t border-gray-700">
+        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl border border-gray-600 text-gray-300 text-sm font-semibold hover:bg-gray-700 transition">إلغاء</button>
+        <button type="button" onClick={() => onSave(editData)} className="px-4 py-2 rounded-xl bg-linear-to-r from-emerald-600 to-teal-600 text-slate-100 text-sm font-bold shadow-md hover:shadow-lg transition flex items-center gap-1">
           <CheckCircle size={15} /> حفظ التعديل
         </button>
       </div>
@@ -336,17 +336,17 @@ const QuestionEditor = ({ question, dirValue, onSave, onCancel }) => {
 const QuestionDisplay = ({ dirValue, question, onEdit, onDelete, index, duplicateInfo }) => (
   <div className="group">
     <div className="flex items-start gap-3">
-      <span className="flex-shrink-0 w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold flex items-center justify-center mt-0.5 shadow-sm">
+      <span className="flex-shrink-0 w-7 h-7 rounded-lg bg-indigo-900/40 text-indigo-400 text-xs font-bold flex items-center justify-center mt-0.5 shadow-sm">
         {(index ?? 0) + 1}
       </span>
       <div className="flex-1 min-w-0">
         {duplicateInfo && (
-          <div className="mb-1.5 flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 rounded-lg text-xs font-bold text-amber-700 dark:text-amber-300">
+          <div className="mb-1.5 flex items-center gap-1.5 px-2.5 py-1 bg-amber-950/40 border border-amber-700 rounded-lg text-xs font-bold text-amber-300">
             <AlertCircle size={12} className="flex-shrink-0" />
             <span>⚠️ سؤال مكرر — {duplicateInfo.type === 'current' ? 'موجود في نفس هذا الامتحان' : `موجود في امتحان آخر: "${duplicateInfo.examTitle}"`}</span>
           </div>
         )}
-        <p dir={dirValue} className="text-gray-900 dark:text-gray-100 font-semibold leading-relaxed text-base">{question.text}</p>
+        <p dir={dirValue} className="text-gray-100 font-semibold leading-relaxed text-base">{question.text}</p>
 
         {/* عرض صورة السؤال إذا كانت موجودة */}
         {question.image && (
@@ -354,7 +354,7 @@ const QuestionDisplay = ({ dirValue, question, onEdit, onDelete, index, duplicat
             <img
               src={question.image}
               alt={`صورة السؤال ${index + 1}`}
-              className="max-h-60 max-w-full rounded-xl object-contain border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-900"
+              className="max-h-60 max-w-full rounded-xl object-contain border border-gray-700 shadow-sm bg-gray-900"
             />
           </div>
         )}
@@ -363,10 +363,10 @@ const QuestionDisplay = ({ dirValue, question, onEdit, onDelete, index, duplicat
           <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
             {question.options.map((option, i) => (
               <div key={i} className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-sm ${i === question.correctAnswer
-                ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-800 shadow-sm'
-                : 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700'
+                ? 'bg-emerald-950/30 text-emerald-300 font-bold border border-emerald-800 shadow-sm'
+                : 'bg-gray-800 text-gray-300 border border-gray-700'
                 }`}>
-                <span className={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-extrabold ${i === question.correctAnswer ? 'bg-emerald-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                <span className={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-extrabold ${i === question.correctAnswer ? 'text-slate-100' : 'bg-gray-700 text-gray-400'
                   }`}>{i === question.correctAnswer ? '✓' : String.fromCharCode(65 + i)}</span>
                 <span dir={dirValue} className="break-words">{option}</span>
               </div>
@@ -375,16 +375,16 @@ const QuestionDisplay = ({ dirValue, question, onEdit, onDelete, index, duplicat
         )}
 
         <div className="mt-3 flex items-center gap-2 flex-wrap">
-          <span className="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+          <span className="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-bold bg-indigo-900/40 text-indigo-300 border border-indigo-800">
             {question.marks} درجات
           </span>
           {question.image && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-900/30 text-purple-300">
               <Image size={12} /> تتضمن صورة
             </span>
           )}
           {duplicateInfo && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-900/30 text-amber-300 border border-amber-700">
               <AlertCircle size={11} /> مكرر
             </span>
           )}
@@ -392,10 +392,10 @@ const QuestionDisplay = ({ dirValue, question, onEdit, onDelete, index, duplicat
       </div>
 
       <div className="flex items-center gap-1 flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
-        <button onClick={onEdit} className="p-2 text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40 rounded-xl transition" title="تعديل السؤال">
+        <button onClick={onEdit} className="p-2 text-indigo-400 hover:bg-indigo-900/40 rounded-xl transition" title="تعديل السؤال">
           <Edit3 size={16} />
         </button>
-        <button onClick={onDelete} className="p-2 text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40 rounded-xl transition" title="حذف السؤال">
+        <button onClick={onDelete} className="p-2 text-red-400 hover:bg-red-900/40 rounded-xl transition" title="حذف السؤال">
           <Trash2 size={16} />
         </button>
       </div>
@@ -459,28 +459,28 @@ const ExamDateModal = ({ isOpen, onClose, startAt, closeAt, onSave }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-lg w-full overflow-hidden transition-all transform scale-100">
+      <div className="bg-gray-800 rounded-3xl shadow-2xl border border-gray-700 max-w-lg w-full overflow-hidden transition-all transform scale-100">
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white flex justify-between items-center">
+        <div className="bg-linear-to-r from-indigo-600 to-purple-600 p-6 text-slate-100 flex justify-between items-center">
           <div>
             <h3 className="text-xl font-extrabold flex items-center gap-2">
               <Calendar className="w-6 h-6" /> إعداد مواعيد الامتحان
             </h3>
             <p className="text-xs text-indigo-100 mt-1">الخطوة {step} من 2: {step === 1 ? "اختيار موعد البداية" : "اختيار موعد النهاية"}</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition text-white">
+          <button onClick={onClose} className="p-2 hover:bg-slate-800/20 rounded-full transition text-slate-100">
             <X size={20} />
           </button>
         </div>
 
         {/* Indicator Bar */}
-        <div className="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-          <div className={`flex-1 py-3 text-center font-bold text-xs flex items-center justify-center gap-1.5 border-b-2 transition ${step === 1 ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800' : 'border-transparent text-gray-400'}`}>
-            <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 dark:text-indigo-300 flex items-center justify-center text-xs">1</span>
+        <div className="flex border-b border-gray-700 bg-gray-800">
+          <div className={`flex-1 py-3 text-center font-bold text-xs flex items-center justify-center gap-1.5 border-b-2 transition ${step === 1 ? 'border-indigo-600 bg-gray-800' : 'border-transparent text-gray-400'}`}>
+            <span className="w-5 h-5 rounded-full bg-indigo-900/60 text-indigo-300 flex items-center justify-center text-xs">1</span>
             موعد البداية
           </div>
-          <div className={`flex-1 py-3 text-center font-bold text-xs flex items-center justify-center gap-1.5 border-b-2 transition ${step === 2 ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800' : 'border-transparent text-gray-400'}`}>
-            <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 dark:text-indigo-300 flex items-center justify-center text-xs">2</span>
+          <div className={`flex-1 py-3 text-center font-bold text-xs flex items-center justify-center gap-1.5 border-b-2 transition ${step === 2 ? 'border-indigo-600 bg-gray-800' : 'border-transparent text-gray-400'}`}>
+            <span className="w-5 h-5 rounded-full bg-indigo-900/60 text-indigo-300 flex items-center justify-center text-xs">2</span>
             موعد النهاية
           </div>
         </div>
@@ -489,8 +489,8 @@ const ExamDateModal = ({ isOpen, onClose, startAt, closeAt, onSave }) => {
         <div className="p-6 space-y-5">
           {step === 1 ? (
             <div className="space-y-4">
-              <div className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-2xl text-indigo-900 dark:text-indigo-200">
-                <Calendar className="w-8 h-8 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
+              <div className="flex items-center gap-3 p-3 bg-indigo-950/40 border border-indigo-800 rounded-2xl text-indigo-200">
+                <Calendar className="w-8 h-8 text-indigo-400 flex-shrink-0" />
                 <div className="text-xs">
                   <span className="font-bold block text-sm mb-0.5">خطوة 1: تحديد موعد وتاريخ بدء الامتحان</span>
                   حدد اليوم والوقت الساعي الذي سيُتاح فيه الامتحان للطلاب للبدء.
@@ -498,25 +498,25 @@ const ExamDateModal = ({ isOpen, onClose, startAt, closeAt, onSave }) => {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-gray-800 dark:text-gray-200">موعد ووقت البداية:</label>
+                <label className="block text-sm font-bold text-gray-200">موعد ووقت البداية:</label>
                 <input
                   type="datetime-local"
                   value={tempStart}
                   onChange={(e) => setTempStart(e.target.value)}
-                  className="w-full p-3.5 bg-gray-50 dark:bg-gray-700 border-2 border-indigo-300 dark:border-indigo-600 rounded-2xl text-gray-900 dark:text-white font-bold text-base focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                  className="w-full p-3.5 bg-gray-700 border-2 border-indigo-600 rounded-2xl text-slate-100 font-bold text-base focus:ring-2 focus:ring-indigo-500 outline-none transition"
                 />
               </div>
 
               {tempStart && (
-                <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl text-xs text-gray-600 dark:text-gray-300 font-medium">
-                  الموعد المحدد: <span className="font-bold text-indigo-600 dark:text-indigo-400">{formatDateTimeText(tempStart)}</span>
+                <div className="p-3 bg-gray-700 rounded-xl text-xs text-gray-300 font-medium">
+                  الموعد المحدد: <span className="font-bold text-indigo-400">{formatDateTimeText(tempStart)}</span>
                 </div>
               )}
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 rounded-2xl text-purple-900 dark:text-purple-200">
-                <Clock className="w-8 h-8 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+              <div className="flex items-center gap-3 p-3 bg-purple-950/40 border border-purple-800 rounded-2xl text-purple-200">
+                <Clock className="w-8 h-8 text-purple-400 flex-shrink-0" />
                 <div className="text-xs">
                   <span className="font-bold block text-sm mb-0.5">خطوة 2: تحديد موعد وتاريخ إغلاق الامتحان</span>
                   حدد اليوم والوقت الساعي الذي سينتهي فيه الامتحان ويُغلق تلقائياً.
@@ -524,17 +524,17 @@ const ExamDateModal = ({ isOpen, onClose, startAt, closeAt, onSave }) => {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-gray-800 dark:text-gray-200">موعد ووقت الإغلاق:</label>
+                <label className="block text-sm font-bold text-gray-200">موعد ووقت الإغلاق:</label>
                 <input
                   type="datetime-local"
                   value={tempClose}
                   onChange={(e) => setTempClose(e.target.value)}
-                  className="w-full p-3.5 bg-gray-50 dark:bg-gray-700 border-2 border-purple-300 dark:border-purple-600 rounded-2xl text-gray-900 dark:text-white font-bold text-base focus:ring-2 focus:ring-purple-500 outline-none transition"
+                  className="w-full p-3.5 bg-gray-700 border-2 border-purple-600 rounded-2xl text-slate-100 font-bold text-base focus:ring-2 focus:ring-purple-500 outline-none transition"
                 />
               </div>
 
               {durationMins > 0 ? (
-                <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl text-emerald-800 dark:text-emerald-300 text-xs space-y-1">
+                <div className="p-3.5 bg-emerald-950/30 border border-emerald-800 rounded-xl text-emerald-300 text-xs space-y-1">
                   <div className="font-extrabold text-sm flex items-center gap-1.5">
                     <CheckCircle size={16} className="text-emerald-600" />
                     المدة المحسوبة للاختبار: {durationMins} دقيقة
@@ -547,7 +547,7 @@ const ExamDateModal = ({ isOpen, onClose, startAt, closeAt, onSave }) => {
                   </div>
                 </div>
               ) : tempClose && tempStart && new Date(tempClose) <= new Date(tempStart) ? (
-                <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 text-xs font-bold flex items-center gap-2">
+                <div className="p-3 bg-red-950/30 border border-red-800 rounded-xl text-red-400 text-xs font-bold flex items-center gap-2">
                   <AlertCircle size={16} /> تنبيه: موعد النهاية يجب أن يكون بعد موعد البداية!
                 </div>
               ) : null}
@@ -556,20 +556,20 @@ const ExamDateModal = ({ isOpen, onClose, startAt, closeAt, onSave }) => {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex items-center justify-between gap-3">
+        <div className="p-4 border-t border-gray-700 bg-gray-800 flex items-center justify-between gap-3">
           {step === 1 ? (
             <>
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                className="px-4 py-2.5 rounded-xl border border-gray-600 text-gray-300 text-sm font-bold hover:bg-gray-700 transition"
               >
                 إلغاء
               </button>
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm font-bold shadow-md transition flex items-center gap-1.5"
+                className="px-6 py-2.5 rounded-xl bg-linear-to-r hover:from-indigo-700 hover:to-purple-700 text-slate-100 text-sm font-bold shadow-md transition flex items-center gap-1.5"
               >
                 التالي: موعد النهاية <ArrowLeft size={16} />
               </button>
@@ -579,14 +579,14 @@ const ExamDateModal = ({ isOpen, onClose, startAt, closeAt, onSave }) => {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition flex items-center gap-1.5"
+                className="px-4 py-2.5 rounded-xl border border-gray-600 text-gray-300 text-sm font-bold hover:bg-gray-700 transition flex items-center gap-1.5"
               >
                 <ArrowRight size={16} /> السابق (موعد البداية)
               </button>
               <button
                 type="button"
                 onClick={handleFinalSave}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-sm font-extrabold shadow-md transition flex items-center gap-1.5"
+                className="px-6 py-2.5 rounded-xl bg-linear-to-r hover:from-emerald-700 hover:to-teal-700 text-slate-100 text-sm font-extrabold shadow-md transition flex items-center gap-1.5"
               >
                 <Check size={18} /> حفظ وتأكيد المواعيد
               </button>
@@ -841,7 +841,6 @@ const ExamSystem = () => {
 
   const newQuestionDuplicate = useMemo(
     () => getQuestionDuplicateInfo(newQuestion.text),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [newQuestion.text, exam?.questions, allExams, examId]
   );
 
@@ -1260,10 +1259,10 @@ const ExamSystem = () => {
   if (isCreating) return <div className="text-center p-6 flex items-center justify-center gap-2"><Loader className="animate-spin" /> <span>جاري إنشاء مسودة امتحان جديد...</span></div>;
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen" dir={dirValue}>
+    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 bg-linear-to-br from-gray-900 to-gray-800 min-h-screen" dir={dirValue}>
       {/* رأس اللوحة الإدارية الموحدة */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-8 border border-gray-200 dark:border-gray-700">
-        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-white animate-fadeIn">
+      <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-8 border border-gray-700">
+        <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-slate-100 animate-fadeIn">
           <h1 className="text-3xl sm:text-4xl font-extrabold flex items-center gap-3">
             <Edit3 className="w-9 h-9" />
             لوحة الامتحانات والنتائج الموحدة
@@ -1284,13 +1283,13 @@ const ExamSystem = () => {
           {exam && (
             <>
               {/* أزرار التبويبات الموحدة */}
-              <div className="flex border-b border-gray-200 dark:border-gray-700 mb-6 bg-gray-55 dark:bg-gray-900/40 rounded-xl p-1.5 gap-2">
+              <div className="flex border-b border-gray-700 mb-6 bg-gray-900/40 rounded-xl p-1.5 gap-2">
                 <button
                   type="button"
                   onClick={() => setActiveTab("setup")}
                   className={`flex-1 py-3 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition duration-200 ${activeTab === "setup"
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    ? "bg-linear-to-r from-indigo-600 to-purple-600 text-slate-100 shadow-md"
+                    : "text-gray-400 hover:bg-gray-800"
                     }`}
                 >
                   <BookOpen className="w-5 h-5" /> إعداد الامتحان والأسئلة
@@ -1299,8 +1298,8 @@ const ExamSystem = () => {
                   type="button"
                   onClick={() => setActiveTab("results")}
                   className={`flex-1 py-3 px-4 rounded-lg font-bold flex items-center justify-center gap-2 transition duration-200 ${activeTab === "results"
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    ? "bg-linear-to-r from-indigo-600 to-purple-600 text-slate-100 shadow-md"
+                    : "text-gray-400 hover:bg-gray-800"
                     }`}
                 >
                   <Activity className="w-5 h-5" /> نتائج الطلاب والتحليلات
@@ -1310,9 +1309,9 @@ const ExamSystem = () => {
               {activeTab === "setup" && (
                 <div className="space-y-6 animate-fadeIn">
                   {/* قسم البيانات العامة والجدولة */}
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                    <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-5 flex items-center gap-2 border-b pb-3 border-gray-100 dark:border-gray-700">
-                      <Settings className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                  <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-sm">
+                    <h3 className="text-lg font-bold text-slate-100 mb-5 flex items-center gap-2 border-b pb-3 border-gray-700">
+                      <Settings className="w-5 h-5 text-indigo-400" />
                       إعدادات وجدولة الامتحان
                     </h3>
 
@@ -1320,13 +1319,13 @@ const ExamSystem = () => {
                       {/* العمود الأول: العنوان ولغة الكتابة */}
                       <div className="space-y-4">
                         <div className="space-y-1.5">
-                          <label className="block text-sm font-bold text-gray-700 dark:text-gray-300">عنوان الامتحان</label>
+                          <label className="block text-sm font-bold text-gray-300">عنوان الامتحان</label>
                           <div className="relative">
                             <input
                               type="text"
                               value={exam.title}
                               onChange={(e) => handleExamDataChange("title", e.target.value)}
-                              className="w-full pl-4 pr-10 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-medium placeholder:text-gray-400"
+                              className="w-full pl-4 pr-10 py-3 bg-gray-700 border border-gray-600 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-medium placeholder:text-gray-400"
                               placeholder="مثال: امتحان أساسيات البرمجة - الفصل الثاني"
                             />
                             <Edit3 className="w-5 h-5 text-gray-400 absolute left-auto right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1334,14 +1333,14 @@ const ExamSystem = () => {
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="block text-sm font-bold text-gray-700 dark:text-gray-300">لغة وتوجيه الأسئلة</label>
+                          <label className="block text-sm font-bold text-gray-300">لغة وتوجيه الأسئلة</label>
                           <button
                             type="button"
                             onClick={handleDir}
-                            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-650 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white transition-all font-semibold shadow-sm"
+                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-600 border border-gray-600 rounded-xl text-slate-100 transition-all font-semibold shadow-sm"
                           >
                             <span>{dirValue === "rtl" ? "العربية (يمين إلى اليسار)" : "English (Left to Right)"}</span>
-                            <span className="bg-white dark:bg-gray-800 px-3 py-1 rounded-lg border border-gray-200 dark:border-gray-600 text-xs shadow-sm">📝 تبديل الاتجاه</span>
+                            <span className="bg-gray-800 px-3 py-1 rounded-lg border border-gray-600 text-xs shadow-sm">📝 تبديل الاتجاه</span>
                           </button>
                         </div>
                       </div>
@@ -1349,30 +1348,30 @@ const ExamSystem = () => {
                       {/* العمود الثاني: التوقيت عبر النافذة المنبثقة البوب أب */}
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <label className="block text-sm font-bold text-gray-700 dark:text-gray-300">جدولة مواعيد الامتحان (البداية والنهاية)</label>
+                          <label className="block text-sm font-bold text-gray-300">جدولة مواعيد الامتحان (البداية والنهاية)</label>
                           <button
                             type="button"
                             onClick={() => setIsDateModalOpen(true)}
-                            className="w-full p-4 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 dark:from-indigo-950/40 dark:to-purple-950/40 border-2 border-indigo-200 dark:border-indigo-800 rounded-2xl transition-all shadow-sm hover:shadow text-right group flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                            className="w-full p-4 bg-linear-to-r hover:hover:from-indigo-950/40 to-purple-950/40 border-2 border-indigo-800 rounded-2xl transition-all shadow-sm hover:shadow text-right group flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                              <div className="w-12 h-12 rounded-xl bg-indigo-600 text-slate-100 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                 <Calendar className="w-6 h-6" />
                               </div>
                               <div>
-                                <p className="font-extrabold text-gray-900 dark:text-white text-base">تحديد / تعديل مواعيد البدء والإغلاق</p>
-                                <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">
+                                <p className="font-extrabold text-slate-100 text-base">تحديد / تعديل مواعيد البدء والإغلاق</p>
+                                <p className="text-xs text-gray-300 mt-0.5">
                                   {exam.startAt && exam.closeAt ? (
                                     <span>
-                                      البداية: <strong className="text-indigo-600 dark:text-indigo-400">{exam.startAt.replace('T', ' ')}</strong> | النهاية: <strong className="text-purple-600 dark:text-purple-400">{exam.closeAt.replace('T', ' ')}</strong>
+                                      البداية: <strong className="text-indigo-400">{exam.startAt.replace('T', ' ')}</strong> | النهاية: <strong className="text-purple-400">{exam.closeAt.replace('T', ' ')}</strong>
                                     </span>
                                   ) : (
-                                    <span className="text-amber-600 dark:text-amber-400 font-bold">لم يتم تحديد المواعيد بعد - اضغط هنا لتحديدها عبر البوب أب</span>
+                                    <span className="text-amber-400 font-bold">لم يتم تحديد المواعيد بعد - اضغط هنا لتحديدها عبر البوب أب</span>
                                   )}
                                 </p>
                               </div>
                             </div>
-                            <span className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-sm group-hover:bg-indigo-700 transition flex items-center gap-1 self-start sm:self-center">
+                            <span className="px-4 py-2 text-slate-100 rounded-xl text-xs font-bold shadow-sm group-hover:bg-indigo-700 transition flex items-center gap-1 self-start sm:self-center">
                               فتح نافذة المواعيد ✨
                             </span>
                           </button>
@@ -1381,7 +1380,7 @@ const ExamSystem = () => {
                         {/* مؤشر حساب المدة التلقائي بشكل احترافي */}
                         <div className="transition-all duration-300">
                           {calculatedDuration > 0 ? (
-                            <div className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-emerald-800 dark:text-emerald-300">
+                            <div className="flex items-center gap-3 p-3 bg-emerald-950/20 border border-emerald-800 rounded-xl text-emerald-300">
                               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
                               <div className="text-sm">
                                 <span className="font-bold">مدة الاختبار التلقائية: {calculatedDuration} دقيقة</span>
@@ -1391,12 +1390,12 @@ const ExamSystem = () => {
                               </div>
                             </div>
                           ) : exam.startAt && exam.closeAt && new Date(exam.startAt) >= new Date(exam.closeAt) ? (
-                            <div className="flex items-center gap-3 p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800 rounded-xl text-rose-800 dark:text-rose-300">
+                            <div className="flex items-center gap-3 p-3 bg-rose-950/20 border border-rose-800 rounded-xl text-rose-300">
                               <span className="w-2.5 h-2.5 rounded-full bg-rose-500 flex-shrink-0" />
                               <span className="text-sm font-bold">⚠️ خطأ: موعد الإغلاق يجب أن يكون بعد موعد البدء.</span>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-3 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-800 dark:text-amber-300">
+                            <div className="flex items-center gap-3 p-3 bg-amber-950/20 border border-amber-800 rounded-xl text-amber-300">
                               <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-bounce flex-shrink-0" />
                               <span className="text-sm font-semibold">تنبيه: سيتم حساب مدة الامتحان تلقائياً عند تحديد مواعيد البدء والإغلاق.</span>
                             </div>
@@ -1408,66 +1407,66 @@ const ExamSystem = () => {
 
                   {/* إحصائيات سريعة للتحقق */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                    <div className="bg-linear-to-br from-indigo-500 to-indigo-600 text-slate-100 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                       <div>
                         <p className="text-xs opacity-80 font-medium">إجمالي الدرجات</p>
                         <p className="text-2xl font-black mt-1">{totalMarks} درجة</p>
                       </div>
-                      <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                        <Award className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 rounded-xl bg-slate-800/20 flex items-center justify-center">
+                        <Award className="w-5 h-5 text-slate-100" />
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                    <div className="bg-linear-to-br from-emerald-500 to-teal-600 text-slate-100 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                       <div>
                         <p className="text-xs opacity-80 font-medium">الأسئلة المضافة</p>
                         <p className="text-2xl font-black mt-1">{exam.questions?.length || 0} سؤال</p>
                       </div>
-                      <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                        <BookOpen className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 rounded-xl bg-slate-800/20 flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-slate-100" />
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-purple-500 to-pink-600 text-white p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                    <div className="bg-linear-to-br from-purple-500 to-pink-600 text-slate-100 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                       <div>
                         <p className="text-xs opacity-80 font-medium">الحالة الحالية</p>
                         <p className="text-xl font-bold mt-1.5">
                           {exam.status === 'published' ? 'منشور للطلاب' : exam.status === 'archived' ? 'مؤرشف' : 'مسودة مؤقتة'}
                         </p>
                       </div>
-                      <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                        <PlayCircle className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 rounded-xl bg-slate-800/20 flex items-center justify-center">
+                        <PlayCircle className="w-5 h-5 text-slate-100" />
                       </div>
                     </div>
                   </div>
 
                    {/* شريط إجراءات الحالة */}
-                  <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+                  <div className="bg-gray-800 p-4 rounded-2xl border border-gray-700 flex flex-col gap-4">
                     {/* ✅ تحذير ظاهر لو الامتحان بدون مواعيد */}
                     {(!exam.startAt || !exam.closeAt) && (
-                      <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-700 rounded-xl">
-                        <span className="text-amber-600 dark:text-amber-400 text-lg flex-shrink-0">⚠️</span>
+                      <div className="flex items-start gap-3 p-3 bg-amber-950/30 border border-amber-700 rounded-xl">
+                        <span className="text-amber-400 text-lg flex-shrink-0">⚠️</span>
                         <div>
-                          <p className="font-bold text-amber-800 dark:text-amber-200 text-sm">تنبيه: لم تُحدَّد مواعيد الامتحان</p>
-                          <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">لن يتمكن الطلاب من الدخول إلى الامتحان حتى تُحدِّد موعدَي البداية والإغلاق.</p>
+                          <p className="font-bold text-amber-200 text-sm">تنبيه: لم تُحدَّد مواعيد الامتحان</p>
+                          <p className="text-xs text-amber-300 mt-0.5">لن يتمكن الطلاب من الدخول إلى الامتحان حتى تُحدِّد موعدَي البداية والإغلاق.</p>
                         </div>
                       </div>
                     )}
                     {(exam.closeAt && new Date(exam.closeAt) <= new Date()) && (
-                      <div className="flex items-start gap-3 p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-300 dark:border-rose-700 rounded-xl">
-                        <span className="text-rose-600 dark:text-rose-400 text-lg flex-shrink-0">🔴</span>
+                      <div className="flex items-start gap-3 p-3 bg-rose-950/30 border border-rose-700 rounded-xl">
+                        <span className="text-rose-400 text-lg flex-shrink-0">🔴</span>
                         <div>
-                          <p className="font-bold text-rose-800 dark:text-rose-200 text-sm">تنبيه: موعد إغلاق الامتحان في الماضي</p>
-                          <p className="text-xs text-rose-700 dark:text-rose-300 mt-0.5">الامتحان انتهى وقته. لن يتمكن أي طالب من دخوله حتى لو كان منشوراً.</p>
+                          <p className="font-bold text-rose-200 text-sm">تنبيه: موعد إغلاق الامتحان في الماضي</p>
+                          <p className="text-xs text-rose-300 mt-0.5">الامتحان انتهى وقته. لن يتمكن أي طالب من دخوله حتى لو كان منشوراً.</p>
                         </div>
                       </div>
                     )}
                     <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-gray-500 dark:text-gray-400">حالة النشر:</span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${exam.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' :
-                        exam.status === 'archived' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300' :
-                          'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
+                      <span className="text-sm font-bold text-gray-400">حالة النشر:</span>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${exam.status === 'published' ? 'bg-emerald-950 text-emerald-300' :
+                        exam.status === 'archived' ? 'bg-rose-950 text-rose-300' :
+                          'bg-amber-950 text-amber-300'
                         }`}>
                         {exam.status === 'published' ? 'نشط الآن' : exam.status === 'archived' ? 'مؤرشف ومحجوب' : 'قيد التجهيز'}
                       </span>
@@ -1479,14 +1478,14 @@ const ExamSystem = () => {
                         onClick={() => updateExamStatus('published')}
                         disabled={!exam.startAt || !exam.closeAt || !exam.questions?.length}
                         title={!exam.startAt || !exam.closeAt ? 'يجب تحديد مواعيد الامتحان أولاً' : !exam.questions?.length ? 'يجب إضافة أسئلة أولاً' : 'نشر الامتحان'}
-                        className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                        className="px-5 py-2.5 rounded-xl hover:disabled:bg-gray-400 disabled:cursor-not-allowed text-slate-100 text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                       >
                         <PlayCircle className="w-4 h-4" /> نشر الامتحان
                       </button>
                       <button
                         type="button"
                         onClick={() => updateExamStatus('archived')}
-                        className="px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-bold transition-all flex items-center gap-2 border dark:border-gray-600"
+                        className="px-5 py-2.5 rounded-xl hover:bg-gray-600 text-gray-200 text-sm font-bold transition-all flex items-center gap-2 border border-gray-600"
                       >
                         <Archive className="w-4 h-4" /> أرشفة الامتحان
                       </button>
@@ -1502,31 +1501,31 @@ const ExamSystem = () => {
 
       {/* رسالة ترحيب عند عدم وجود امتحان */}
       {!exam && !loading && (
-        <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-          <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
-            <Edit3 className="w-10 h-10 text-white" />
+        <div className="text-center py-16 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
+          <div className="w-20 h-20 mx-auto mb-4 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+            <Edit3 className="w-10 h-10 text-slate-100" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">مرحباً بك!</h2>
-          <p className="text-gray-600 dark:text-gray-400">اختر امتحانًا من القائمة أو أنشئ واحدًا جديدًا لبدء الإدارة والتحليل.</p>
+          <h2 className="text-3xl font-bold text-slate-100 mb-2">مرحباً بك!</h2>
+          <p className="text-gray-400">اختر امتحانًا من القائمة أو أنشئ واحدًا جديدًا لبدء الإدارة والتحليل.</p>
         </div>
       )}
 
       {exam && activeTab === "setup" && (
         <>
           {/* قسم تعيين المجموعة */}
-          <div className="bg-gradient-to-br from-indigo-50/60 to-purple-50/60 dark:from-indigo-950/10 dark:to-purple-950/10 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-900/60 shadow-sm mb-8">
-            <h2 className="text-lg font-bold text-indigo-950 dark:text-indigo-200 flex items-center gap-2 mb-4">
-              <Users className="w-5.5 h-5.5 text-indigo-600 dark:text-indigo-400" />
+          <div className="bg-linear-to-br from-indigo-950/10 to-purple-950/10 p-6 rounded-2xl border border-indigo-900/60 shadow-sm mb-8">
+            <h2 className="text-lg font-bold text-indigo-200 flex items-center gap-2 mb-4">
+              <Users className="w-5.5 h-5.5 text-indigo-400" />
               الخطوة الأخيرة: تعيين المجموعة المستهدفة
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">اختر المجموعة الدراسية التي ترغب في توجيه هذا الاختبار إليها مباشرة.</p>
+            <p className="text-sm text-gray-400 mb-4">اختر المجموعة الدراسية التي ترغب في توجيه هذا الاختبار إليها مباشرة.</p>
 
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1 relative">
                 <select
                   value={selectedGroup}
                   onChange={(e) => setSelectedGroup(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition appearance-none"
+                  className="w-full px-4 py-3 border border-gray-600 rounded-xl bg-gray-800 text-slate-100 font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition appearance-none"
                 >
                   <option value="">-- اختر مجموعة الطلاب --</option>
                   {groups.map((g) => (
@@ -1541,7 +1540,7 @@ const ExamSystem = () => {
                 type="button"
                 onClick={assignExamToGroup}
                 disabled={!selectedGroup || isAssigning}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 text-white px-7 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition duration-200 shadow-sm hover:shadow"
+                className="bg-linear-to-r hover:hover:disabled:from-gray-300 disabled:to-gray-400 text-slate-100 px-7 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition duration-200 shadow-sm hover:shadow"
               >
                 {isAssigning ? (
                   <>
@@ -1557,32 +1556,32 @@ const ExamSystem = () => {
           </div>
 
           {/* إضافة سؤال جديد */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-250 dark:border-gray-700 p-6 mb-8">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2 mb-5">
-              <Plus className="w-6 h-6 text-emerald-600 dark:text-emerald-400" /> إضافة سؤال جديد للاختبار
+          <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-700 p-6 mb-8">
+            <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2 mb-5">
+              <Plus className="w-6 h-6 text-emerald-400" /> إضافة سؤال جديد للاختبار
             </h2>
 
             <div className="space-y-5">
               <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">نص السؤال</label>
+                <label className="block text-sm font-semibold text-gray-300">نص السؤال</label>
                 <textarea
                   dir={dirValue}
                   value={newQuestion.text}
                   onChange={(e) => setNewQuestion(p => ({ ...p, text: e.target.value }))}
-                  className={`w-full p-4 border rounded-xl bg-gray-50/50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none font-medium ${
+                  className={`w-full p-4 border rounded-xl bg-gray-700 text-slate-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none font-medium ${
                     newQuestionDuplicate
-                      ? 'border-amber-400 dark:border-amber-600 ring-1 ring-amber-300'
-                      : 'border-gray-300 dark:border-gray-600'
+                      ? 'border-amber-600 ring-1 ring-amber-300'
+                      : 'border-gray-600'
                   }`}
                   rows="3"
                   placeholder={dirValue === "rtl" ? "اكتب نص السؤال الإملائي هنا..." : "Type the question content here..."}
                 />
                 {newQuestionDuplicate && (
-                  <div className="flex items-start gap-2.5 p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 rounded-xl">
-                    <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-2.5 p-3 bg-amber-950/40 border border-amber-700 rounded-xl">
+                    <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-xs font-extrabold text-amber-800 dark:text-amber-200">⚠️ تنبيه: هذا السؤال مكرر!</p>
-                      <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
+                      <p className="text-xs font-extrabold text-amber-200">⚠️ تنبيه: هذا السؤال مكرر!</p>
+                      <p className="text-xs text-amber-300 mt-0.5">
                         موجود بالفعل في {newQuestionDuplicate.type === 'current' ? 'نفس هذا الامتحان' : `امتحان آخر: "${newQuestionDuplicate.examTitle}"`}.
                       </p>
                     </div>
@@ -1591,18 +1590,18 @@ const ExamSystem = () => {
               </div>
 
               {/* قسم صورة السؤال الجديد */}
-              <div className="space-y-2 p-4 bg-gray-700 dark:bg-gray-750/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-                  <Image size={16} className="text-indigo-600 dark:text-indigo-400" /> إدراج صورة للسؤال (اختياري)
+              <div className="space-y-2 p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                <label className="block text-sm font-semibold text-gray-300 flex items-center gap-1.5">
+                  <Image size={16} className="text-indigo-400" /> إدراج صورة للسؤال (اختياري)
                 </label>
 
                 {newQuestion.image ? (
                   <div className="relative group inline-block">
-                    <img src={newQuestion.image} alt="Question preview" className="max-h-48 rounded-xl object-contain border border-gray-300 dark:border-gray-600 shadow-sm bg-white dark:bg-gray-900" />
+                    <img src={newQuestion.image} alt="Question preview" className="max-h-48 rounded-xl object-contain border border-gray-600 shadow-sm bg-gray-900" />
                     <button
                       type="button"
                       onClick={() => setNewQuestion(p => ({ ...p, image: "" }))}
-                      className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-md transition"
+                      className="absolute top-2 right-2 hover:bg-red-700 text-slate-100 p-1.5 rounded-full shadow-md transition"
                       title="حذف الصورة"
                     >
                       <X size={14} />
@@ -1629,7 +1628,7 @@ const ExamSystem = () => {
                     />
                     <label
                       htmlFor="new-question-image-file"
-                      className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/40 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-sm"
+                      className="px-4 py-2 hover:bg-indigo-900/60 text-indigo-300 border border-indigo-700 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-sm"
                     >
                       <Upload size={14} /> رفع صورة من الجهاز
                     </label>
@@ -1639,7 +1638,7 @@ const ExamSystem = () => {
                       value={newQuestion.image || ''}
                       onChange={(e) => setNewQuestion(p => ({ ...p, image: e.target.value }))}
                       placeholder="https://example.com/image.jpg"
-                      className="flex-1 min-w-[200px] px-3.5 py-2 text-xs bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
+                      className="flex-1 min-w-[200px] px-3.5 py-2 text-xs bg-gray-700 text-slate-100 border border-gray-600 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
                     />
                   </div>
                 )}
@@ -1647,13 +1646,13 @@ const ExamSystem = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">درجة هذا السؤال</label>
+                  <label className="block text-sm font-semibold text-gray-300">درجة هذا السؤال</label>
                   <div className="relative">
                     <input
                       type="number"
                       value={newQuestion.marks}
                       onChange={(e) => setNewQuestion(p => ({ ...p, marks: Math.max(0, parseInt(e.target.value) || 0) }))}
-                      className="w-full pl-4 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition font-semibold"
+                      className="w-full pl-4 pr-10 py-2.5 border border-gray-600 rounded-xl bg-gray-700 text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition font-semibold"
                       placeholder="2"
                     />
                     <span className="absolute left-auto right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">درجة</span>
@@ -1662,9 +1661,9 @@ const ExamSystem = () => {
               </div>
 
               {newQuestion.type === 'multiple' && (
-                <div className="space-y-3.5 p-5 bg-gray-50/50 dark:bg-gray-800 rounded-2xl border border-dashed border-gray-300 dark:border-gray-600">
+                <div className="space-y-3.5 p-5 bg-gray-800 rounded-2xl border border-dashed border-gray-600">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-bold text-gray-700 dark:text-gray-300">خيارات الإجابة:</span>
+                    <span className="text-sm font-bold text-gray-300">خيارات الإجابة:</span>
                     <span className="text-xs text-gray-400">حدد الدائرة الخضراء لتحديد الإجابة الصحيحة | اسحب الخيار لتغيير ترتيبه</span>
                   </div>
 
@@ -1695,14 +1694,14 @@ const ExamSystem = () => {
                           setNewDragIdx(null);
                           setNewDragOverIdx(null);
                         }}
-                        className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 cursor-move ${newDragIdx === i ? 'opacity-40 border-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' :
-                          newDragOverIdx === i ? 'border-indigo-500 ring-2 ring-indigo-400 bg-indigo-50/60 dark:bg-indigo-900/20' :
+                        className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 cursor-move ${newDragIdx === i ? 'opacity-40 border-indigo-400 bg-indigo-900/30' :
+                          newDragOverIdx === i ? 'border-indigo-500 ring-2 ring-indigo-400 bg-indigo-900/20' :
                             newQuestion.correctAnswer === i
-                              ? 'border-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20 dark:border-emerald-800 shadow-sm'
-                              : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                              ? 'bg-emerald-950/20 border-emerald-800 shadow-sm'
+                              : 'border-gray-700 bg-gray-800'
                           }`}
                       >
-                        <div className="text-gray-400 hover:text-indigo-600 cursor-grab active:cursor-grabbing p-1 flex-shrink-0" title="اسحب لإعادة الترتيب">
+                        <div className="hover:text-indigo-600 cursor-grab active:cursor-grabbing p-1 flex-shrink-0" title="اسحب لإعادة الترتيب">
                           <GripVertical size={18} />
                         </div>
 
@@ -1722,7 +1721,7 @@ const ExamSystem = () => {
                             newOpts[i] = e.target.value;
                             setNewQuestion(p => ({ ...p, options: newOpts }));
                           }}
-                          className="flex-1 bg-transparent border-0 focus:ring-0 p-0 text-gray-900 dark:text-white placeholder-gray-400 font-medium focus:outline-none"
+                          className="flex-1 bg-transparent border-0 focus:ring-0 p-0 text-slate-100 placeholder-gray-400 font-medium focus:outline-none"
                           placeholder={`${dirValue === "rtl" ? "اكتب خياراً" : "option"} ${i + 1}`}
                         />
 
@@ -1734,7 +1733,7 @@ const ExamSystem = () => {
                               const { options: newOptions, correctAnswer: newCorrect } = reorderOptions(newQuestion.options, newQuestion.correctAnswer, i, i - 1);
                               setNewQuestion(prev => ({ ...prev, options: newOptions, correctAnswer: newCorrect }));
                             }}
-                            className="p-1 text-gray-400 hover:text-indigo-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="p-1 hover:text-indigo-600 hover:bg-gray-700 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                             title="تحريك لأعلى"
                           >
                             <ChevronUp size={15} />
@@ -1746,7 +1745,7 @@ const ExamSystem = () => {
                               const { options: newOptions, correctAnswer: newCorrect } = reorderOptions(newQuestion.options, newQuestion.correctAnswer, i, i + 1);
                               setNewQuestion(prev => ({ ...prev, options: newOptions, correctAnswer: newCorrect }));
                             }}
-                            className="p-1 text-gray-400 hover:text-indigo-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="p-1 hover:text-indigo-600 hover:bg-gray-700 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                             title="تحريك لأسفل"
                           >
                             <ChevronDown size={15} />
@@ -1757,7 +1756,7 @@ const ExamSystem = () => {
                           <button
                             type="button"
                             onClick={() => setNewQuestion(p => ({ ...p, options: p.options.filter((_, idx) => idx !== i) }))}
-                            className="text-gray-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-750 transition flex-shrink-0"
+                            className="hover:text-red-500 p-1.5 rounded-lg hover:bg-gray-800 transition flex-shrink-0"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -1769,7 +1768,7 @@ const ExamSystem = () => {
                   <button
                     type="button"
                     onClick={() => setNewQuestion(p => ({ ...p, options: [...p.options, ""] }))}
-                    className="text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-bold flex items-center gap-1 mt-2.5 transition"
+                    className="text-sm hover:text-indigo-300 font-bold flex items-center gap-1 mt-2.5 transition"
                   >
                     <Plus className="w-4 h-4" /> إضافة خيار جديد للمقترحات
                   </button>
@@ -1779,7 +1778,7 @@ const ExamSystem = () => {
               <button
                 type="button"
                 onClick={addQuestion}
-                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-7 py-3 rounded-xl font-extrabold flex items-center justify-center gap-2 transition transform hover:scale-105 shadow-sm hover:shadow"
+                className="w-full sm:w-auto bg-linear-to-r hover:from-emerald-600 hover:to-green-700 text-slate-100 px-7 py-3 rounded-xl font-extrabold flex items-center justify-center gap-2 transition transform hover:scale-105 shadow-sm hover:shadow"
               >
                 <Plus className="w-5 h-5" /> إضافة السؤال إلى بنك الأسئلة
               </button>
@@ -1787,14 +1786,14 @@ const ExamSystem = () => {
           </div>
 
           {/* شريط الدرجة الموحدة لجميع الأسئلة */}
-          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/30 dark:to-indigo-950/30 p-4 rounded-2xl border border-purple-200 dark:border-purple-800 shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-linear-to-r from-purple-950/30 to-indigo-950/30 p-4 rounded-2xl border border-purple-800 shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-purple-600 text-white rounded-xl shadow-sm">
+              <div className="p-2.5 bg-purple-600 text-slate-100 rounded-xl shadow-sm">
                 <Layers className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-extrabold text-gray-900 dark:text-white text-sm">تطبيق درجة موحدة لكافة أسئلة الامتحان</h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">تغيير درجة جميع الأسئلة الحالية دفعة واحدة من مكان واحد.</p>
+                <h4 className="font-extrabold text-slate-100 text-sm">تطبيق درجة موحدة لكافة أسئلة الامتحان</h4>
+                <p className="text-xs text-gray-400">تغيير درجة جميع الأسئلة الحالية دفعة واحدة من مكان واحد.</p>
               </div>
             </div>
 
@@ -1804,14 +1803,14 @@ const ExamSystem = () => {
                 min="0"
                 value={unifiedMarks}
                 onChange={(e) => setUnifiedMarks(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-24 px-3 py-2 text-center bg-white dark:bg-gray-800 border border-purple-300 dark:border-purple-600 rounded-xl font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-purple-500 shadow-sm"
+                className="w-24 px-3 py-2 text-center bg-gray-800 border border-purple-600 rounded-xl font-bold text-slate-100 outline-none focus:ring-2 focus:ring-purple-500 shadow-sm"
                 placeholder="الدرجة"
               />
               <button
                 type="button"
                 onClick={applyUnifiedMarks}
                 disabled={!exam.questions || exam.questions.length === 0}
-                className="px-5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                className="px-5 py-2 bg-linear-to-r hover:from-purple-700 hover:to-indigo-700 text-slate-100 font-bold text-xs rounded-xl shadow-sm hover:shadow transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 تطبيق على كافة الأسئلة ({exam.questions?.length || 0})
               </button>
@@ -1819,9 +1818,9 @@ const ExamSystem = () => {
           </div>
 
           {/* قائمة الأسئلة */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-250 dark:border-gray-700 overflow-hidden">
-            <div className="p-5 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+          <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-700 overflow-hidden">
+            <div className="p-5 border-b border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <h2 className="text-xl font-bold text-slate-100">
                 الأسئلة الحالية <span className="text-indigo-600">({exam.questions?.length || 0})</span>
               </h2>
               {status.type !== 'idle' && (
@@ -1837,10 +1836,10 @@ const ExamSystem = () => {
               )}
             </div>
 
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="divide-y divide-gray-700">
               {exam.questions?.length > 0 ? (
                 exam.questions.map((question, index) => (
-                  <div key={question.id} className="p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                  <div key={question.id} className="p-5 hover:bg-gray-700/50 transition">
                     {editingQuestionId === question.id ? (
                       <QuestionEditor
                         dirValue={dirValue}
@@ -1860,7 +1859,7 @@ const ExamSystem = () => {
                   </div>
                 ))
               ) : (
-                <div className="p-12 text-center text-gray-500 dark:text-gray-400">
+                <div className="p-12 text-center text-gray-400">
                   <BookOpen className="w-16 h-16 mx-auto mb-3 opacity-50" />
                   <p className="text-lg font-medium">لا توجد أسئلة بعد</p>
                   <p className="text-sm mt-1">ابدأ بإضافة سؤال جديد من الأعلى</p>
@@ -1876,10 +1875,10 @@ const ExamSystem = () => {
           {resultsLoading ? (
             <div className="text-center py-12">
               <Loader className="animate-spin mx-auto text-indigo-600 mb-3" size={40} />
-              <p className="text-gray-650 dark:text-gray-400">جاري تحميل نتائج الطلاب...</p>
+              <p className="text-gray-400">جاري تحميل نتائج الطلاب...</p>
             </div>
           ) : resultsError ? (
-            <div className="bg-red-105 dark:bg-red-900/20 text-red-700 dark:text-red-400 p-4 rounded-xl border border-red-200 dark:border-red-800">
+            <div className="bg-red-900/20 text-red-400 p-4 rounded-xl border border-red-800">
               {resultsError}
             </div>
           ) : (
@@ -1913,29 +1912,29 @@ const ExamSystem = () => {
               </div>
 
               {/* لوحة أداء الأسئلة التفصيلية */}
-              <details className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                <summary className="p-5 text-lg font-bold text-gray-800 dark:text-gray-100 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition flex items-center justify-between">
+              <details className="bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-700">
+                <summary className="p-5 text-lg font-bold text-gray-100 cursor-pointer hover:bg-gray-700/50 transition flex items-center justify-between">
                   <span>تحليل أداء أسئلة هذا الامتحان 📊</span>
                   <CheckCircle className="text-green-500" size={24} />
                 </summary>
-                <div className="p-5 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/20">
+                <div className="p-5 border-t border-gray-700 bg-gray-900/20">
                   <QuestionAnalysisDashboard examId={examId} />
                 </div>
               </details>
 
               {/* بانر زر إضافة الأوائل التلقائي للوحة الشرف */}
               {results.length > 0 && (
-                <div className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-yellow-500/10 border-2 border-amber-500/30 dark:border-amber-500/20 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+                <div className="bg-linear-to-r from-amber-500/10 via-orange-500/10 to-yellow-500/10 border-2 border-amber-500/20 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
                   <div className="flex items-center gap-3.5 text-right">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shadow-lg shadow-amber-500/30 shrink-0">
+                    <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center text-slate-100 shadow-lg shadow-amber-500/30 shrink-0">
                       <Trophy className="w-6 h-6" />
                     </div>
                     <div>
-                      <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      <h4 className="text-base sm:text-lg font-bold text-slate-100 flex items-center gap-2">
                         <span>لوحة الشرف وأوائل الاختبار</span>
                         <Sparkles className="w-4 h-4 text-amber-500" />
                       </h4>
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-0.5">
+                      <p className="text-xs sm:text-sm text-gray-300 mt-0.5">
                         يمكنك إضافة وتحديث الأوائل تلقائياً في قائمة أوائل الاختبارات بضغطة واحدة وبأعلى دقة!
                       </p>
                     </div>
@@ -1943,7 +1942,7 @@ const ExamSystem = () => {
                   <button
                     type="button"
                     onClick={handleOpenTopStudentsModal}
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl font-black text-sm text-white bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl font-black text-sm text-slate-100 bg-linear-to-r via-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
                   >
                     <Trophy className="w-4 h-4 text-yellow-200" />
                     <span>إضافة الأوائل تلقائياً لقائمة الأوائل 🏆</span>
@@ -1953,13 +1952,13 @@ const ExamSystem = () => {
 
               {/* البحث والفلترة */}
               {results.length > 0 && (
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-4 items-center">
+                <div className="bg-gray-800 p-4 rounded-xl shadow-md border border-gray-700 flex flex-col md:flex-row gap-4 items-center">
                   <div className="relative flex-grow w-full">
                     <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                     <input
                       type="text"
                       placeholder="بحث باسم الطالب..."
-                      className="w-full pr-10 p-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                      className="w-full pr-10 p-2.5 border border-gray-600 rounded-xl bg-gray-700 text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none transition"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -1968,7 +1967,7 @@ const ExamSystem = () => {
                   <div className="flex items-center gap-2 w-full md:w-auto">
                     <Filter className="text-gray-400" size={18} />
                     <select
-                      className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none min-w-[150px] flex-grow transition"
+                      className="p-2.5 border border-gray-600 rounded-xl bg-gray-700 text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none min-w-[150px] flex-grow transition"
                       value={resultsSelectedGroup}
                       onChange={(e) => setResultsSelectedGroup(e.target.value)}
                     >
@@ -1979,23 +1978,23 @@ const ExamSystem = () => {
                     </select>
                   </div>
 
-                  <div className="text-sm text-gray-550 dark:text-gray-400 whitespace-nowrap">
+                  <div className="text-sm text-gray-400 whitespace-nowrap">
                     نتائج البحث: <strong>{sortedResults.length}</strong>
                   </div>
                 </div>
               )}
 
               {/* قائمة ترتيب أداء الطلاب */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <div className="p-5 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-750 flex flex-wrap items-center justify-between gap-3">
-                  <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+              <div className="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 overflow-hidden">
+                <div className="p-5 border-b border-gray-700 bg-gray-800 flex flex-wrap items-center justify-between gap-3">
+                  <h3 className="text-xl font-bold text-slate-100">
                     ترتيب أداء الطلاب المكملين للامتحان
                   </h3>
                   {results.length > 0 && (
                     <button
                       type="button"
                       onClick={handleOpenTopStudentsModal}
-                      className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-700 dark:text-amber-300 border border-amber-500/30 flex items-center gap-2 transition cursor-pointer"
+                      className="px-4 py-2 rounded-xl text-xs font-bold hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 flex items-center gap-2 transition cursor-pointer"
                     >
                       <Trophy className="w-4 h-4 text-amber-500" />
                       <span>تصدير للأوائل 🏆</span>
@@ -2011,21 +2010,21 @@ const ExamSystem = () => {
                   <div className="w-full">
                     {/* عرض الجدول للشاشات الكبيرة */}
                     <div className="hidden lg:block overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead className="bg-gray-50 dark:bg-gray-700/50">
+                      <table className="min-w-full divide-y divide-gray-700">
+                        <thead className="bg-gray-700/50">
                           <tr>
-                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">الترتيب</th>
-                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">اسم الطالب</th>
-                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">الدرجة</th>
-                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">النسبة</th>
-                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">وقت الانتهاء</th>
+                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">الترتيب</th>
+                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">اسم الطالب</th>
+                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">الدرجة</th>
+                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">النسبة</th>
+                            <th className="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">وقت الانتهاء</th>
                           </tr>
                         </thead>
-                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <tbody className="bg-gray-800 divide-y divide-gray-700">
                           {sortedResults.map((result, index) => (
                             <tr
                               key={result.id}
-                              className="hover:bg-indigo-50/40 dark:hover:bg-indigo-900/10 transition duration-150 cursor-pointer"
+                              className="hover:bg-indigo-900/10 transition duration-150 cursor-pointer"
                               onClick={() =>
                                 setSelectedStudent({
                                   ...result,
@@ -2038,20 +2037,20 @@ const ExamSystem = () => {
                                 <RankBadge rank={index + 1} />
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-base font-semibold text-gray-900 dark:text-white">{result.studentName}</div>
-                                <div className="text-sm text-gray-500 dark:text-gray-400">المجموعة: {result.group}</div>
+                                <div className="text-base font-semibold text-slate-100">{result.studentName}</div>
+                                <div className="text-sm text-gray-400">المجموعة: {result.group}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">{result.score} / {exam?.totalMarks || "N/A"}</span>
+                                <span className="text-base font-bold text-indigo-400">{result.score} / {exam?.totalMarks || "N/A"}</span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="text-base font-bold text-green-600 dark:text-green-400">
+                                <span className="text-base font-bold text-green-400">
                                   {exam?.totalMarks
                                     ? ((result.score / exam.totalMarks) * 100).toFixed(1) + "%"
                                     : "N/A"}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                                 {result.finishedAt
                                   ? result.finishedAt.toLocaleString("ar-EG")
                                   : "غير محدد"}
@@ -2067,7 +2066,7 @@ const ExamSystem = () => {
                       {sortedResults.map((result, index) => (
                         <div
                           key={result.id}
-                          className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition cursor-pointer"
+                          className="bg-gray-900 rounded-xl shadow-md p-4 border border-gray-700 hover:shadow-lg transition cursor-pointer"
                           onClick={() =>
                             setSelectedStudent({
                               ...result,
@@ -2076,24 +2075,24 @@ const ExamSystem = () => {
                             })
                           }
                         >
-                          <div className="flex items-center justify-between mb-3 border-b dark:border-gray-700 pb-2">
+                          <div className="flex items-center justify-between mb-3 border-b border-gray-700 pb-2">
                             <RankBadge rank={index + 1} />
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <span className="text-xs text-gray-400">
                               {result.finishedAt
                                 ? result.finishedAt.toLocaleString("ar-EG")
                                 : "غير محدد"}
                             </span>
                           </div>
-                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{result.studentName}</h3>
-                          <p className="text-sm text-indigo-650 dark:text-indigo-400 mb-3">المجموعة: {result.group}</p>
-                          <div className="flex items-center justify-between pt-2 border-t border-dashed dark:border-gray-700 mt-2">
+                          <h3 className="text-lg font-bold text-slate-100">{result.studentName}</h3>
+                          <p className="text-sm text-indigo-400 mb-3">المجموعة: {result.group}</p>
+                          <div className="flex items-center justify-between pt-2 border-t border-dashed border-gray-700 mt-2">
                             <div className="flex flex-col">
-                              <span className="text-xs text-gray-500 dark:text-gray-400">الدرجة</span>
-                              <span className="text-base font-bold text-indigo-650 dark:text-indigo-400">{result.score} / {exam?.totalMarks || "N/A"}</span>
+                              <span className="text-xs text-gray-400">الدرجة</span>
+                              <span className="text-base font-bold text-indigo-400">{result.score} / {exam?.totalMarks || "N/A"}</span>
                             </div>
                             <div className="flex flex-col items-end">
-                              <span className="text-xs text-gray-500 dark:text-gray-400">النسبة</span>
-                              <span className="text-base font-bold text-green-600 dark:text-green-400">
+                              <span className="text-xs text-gray-400">النسبة</span>
+                              <span className="text-base font-bold text-green-400">
                                 {exam?.totalMarks
                                   ? ((result.score / exam.totalMarks) * 100).toFixed(1) + "%"
                                   : "N/A"}
@@ -2110,8 +2109,8 @@ const ExamSystem = () => {
               {/* ملاحظات الطلاب وتقييمات الصعوبة */}
               {results.length > 0 && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-                    <h3 className="text-xl font-bold text-gray-850 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">
+                  <div className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 className="text-xl font-bold text-slate-100 mb-4 border-b border-gray-700 pb-2">
                       تقييم صعوبة الامتحان من الطلاب
                     </h3>
                     <div className="w-full h-64 flex items-center justify-center">
@@ -2132,16 +2131,16 @@ const ExamSystem = () => {
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-                    <h3 className="text-xl font-bold text-gray-850 dark:text-white mb-4 flex items-center border-b dark:border-gray-700 pb-2">
+                  <div className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 className="text-xl font-bold text-slate-100 mb-4 flex items-center border-b border-gray-700 pb-2">
                       <MessageSquare className="ml-2 text-indigo-600 font-bold" /> ملاحظات الطلاب
                     </h3>
                     <div className="max-h-64 overflow-y-auto space-y-4 pr-2">
                       {feedbackAnalysis.notes.length > 0 ? (
                         feedbackAnalysis.notes.map((item, index) => (
-                          <div key={index} className="bg-gray-50 dark:bg-gray-900/40 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition">
-                            <p className="font-bold text-gray-850 dark:text-gray-250 mb-1">{item.studentName}:</p>
-                            <p className="text-gray-700 dark:text-gray-300 text-sm italic leading-relaxed">"{item.note}"</p>
+                          <div key={index} className="bg-gray-900/40 p-4 rounded-xl border border-gray-700 shadow-sm transition">
+                            <p className="font-bold text-gray-250 mb-1">{item.studentName}:</p>
+                            <p className="text-gray-300 text-sm italic leading-relaxed">"{item.note}"</p>
                           </div>
                         ))
                       ) : (
@@ -2187,18 +2186,18 @@ const ExamSystem = () => {
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
           dir="rtl"
         >
-          <div className="bg-white dark:bg-gray-900 rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+          <div className="bg-gray-900 rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-800 overflow-hidden">
             {/* رأس النافذة */}
-            <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gradient-to-r from-amber-500/10 via-transparent to-transparent">
+            <div className="p-5 border-b border-gray-800 flex items-center justify-between bg-linear-to-r from-amber-500/10 via-transparent to-transparent">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/30">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-100 flex items-center justify-center shadow-md shadow-amber-500/30">
                   <Trophy className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-bold text-slate-100">
                     إضافة الأوائل لقائمة أوائل الاختبار
                   </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-gray-400">
                     تحديث لوحة الشرف لطلاب هذا الاختبار تلقائياً وبأعلى دقة
                   </p>
                 </div>
@@ -2206,7 +2205,7 @@ const ExamSystem = () => {
               <button
                 type="button"
                 onClick={() => setShowTopStudentsModal(false)}
-                className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                className="p-2 hover:text-slate-100 rounded-full hover:bg-gray-800 transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -2215,7 +2214,7 @@ const ExamSystem = () => {
             {/* المحتوى */}
             <div className="p-6 space-y-5 overflow-y-auto flex-1 text-right">
               {publishSuccessMessage && (
-                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-sm font-bold flex items-center gap-3">
+                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-bold flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 shrink-0" />
                   <span>{publishSuccessMessage}</span>
                 </div>
@@ -2223,7 +2222,7 @@ const ExamSystem = () => {
 
               {/* عنوان الاختبار */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">
+                <label className="block text-xs font-bold text-gray-300">
                   عنوان الاختبار في لوحة الشرف:
                 </label>
                 <input
@@ -2231,7 +2230,7 @@ const ExamSystem = () => {
                   value={topTestTitle}
                   onChange={(e) => setTopTestTitle(e.target.value)}
                   placeholder="مثال: امتحان الشهر الأول"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none font-medium"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-700 bg-gray-800 text-slate-100 text-sm focus:ring-2 focus:ring-amber-500 outline-none font-medium"
                 />
               </div>
 
@@ -2239,13 +2238,13 @@ const ExamSystem = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* المجموعة المستهدفة */}
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">
+                  <label className="block text-xs font-bold text-gray-300">
                     المجموعة المستهدفة:
                   </label>
                   <select
                     value={topTargetGroup}
                     onChange={(e) => setTopTargetGroup(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-700 bg-gray-800 text-slate-100 text-sm focus:ring-2 focus:ring-amber-500 outline-none"
                   >
                     <option value="all">كل المجموعات (معالجة كل مجموعة على حدة)</option>
                     {resultsGroups.filter(g => g !== "all").map(g => (
@@ -2256,13 +2255,13 @@ const ExamSystem = () => {
 
                 {/* عدد الأوائل */}
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">
+                  <label className="block text-xs font-bold text-gray-300">
                     معيار اختيار الأوائل:
                   </label>
                   <select
                     value={topCount}
                     onChange={(e) => setTopCount(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 outline-none font-medium"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-700 bg-gray-800 text-slate-100 text-sm focus:ring-2 focus:ring-amber-500 outline-none font-medium"
                   >
                     <option value={3}>أعلى 3 طلاب 🥉</option>
                     <option value={5}>أعلى 5 طلاب ⭐</option>
@@ -2275,28 +2274,28 @@ const ExamSystem = () => {
 
               {/* المعاينة الحية للأوائل */}
               <div className="space-y-3 pt-2">
-                <div className="flex items-center justify-between text-xs font-bold text-gray-700 dark:text-gray-300">
+                <div className="flex items-center justify-between text-xs font-bold text-gray-300">
                   <span>معاينة الطلاب الذين سيتم إضافتهم:</span>
-                  <span className="text-amber-600 dark:text-amber-400">
+                  <span className="text-amber-400">
                     إجمالي المؤهلين: {Object.values(previewTopStudents).reduce((a, b) => a + b.length, 0)} طالب
                   </span>
                 </div>
 
                 <div className="space-y-4 max-h-56 overflow-y-auto pr-1">
                   {Object.keys(previewTopStudents).length === 0 || Object.values(previewTopStudents).every(list => list.length === 0) ? (
-                    <div className="p-6 text-center text-xs text-gray-400 bg-gray-50 dark:bg-gray-800/40 rounded-2xl">
+                    <div className="p-6 text-center text-xs text-gray-400 bg-gray-800/40 rounded-2xl">
                       لا يوجد طلاب مطابقين للمعايير المحددة.
                     </div>
                   ) : (
                     Object.entries(previewTopStudents).map(([grp, sList]) => (
                       sList.length > 0 && (
-                        <div key={grp} className="bg-gray-50 dark:bg-gray-800/50 p-3.5 rounded-2xl border border-gray-200 dark:border-gray-700/60 space-y-2">
-                          <div className="flex items-center justify-between text-xs font-bold border-b dark:border-gray-700/50 pb-2">
-                            <span className="text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                        <div key={grp} className="bg-gray-800/50 p-3.5 rounded-2xl border border-gray-700/60 space-y-2">
+                          <div className="flex items-center justify-between text-xs font-bold border-b border-gray-700/50 pb-2">
+                            <span className="text-indigo-400 flex items-center gap-1.5">
                               <Users className="w-3.5 h-3.5" />
                               مجموعة: {grp}
                             </span>
-                            <span className="text-gray-500 dark:text-gray-400">
+                            <span className="text-gray-400">
                               {sList.length} طالب
                             </span>
                           </div>
@@ -2304,19 +2303,19 @@ const ExamSystem = () => {
                             {sList.map((st, idx) => (
                               <div
                                 key={st.id || idx}
-                                className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-xs"
+                                className="flex items-center justify-between p-2 rounded-xl bg-gray-900 border border-gray-800 text-xs"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
                                   <span className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ${
-                                    idx === 0 ? "bg-amber-400 text-black" : idx === 1 ? "bg-slate-300 text-black" : idx === 2 ? "bg-amber-700 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                                    idx === 0 ? "text-black" : idx === 1 ? "text-black" : idx === 2 ? "text-slate-100" : "bg-gray-700 text-gray-300"
                                   }`}>
                                     {idx + 1}
                                   </span>
-                                  <span className="font-semibold text-gray-800 dark:text-gray-200 truncate">
+                                  <span className="font-semibold text-gray-200 truncate">
                                     {st.studentName}
                                   </span>
                                 </div>
-                                <span className="font-bold text-amber-600 dark:text-amber-400 shrink-0">
+                                <span className="font-bold text-amber-400 shrink-0">
                                   {st.score} درجة
                                 </span>
                               </div>
@@ -2331,11 +2330,11 @@ const ExamSystem = () => {
             </div>
 
             {/* الأزرار */}
-            <div className="p-5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900 flex items-center justify-end gap-3">
+            <div className="p-5 border-t border-gray-800 bg-gray-900 flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setShowTopStudentsModal(false)}
-                className="px-4 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition"
+                className="px-4 py-2.5 text-xs font-bold text-gray-400 hover:bg-gray-800 rounded-xl transition"
               >
                 إلغاء
               </button>
@@ -2343,7 +2342,7 @@ const ExamSystem = () => {
                 type="button"
                 onClick={handlePublishTopStudents}
                 disabled={isPublishingTop || Object.values(previewTopStudents).every(l => l.length === 0)}
-                className="px-6 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 disabled:opacity-50 rounded-xl shadow-lg shadow-amber-500/25 transition flex items-center gap-2 cursor-pointer"
+                className="px-6 py-2.5 text-xs font-bold text-slate-100 bg-linear-to-r via-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:opacity-50 rounded-xl shadow-lg shadow-amber-500/25 transition flex items-center gap-2 cursor-pointer"
               >
                 {isPublishingTop ? (
                   <>

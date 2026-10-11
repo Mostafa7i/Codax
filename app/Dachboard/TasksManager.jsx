@@ -172,7 +172,7 @@ export const DeadlineModal = ({
           <button
             onClick={handleSave}
             disabled={isUpdating || !newDeadline}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-2xl font-bold text-xl hover:shadow-xl disabled:opacity-60 transition flex items-center justify-center gap-3"
+            className="w-full bg-linear-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-2xl font-bold text-xl hover:shadow-xl disabled:opacity-60 transition flex items-center justify-center gap-3"
           >
             {isUpdating ? <Loader2 className="animate-spin" /> : <Save />}
             {isEditingTime ? "تحديث المؤقت" : "حفظ المؤقت والمهمة"}
@@ -577,7 +577,7 @@ export default function TasksManager({ selectedGroup }) {
         )}
       </div>
 
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 rounded-2xl shadow-md flex flex-wrap justify-between items-center gap-4">
+      <div className="bg-linear-to-r from-purple-600 to-indigo-600 text-white p-4 rounded-2xl shadow-md flex flex-wrap justify-between items-center gap-4">
         <div className="flex items-center gap-3">
           <Clock className="w-8 h-8 opacity-90" />
           <div>

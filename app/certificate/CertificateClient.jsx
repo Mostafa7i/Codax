@@ -141,7 +141,7 @@ export default function CertificateClient() {
   // ── Loading ──────────────────────────────────────────────────────────────
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950 p-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-slate-900 via-indigo-950 to-purple-950 p-4">
         <div className="flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-indigo-400 shadow-xl bg-white p-1">
             <img
@@ -162,7 +162,7 @@ export default function CertificateClient() {
   // ── Error ─────────────────────────────────────────────────────────────────
   if (status === "error") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-gray-900 to-gray-950 p-6">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-slate-900 via-gray-900 to-gray-950 p-6">
         <div className="bg-red-950/30 border border-red-500/40 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
           <XCircle size={52} className="text-red-400 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-red-300 mb-2">
@@ -186,7 +186,7 @@ export default function CertificateClient() {
   // ── Invalid ───────────────────────────────────────────────────────────────
   if (status === "invalid") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-red-950 to-gray-950 p-6">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-slate-900 via-red-950 to-gray-950 p-6">
         <div className="bg-gray-900/80 border border-red-500/40 backdrop-blur-sm rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
           <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-6 shadow-xl border-2 border-red-400/30 bg-white p-1">
             <img
@@ -215,7 +215,7 @@ export default function CertificateClient() {
 
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-medium transition-all shadow-lg"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-medium transition-all shadow-lg"
           >
             <Globe size={16} />
             العودة للرئيسية
@@ -228,7 +228,7 @@ export default function CertificateClient() {
   // ── Valid Certificate ─────────────────────────────────────────────────────
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950 flex items-center justify-center p-4 py-12"
+      className="min-h-screen bg-linear-to-br from-slate-900 via-indigo-950 to-purple-950 flex items-center justify-center p-4 py-12"
       dir="rtl"
     >
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -243,8 +243,8 @@ export default function CertificateClient() {
           <div
             className={`p-6 text-center relative ${
               certData.isFullStack
-                ? "bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600"
-                : "bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500"
+                ? "bg-linear-to-r from-amber-500 via-purple-600 to-indigo-600"
+                : "bg-linear-to-r from-green-500 via-emerald-500 to-teal-500"
             }`}
           >
             <div
@@ -304,7 +304,7 @@ export default function CertificateClient() {
               <p className="text-indigo-300 text-sm mt-1">
                 لإتمامه/ها بنجاح واحتراف دورة
               </p>
-              <div className="inline-block mt-2 px-4 py-1.5 bg-gradient-to-r from-indigo-600/30 to-purple-600/30 border border-indigo-500/40 rounded-full">
+              <div className="inline-block mt-2 px-4 py-1.5 bg-linear-to-r from-indigo-600/30 to-purple-600/30 border border-indigo-500/40 rounded-full">
                 <span className="text-indigo-200 font-bold text-sm">
                   {certData.course}
                 </span>
@@ -313,7 +313,7 @@ export default function CertificateClient() {
 
             {/* Special Full-Stack Track Badges */}
             {certData.isFullStack && (
-              <div className="grid grid-cols-2 gap-3 p-3 bg-gradient-to-r from-indigo-950/40 to-purple-950/40 rounded-2xl border border-indigo-500/20">
+              <div className="grid grid-cols-2 gap-3 p-3 bg-linear-to-r from-indigo-950/40 to-purple-950/40 rounded-2xl border border-indigo-500/20">
                 <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-900/60 border border-indigo-500/30 text-right">
                   <div className="p-2 rounded-lg bg-indigo-500/20 text-indigo-400">
                     <Code2 size={18} />

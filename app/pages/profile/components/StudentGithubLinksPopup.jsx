@@ -181,7 +181,7 @@ const StudentGithubLinksPopup = ({ studentId, onClose }) => {
           <div className="min-w-0">
             <h2
               id="github-popup-title"
-              className="text-sm font-bold text-white flex items-center gap-2 truncate"
+              className="text-sm font-bold text-slate-100 flex items-center gap-2 truncate"
             >
               <Github className="w-4 h-4 text-indigo-400 shrink-0" />
               <span className="truncate">{studentName || "روابط الطالب"}</span>
@@ -197,7 +197,7 @@ const StudentGithubLinksPopup = ({ studentId, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0"
+            className="p-2 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition shrink-0"
             aria-label="إغلاق"
           >
             <X className="w-5 h-5" />
@@ -221,7 +221,7 @@ const StudentGithubLinksPopup = ({ studentId, onClose }) => {
                 <button
                   type="button"
                   onClick={fetchLinks}
-                  className="text-xs font-bold bg-red-500/20 hover:bg-red-500/30 text-red-200 px-3 py-1.5 rounded-lg transition"
+                  className="text-xs font-bold hover:bg-red-500/30 text-red-200 px-3 py-1.5 rounded-lg transition"
                 >
                   إعادة المحاولة
                 </button>
@@ -258,7 +258,7 @@ const StudentGithubLinksPopup = ({ studentId, onClose }) => {
                         }}
                         className={`flex items-center gap-2 min-w-0 flex-1 ${
                           valid
-                            ? "text-indigo-300 hover:text-indigo-200"
+                            ? "hover:text-indigo-200"
                             : "text-slate-500 cursor-not-allowed"
                         }`}
                       >
@@ -307,7 +307,7 @@ const StudentGithubLinksPopup = ({ studentId, onClose }) => {
                         }}
                         className={`flex items-center gap-2 min-w-0 flex-1 ${
                           valid
-                            ? "text-indigo-300 hover:text-indigo-200"
+                            ? "hover:text-indigo-200"
                             : "text-slate-500 cursor-not-allowed"
                         }`}
                       >

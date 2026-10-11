@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { db } from '@/app/services/firebaseConfig';
-import { collection, getDocs, query, where, or } from 'firebase/firestore';
-import { Gift, Loader, Star, CalendarPlus, Users } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { db } from "@/app/services/firebaseConfig";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  Gift,
+  Loader,
+  Star,
+  CalendarPlus,
+  Users,
+  CreditCard,
+} from "lucide-react";
 
-const GiftStu = ({ studentId, studentGroupId }) => {
+const GiftStu = ({ studentId, studentGroupId, studentGroup }) => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const effectiveGroupId = studentGroupId || studentGroup;
+
   useEffect(() => {
     const numericStudentId = Number(studentId);
     if (!numericStudentId) {
-      console.error('[GiftStu] Invalid or missing studentId. Aborting fetch.');
+      console.error("[GiftStu] Invalid or missing studentId. Aborting fetch.");
       setLoading(false);
       return;
     }
@@ -21,24 +30,24 @@ const GiftStu = ({ studentId, studentGroupId }) => {
       setError(null);
 
       try {
-        const giftsRef = collection(db, 'gifts');
+        const giftsRef = collection(db, "gifts");
 
         // 🟢 الاستعلام الأول: المكافآت الخاصة بالطالب
         const studentQuery = query(
           giftsRef,
-          where('targetType', '==', 'student'),
-          where('targetValue.id', '==', numericStudentId),
-          where('isOpened', '==', true)
+          where("targetType", "==", "student"),
+          where("targetValue.id", "==", numericStudentId),
+          where("isOpened", "==", true),
         );
 
         // 🟢 الاستعلام الثاني: المكافآت الخاصة بالجروب (لو موجود)
         let groupQuerySnapshot = { docs: [] };
-        if (studentGroupId) {
+        if (effectiveGroupId) {
           const groupQuery = query(
             giftsRef,
-            where('targetType', '==', 'group'),
-            where('targetValue.groupId', '==', studentGroupId),
-            where('isOpened', '==', true)
+            where("targetType", "==", "group"),
+            where("targetValue", "==", effectiveGroupId),
+            where("isOpened", "==", true),
           );
           groupQuerySnapshot = await getDocs(groupQuery);
         }
@@ -48,34 +57,34 @@ const GiftStu = ({ studentId, studentGroupId }) => {
 
         // 🧩 دمج النتائج
         const fetchedGifts = [
-          ...studentSnapshot.docs.map(doc => ({
+          ...studentSnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-            source: 'student', // لتوضيح المصدر
+            source: "student",
           })),
-          ...groupQuerySnapshot.docs.map(doc => ({
+          ...groupQuerySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-            source: 'group',
+            source: "group",
           })),
         ];
 
         // 🔽 ترتيبهم حسب وقت الفتح
         fetchedGifts.sort(
-          (a, b) => (b.openedAt?.toDate() || 0) - (a.openedAt?.toDate() || 0)
+          (a, b) => (b.openedAt?.toDate() || 0) - (a.openedAt?.toDate() || 0),
         );
 
         setHistory(fetchedGifts);
       } catch (err) {
-        console.error('[GiftStu] Error fetching gift history:', err);
-        setError('حدث خطأ أثناء جلب سجل المكافآت.');
+        console.error("[GiftStu] Error fetching gift history:", err);
+        setError("حدث خطأ أثناء جلب سجل المكافآت.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchHistory();
-  }, [studentId, studentGroupId]);
+  }, [studentId, effectiveGroupId]);
 
   if (loading) {
     return (
@@ -90,54 +99,62 @@ const GiftStu = ({ studentId, studentGroupId }) => {
   }
 
   return (
-    <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg" dir="rtl">
-      <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center">
+    <div
+      className="p-4 bg-slate-900 border border-slate-800 rounded-2xl"
+      dir="rtl"
+    >
+      <h3 className="text-xl font-bold text-slate-100 mb-4 flex items-center">
         <Gift className="ml-2 text-purple-500" />
         سجل المكافآت المستلمة ({history.length})
       </h3>
 
       {history.length > 0 ? (
-        <div className="space-y-4 max-h-80 overflow-scroll">
-          {history.map(item => (
+        <div className="space-y-4 max-h-80 overflow-y-auto">
+          {history.map((item) => (
             <div
               key={item.id}
-              className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+              className="bg-slate-800/80 p-4 rounded-xl shadow-sm border border-slate-700/80"
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-gray-700 dark:text-gray-200 text-sm">
+                  <p className="text-slate-200 text-sm whitespace-pre-line">
                     {item.message}
                   </p>
-                  {/* 🟣 إظهار نوع الهدف */}
-                  <p className="text-xs text-gray-400 mt-1">
-                    🎯 النوع: {item.source === 'group' ? 'مكافأة جماعية' : 'مكافأة فردية'}
+                  <p className="text-xs text-slate-400 mt-1">
+                    🎯 النوع:{" "}
+                    {item.source === "group" ? "مكافأة جماعية" : "مكافأة فردية"}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm font-semibold">
-                  {item.type === 'attendance' ? (
-                    <CalendarPlus size={16} className="text-blue-500" />
-                  ) : item.type === 'points' ? (
-                    <Star size={16} className="text-yellow-500" />
+                <div className="flex items-center gap-2 text-sm font-semibold shrink-0 mr-2">
+                  {item.type === "attendance" ? (
+                    <CalendarPlus size={16} className="text-blue-400" />
+                  ) : item.type === "points" ? (
+                    <Star size={16} className="text-yellow-400" />
+                  ) : item.type === "green_card" ||
+                    item.type === "greencard" ? (
+                    <CreditCard size={16} className="text-emerald-400" />
+                  ) : item.type === "blue_card" || item.type === "bluecard" ? (
+                    <CreditCard size={16} className="text-sky-400" />
                   ) : (
-                    <Users size={16} className="text-purple-500" />
+                    <Users size={16} className="text-purple-400" />
                   )}
-                  <span>+{item.amount}</span>
+                  <span className="text-slate-100">+{item.amount}</span>
                 </div>
               </div>
 
-              <div className="text-left text-xs text-gray-400 dark:text-gray-500 mt-2">
-                {item.openedAt?.toDate().toLocaleString('ar-EG', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
+              <div className="text-left text-xs text-slate-500 mt-2">
+                {item.openedAt?.toDate().toLocaleString("ar-EG", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
                 })}
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-slate-500">
           <p>لا توجد مكافآت مستلمة في سجلك حتى الآن.</p>
         </div>
       )}

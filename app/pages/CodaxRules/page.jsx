@@ -129,10 +129,10 @@ const HeroSlide = memo(function HeroSlide({ slide }) {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center gap-6 sm:gap-8 px-2">
       <div className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48">
-        <div className={`absolute inset-0 rounded-full bg-gradient-to-tr ${slide.gradient} opacity-25 blur-2xl`} />
-        <div className={`w-full h-full rounded-full bg-gradient-to-tr ${slide.gradient} p-[2px] shadow-xl`}>
+        <div className={`absolute inset-0 rounded-full bg-linear-to-tr ${slide.gradient} opacity-25 blur-2xl`} />
+        <div className={`w-full h-full rounded-full bg-linear-to-tr ${slide.gradient} p-[2px] shadow-xl`}>
           <div className="w-full h-full bg-[#0a0f1e] rounded-full flex items-center justify-center">
-            <span className={`text-3xl sm:text-5xl md:text-6xl font-black bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent`}>
+            <span className={`text-3xl sm:text-5xl md:text-6xl font-black bg-linear-to-r ${slide.gradient} bg-clip-text text-transparent`}>
               CX
             </span>
           </div>
@@ -143,7 +143,7 @@ const HeroSlide = memo(function HeroSlide({ slide }) {
         <p className="text-slate-400 text-xs sm:text-sm tracking-[0.25em] uppercase font-semibold">
           {slide.subtitle}
         </p>
-        <h1 className={`text-4xl sm:text-5xl md:text-6xl font-black bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent leading-tight`}>
+        <h1 className={`text-4xl sm:text-5xl md:text-6xl font-black bg-linear-to-r ${slide.gradient} bg-clip-text text-transparent leading-tight`}>
           {slide.title}
         </h1>
         <p className="text-slate-300 text-base sm:text-lg max-w-md mx-auto leading-relaxed">
@@ -151,7 +151,7 @@ const HeroSlide = memo(function HeroSlide({ slide }) {
         </p>
       </div>
 
-      <div className={`flex gap-2 bg-gradient-to-r ${slide.gradient} p-[1px] rounded-full`}>
+      <div className={`flex gap-2 bg-linear-to-r ${slide.gradient} p-[1px] rounded-full`}>
         <div className="bg-[#0a0f1e] rounded-full px-6 py-2.5 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-yellow-400" />
           <span className="text-white font-semibold text-sm sm:text-base">ابدأ رحلتك معنا</span>
@@ -166,7 +166,7 @@ const BulletsSlide = memo(function BulletsSlide({ slide }) {
   return (
     <div className="flex flex-col h-full gap-4 overflow-hidden">
       <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-        <div className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br ${slide.gradient} shadow-lg`}>
+        <div className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-linear-to-br ${slide.gradient} shadow-lg`}>
           <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
         </div>
         <div className="min-w-0">
@@ -191,9 +191,9 @@ const BulletsSlide = memo(function BulletsSlide({ slide }) {
                 : "bg-white/5 border-white/10"}`}
           >
             {item.highlight && (
-              <div className={`absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r ${slide.gradient} opacity-[0.12]`} />
+              <div className={`absolute inset-0 rounded-xl sm:rounded-2xl bg-linear-to-r ${slide.gradient} opacity-[0.12]`} />
             )}
-            <div className={`mt-0.5 shrink-0 p-1 rounded-full bg-gradient-to-br ${slide.gradient}`}>
+            <div className={`mt-0.5 shrink-0 p-1 rounded-full bg-linear-to-br ${slide.gradient}`}>
               <CheckCircle2 className="w-3.5 h-3.5 text-white" />
             </div>
             <p className={`text-sm sm:text-base leading-relaxed relative z-10 ${item.highlight ? "text-white font-medium" : "text-slate-300"}`}>
@@ -211,7 +211,7 @@ const GridSlide = memo(function GridSlide({ slide }) {
   return (
     <div className="flex flex-col h-full gap-5 overflow-hidden">
       <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-        <div className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br ${slide.gradient} shadow-lg`}>
+        <div className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-linear-to-br ${slide.gradient} shadow-lg`}>
           <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
         </div>
         <div>
@@ -240,7 +240,7 @@ const ContactSlide = memo(function ContactSlide({ slide }) {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center gap-8 sm:gap-10 px-2">
       <div className="space-y-2">
-        <h2 className={`text-5xl sm:text-7xl md:text-8xl font-black bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent`}>
+        <h2 className={`text-5xl sm:text-7xl md:text-8xl font-black bg-linear-to-r ${slide.gradient} bg-clip-text text-transparent`}>
           {slide.title}
         </h2>
         <p className="text-slate-400 text-sm sm:text-base tracking-[0.2em] font-semibold">
@@ -251,7 +251,7 @@ const ContactSlide = memo(function ContactSlide({ slide }) {
       <div className="flex flex-col sm:flex-row gap-3 w-full max-w-lg">
         <a
           href="tel:01023669672"
-          className={`flex-1 flex items-center justify-center gap-2.5 p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br ${slide.gradient} shadow-lg hover:brightness-110 transition-all`}
+          className={`flex-1 flex items-center justify-center gap-2.5 p-3.5 sm:p-4 rounded-2xl bg-linear-to-br ${slide.gradient} shadow-lg hover:brightness-110 transition-all`}
         >
           <Phone className="w-5 h-5 text-white" />
           <span className="text-white font-bold text-base">01023669672</span>
@@ -409,7 +409,7 @@ export default function CodaXRules() {
           {current === total - 1 ? (
             <button
               onClick={() => go(0)}
-              className="p-2.5 sm:p-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:brightness-110 active:scale-95 transition-all"
+              className="p-2.5 sm:p-3 rounded-xl bg-linear-to-r from-emerald-500 to-teal-500 text-white hover:brightness-110 active:scale-95 transition-all"
             >
               <RotateCcw className="w-5 h-5" />
             </button>

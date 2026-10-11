@@ -189,7 +189,7 @@ export default function GroupSubmissions({ selectedGroup }) {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-700 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-linear-to-br from-violet-600 to-indigo-700 rounded-xl flex items-center justify-center">
             <FileArchive className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -285,7 +285,7 @@ export default function GroupSubmissions({ selectedGroup }) {
               className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-violet-200 dark:hover:border-violet-800/50 transition overflow-hidden shadow-sm"
             >
               {/* Card header */}
-              <div className="bg-gradient-to-br from-violet-500 to-indigo-600 px-4 py-3">
+              <div className="bg-linear-to-br from-violet-500 to-indigo-600 px-4 py-3">
                 <div className="flex items-center justify-between">
                   <h4 className="font-black text-white text-sm">{student.name}</h4>
                   {student.score > 0 ? (
@@ -341,7 +341,7 @@ export default function GroupSubmissions({ selectedGroup }) {
                 <div className="flex gap-1.5 pt-1">
                   <button
                     onClick={() => handleDownload(student)}
-                    className="flex items-center justify-center gap-1 flex-1 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold rounded-lg text-xs transition"
+                    className="flex items-center justify-center gap-1 flex-1 py-1.5 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold rounded-lg text-xs transition"
                   >
                     <Download className="w-3 h-3" />
                     {student.type === "link" ? "فتح" : "تنزيل"}
@@ -372,7 +372,7 @@ export default function GroupSubmissions({ selectedGroup }) {
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4" dir="rtl">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
           <div className="relative w-full max-w-sm bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-10">
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-4">
+            <div className="bg-linear-to-r from-amber-500 to-orange-500 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
@@ -421,7 +421,7 @@ export default function GroupSubmissions({ selectedGroup }) {
               <button
                 onClick={handleSaveGrade}
                 disabled={saving}
-                className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-xl text-sm transition disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-xl text-sm transition disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : null}
                 حفظ الدرجة والملاحظات

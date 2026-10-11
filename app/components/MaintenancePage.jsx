@@ -95,7 +95,7 @@ export default function MaintenancePage({
               href="https://t.me/codax_academy"
               target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 px-4 rounded-xl text-xs font-bold bg-gray-800 hover:bg-gray-750 text-gray-200 border border-gray-700 transition-all flex items-center justify-center gap-2"
+              className="py-2.5 px-4 rounded-xl text-xs font-bold bg-gray-800 hover:bg-gray-800 text-gray-200 border border-gray-700 transition-all flex items-center justify-center gap-2"
             >
               <Send size={14} className="text-sky-400" />
               <span>قناة التليجرام</span>
@@ -103,7 +103,7 @@ export default function MaintenancePage({
 
             <a
               href="/auth/Login"
-              className="py-2.5 px-4 rounded-xl text-xs font-bold bg-gray-800 hover:bg-gray-750 text-gray-200 border border-gray-700 transition-all flex items-center justify-center gap-2"
+              className="py-2.5 px-4 rounded-xl text-xs font-bold bg-gray-800 hover:bg-gray-800 text-gray-200 border border-gray-700 transition-all flex items-center justify-center gap-2"
             >
               <ShieldCheck size={14} className="text-emerald-400" />
               <span>دخول الإدارة</span>

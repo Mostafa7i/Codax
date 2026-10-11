@@ -1,3 +1,35 @@
+// ─── استيراد إعدادات المعادلات المركزية ───────────────────────────────────
+// ⚙️  لتعديل أي قيمة حرجة (البوست، الأوزان، الحد الأقصى...):
+//     افتح: app/components/scoringConfig.js
+// ──────────────────────────────────────────────────────────────────────────
+import {
+  TASK_WEIGHT,
+  ATTENDANCE_WEIGHT,
+  BOOST_POINTS_PER_PERCENT,
+  BOOST_MAX_PERCENT,
+  MAX_SCORE_PER_TASK,
+  MAX_COMBINED_SCORE,
+  calculateBoostPercentage,
+  getBoostBadgeText,
+  BOOST_TIERS,
+  BOOST_MAX_POINTS,
+  POINTS_TARGET_DISPLAY,
+} from "./scoringConfig.js";
+
+export {
+  TASK_WEIGHT,
+  ATTENDANCE_WEIGHT,
+  BOOST_POINTS_PER_PERCENT,
+  BOOST_MAX_PERCENT,
+  MAX_SCORE_PER_TASK,
+  MAX_COMBINED_SCORE,
+  calculateBoostPercentage,
+  getBoostBadgeText,
+  BOOST_TIERS,
+  BOOST_MAX_POINTS,
+  POINTS_TARGET_DISPLAY,
+};
+
 // دالة محسنة لحساب المتوسط مع تحقق كامل من أنواع البيانات
 export const calculateStudentAverage = (tasks = [], score = 0) => {
   if (!Array.isArray(tasks)) {
@@ -12,7 +44,7 @@ export const calculateStudentAverage = (tasks = [], score = 0) => {
 
   if (validTasks.length === 0) return Math.round(score);
 
-  const maxPossibleTaskScore = validTasks.length * 100;
+  const maxPossibleTaskScore = validTasks.length * MAX_SCORE_PER_TASK;
   const totalTaskScore = validTasks.reduce((sum, task) => sum + task.score, 0);
 
   return maxPossibleTaskScore > 0
@@ -27,7 +59,7 @@ export const calculateGradesPercentage = (tasks, score = 0) => {
 
   const totalScore =
     activeTasks.reduce((sum, task) => sum + task.score, 0) + score;
-  const totalMaxScore = activeTasks.length * 100 + score; // اجمالي النقاط الممكنة
+  const totalMaxScore = activeTasks.length * MAX_SCORE_PER_TASK + score; // اجمالي النقاط الممكنة
 
   return Math.round((totalScore / totalMaxScore) * 100);
 };
@@ -104,7 +136,7 @@ export const getTopStudents = (
         (sum, task) => sum + task.score,
         0,
       );
-      const maxPossibleTaskScore = validTasks.length * 100;
+      const maxPossibleTaskScore = validTasks.length * MAX_SCORE_PER_TASK;
       taskPercentage =
         maxPossibleTaskScore > 0
           ? Math.round((totalTaskScore / maxPossibleTaskScore) * 100)
@@ -124,22 +156,22 @@ export const getTopStudents = (
       availableLectures,
     );
 
-    // --- حساب النقاط الإضافية والـ Boost ---
+    // --- حساب النقاط الإضافية والـ Boost الموحد ---
     const extraPoints = typeof student.score === "number" ? student.score : 0;
-    const boostPercentage = Math.min(Math.floor(extraPoints / 40), 5);
+    const boostPercentage = calculateBoostPercentage(extraPoints);
 
     // --- حساب النتيجة النهائية (Combined Score) بشكل ديناميكي ---
     let combinedScore;
     if (taskPercentage !== null) {
       // ✅ المعادلة الصحيحة: 60% للتاسكات و 40% للحضور
       const scoreWithoutBoost = Math.round(
-        taskPercentage * 0.6 + attendancePercentage * 0.4,
+        taskPercentage * TASK_WEIGHT + attendancePercentage * ATTENDANCE_WEIGHT,
       );
-      combinedScore = Math.min(scoreWithoutBoost + boostPercentage, 100);
+      combinedScore = Math.min(scoreWithoutBoost + boostPercentage, MAX_COMBINED_SCORE);
     } else {
       // ✅ إذا لا يوجد تاسكات، النتيجة هي الحضور + الـ Boost
       const scoreWithoutBoost = attendancePercentage;
-      combinedScore = Math.min(scoreWithoutBoost + boostPercentage, 100);
+      combinedScore = Math.min(scoreWithoutBoost + boostPercentage, MAX_COMBINED_SCORE);
     }
     return {
       ...student,
@@ -151,35 +183,37 @@ export const getTopStudents = (
   });
 
   // 3. فرز الطلاب بناءً على النمط المحدد
+  // كسر التعادل بمفتاح ثابت يمنع تبدّل المراكز ظاهرياً بين قراءتين لنفس البيانات.
+  const compareStableIdentity = (a, b) => {
+    const aKey = String(a.docId ?? a.id ?? a.email ?? a.name ?? "").trim();
+    const bKey = String(b.docId ?? b.id ?? b.email ?? b.name ?? "").trim();
+    return aKey.localeCompare(bKey, "ar");
+  };
+
   const sortedStudents = processedStudents.sort((a, b) => {
     switch (sortMode) {
       case "task":
-        // الطلاب الذين ليس لديهم تاسكات (null) يأتون في الآخر
-        if (a.taskPercentage === null) return 1;
-        if (b.taskPercentage === null) return -1;
-        if (b.taskPercentage !== a.taskPercentage) {
-          return b.taskPercentage - a.taskPercentage;
-        }
-        return (b.extraPoints || 0) - (a.extraPoints || 0);
+        if (a.taskPercentage === null && b.taskPercentage !== null) return 1;
+        if (b.taskPercentage === null && a.taskPercentage !== null) return -1;
+        if (b.taskPercentage !== a.taskPercentage) return b.taskPercentage - a.taskPercentage;
+        if ((b.extraPoints || 0) !== (a.extraPoints || 0)) return (b.extraPoints || 0) - (a.extraPoints || 0);
+        return compareStableIdentity(a, b);
 
       case "attendance":
-        if (b.attendancePercentage !== a.attendancePercentage) {
-          return b.attendancePercentage - a.attendancePercentage;
-        }
-        return (b.extraPoints || 0) - (a.extraPoints || 0);
+        if (b.attendancePercentage !== a.attendancePercentage) return b.attendancePercentage - a.attendancePercentage;
+        if ((b.extraPoints || 0) !== (a.extraPoints || 0)) return (b.extraPoints || 0) - (a.extraPoints || 0);
+        return compareStableIdentity(a, b);
 
       case "extraPoints":
-        if ((b.extraPoints || 0) !== (a.extraPoints || 0)) {
-          return (b.extraPoints || 0) - (a.extraPoints || 0);
-        }
-        return b.combinedScore - a.combinedScore;
+        if ((b.extraPoints || 0) !== (a.extraPoints || 0)) return (b.extraPoints || 0) - (a.extraPoints || 0);
+        if (b.combinedScore !== a.combinedScore) return b.combinedScore - a.combinedScore;
+        return compareStableIdentity(a, b);
 
       case "combined":
       default:
-        if (b.combinedScore !== a.combinedScore) {
-          return b.combinedScore - a.combinedScore;
-        }
-        return (b.extraPoints || 0) - (a.extraPoints || 0);
+        if (b.combinedScore !== a.combinedScore) return b.combinedScore - a.combinedScore;
+        if ((b.extraPoints || 0) !== (a.extraPoints || 0)) return (b.extraPoints || 0) - (a.extraPoints || 0);
+        return compareStableIdentity(a, b);
     }
   });
 

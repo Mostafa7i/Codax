@@ -4,10 +4,10 @@ import {
   getDoc,
   getDocs,
   setDoc,
-  addDoc,
   query,
   where,
   serverTimestamp,
+  runTransaction,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { getTopStudents } from "../components/calculations.jsx";
@@ -203,11 +203,43 @@ export function formatRankChangeNotification(
   return lines.join("\n");
 }
 
-// ذاكرة مؤقتة محلية لمنع تكرار نفس الإشعار خلال ثوانٍ معدودة
-const recentNotificationsCache = new Map();
+function sanitizeRankings(rankedStudents) {
+  return rankedStudents.map((s) => ({
+    studentId: s.id ?? null,
+    docId: s.docId ?? null,
+    name: s.name || "طالب",
+    rank: s.rank,
+    combinedScore: s.combinedScore ?? 0,
+    extraPoints: s.extraPoints ?? s.score ?? 0,
+    taskPercentage: s.taskPercentage ?? null,
+    attendancePercentage: s.attendancePercentage ?? 0,
+  }));
+}
+
+function getRankChanges(newRankedStudents, previousRanks) {
+  const promotions = [];
+  const demotions = [];
+
+  newRankedStudents.forEach((student) => {
+    const oldRank = findPreviousRank(student, previousRanks);
+    if (oldRank === null || typeof oldRank !== "number") return;
+
+    if (student.rank < oldRank) {
+      promotions.push({ name: student.name, id: student.id, docId: student.docId, oldRank, newRank: student.rank, diff: oldRank - student.rank });
+    } else if (student.rank > oldRank) {
+      demotions.push({ name: student.name, id: student.id, docId: student.docId, oldRank, newRank: student.rank, diff: student.rank - oldRank });
+    }
+  });
+
+  promotions.sort((a, b) => a.newRank - b.newRank);
+  demotions.sort((a, b) => a.newRank - b.newRank);
+  return { promotions, demotions };
+}
 
 /**
- * فحص وتوثيق أي تغير في الترتيب وإرسال الإشعار للمجموعة وحفظ الترتيب الجديد
+ * فحص وتوثيق أي تغير في الترتيب وإرسال الإشعار للمجموعة وحفظ الترتيب الجديد.
+ * تتم المقارنة والحفظ والإشعار في Transaction واحدة، لذلك لا يستطيع عميلان
+ * إرسال نفس الإشعار عند تشغيل الموقع في أكثر من جهاز أو تبويب.
  */
 export async function checkAndNotifyRankChanges(
   groupName,
@@ -218,110 +250,49 @@ export async function checkAndNotifyRankChanges(
   if (!groupName) return { status: "no_group" };
 
   try {
-    // 1. حساب الترتيب الحالي
-    const newRankedStudents = await calculateCurrentGroupRankings(
-      groupName,
-      currentStudents,
-      totalLectures,
-    );
+    const newRankedStudents = await calculateCurrentGroupRankings(groupName, currentStudents, totalLectures);
+    if (!newRankedStudents || newRankedStudents.length === 0) return { status: "no_students" };
 
-    if (!newRankedStudents || newRankedStudents.length === 0) {
-      return { status: "no_students" };
-    }
+    const rankingRef = doc(db, "groupRankings", groupName);
+    const sanitizedRanks = sanitizeRankings(newRankedStudents);
+    const now = Date.now();
 
-    // 2. إذا كان أول تحميل: حفظ الترتيب الأولي كمرجع أساسي بهدوء
-    if (isInitialSave) {
-      await saveGroupRankings(groupName, newRankedStudents);
-      return {
-        status: "initialized",
-        message: `تم حفظ ترتيب طلاب مجموعة ${groupName} الحالي كمرجع أساسي.`,
-        ranksCount: newRankedStudents.length,
-      };
-    }
-
-    // 3. جلب الترتيب السابق المخزن
-    const storedData = await getStoredGroupRankings(groupName);
-
-    if (
-      !storedData ||
-      !Array.isArray(storedData.ranks) ||
-      storedData.ranks.length === 0
-    ) {
-      await saveGroupRankings(groupName, newRankedStudents);
-      return {
-        status: "initialized",
-        ranksCount: newRankedStudents.length,
-      };
-    }
-
-    // 4. مقارنة كل طالب واكتشاف الصعود والهبوط
-    const promotions = [];
-    const demotions = [];
-
-    newRankedStudents.forEach((student) => {
-      const oldRank = findPreviousRank(student, storedData.ranks);
-      if (oldRank !== null && typeof oldRank === "number") {
-        if (student.rank < oldRank) {
-          promotions.push({
-            name: student.name,
-            id: student.id,
-            docId: student.docId,
-            oldRank,
-            newRank: student.rank,
-            diff: oldRank - student.rank,
-          });
-        } else if (student.rank > oldRank) {
-          demotions.push({
-            name: student.name,
-            id: student.id,
-            docId: student.docId,
-            oldRank,
-            newRank: student.rank,
-            diff: student.rank - oldRank,
-          });
-        }
-      }
-    });
-
-    // 5. إذا وُجد تغيير فعلي في المراكز:
-    if (promotions.length > 0 || demotions.length > 0) {
-      promotions.sort((a, b) => a.newRank - b.newRank);
-      demotions.sort((a, b) => a.newRank - b.newRank);
-
-      const notifMessage = formatRankChangeNotification(
+    return await runTransaction(db, async (transaction) => {
+      const storedSnapshot = await transaction.get(rankingRef);
+      const storedData = storedSnapshot.exists() ? storedSnapshot.data() : null;
+      const previousRanks = Array.isArray(storedData?.ranks) ? storedData.ranks : [];
+      const rankingPayload = {
         groupName,
-        promotions,
-        demotions,
-      );
-      const notifTitle = `🏆 تحديث جديد في ترتيب أوائل مجموعة ${groupName}`;
+        updatedAt: new Date(now).toISOString(),
+        ranks: sanitizedRanks,
+        totalStudents: sanitizedRanks.length,
+      };
 
-      // بصمة التغيير لمنع التكرار
-      const pStr = promotions
-        .map((p) => `${p.id || p.docId}:${p.oldRank}->${p.newRank}`)
-        .sort()
-        .join("|");
-      const dStr = demotions
-        .map((d) => `${d.id || d.docId}:${d.oldRank}->${d.newRank}`)
-        .sort()
-        .join("|");
-      const changeSignature = `${groupName}__P[${pStr}]__D[${dStr}]`;
-      const now = Date.now();
-
-      // فحص الكاش المحلي (إذا نفس الإشعار أُرسل خلال آخر دقيقة نتجاهل)
-      const lastSentTime = recentNotificationsCache.get(changeSignature) || 0;
-      if (now - lastSentTime < 60000) {
-        console.log(`[rankingService] Duplicate skipped via local cache for ${groupName}`);
-        await saveGroupRankings(groupName, newRankedStudents);
-        return { status: "skipped_duplicate" };
+      // تحميل أي مستخدم للموقع لا يعيد ضبط مرجع المجموعة القائم.
+      if (isInitialSave && previousRanks.length > 0) {
+        return { status: "baseline_exists", ranksCount: newRankedStudents.length };
       }
 
-      // تسجيل البصمة فوراً في الكاش وحفظ الترتيب
-      recentNotificationsCache.set(changeSignature, now);
-      await saveGroupRankings(groupName, newRankedStudents);
+      if (previousRanks.length === 0) {
+        transaction.set(rankingRef, rankingPayload, { merge: true });
+        return { status: "initialized", message: `تم حفظ ترتيب طلاب مجموعة ${groupName} الحالي كمرجع أساسي.`, ranksCount: newRankedStudents.length };
+      }
 
-      // إرسال الإشعار لـ notificationsGroups
-      await addDoc(collection(db, "notificationsGroups"), {
-        title: notifTitle,
+      const { promotions, demotions } = getRankChanges(newRankedStudents, previousRanks);
+      transaction.set(rankingRef, rankingPayload, { merge: true });
+
+      if (promotions.length === 0 && demotions.length === 0) {
+        return { status: "no_rank_changes", ranksCount: newRankedStudents.length };
+      }
+
+      const pStr = promotions.map((p) => `${p.id || p.docId}:${p.oldRank}->${p.newRank}`).sort().join("|");
+      const dStr = demotions.map((d) => `${d.id || d.docId}:${d.oldRank}->${d.newRank}`).sort().join("|");
+      const changeSignature = `${groupName}__P[${pStr}]__D[${dStr}]`;
+      const notifMessage = formatRankChangeNotification(groupName, promotions, demotions);
+      const notificationRef = doc(collection(db, "notificationsGroups"));
+
+      transaction.set(notificationRef, {
+        title: `🏆 تحديث جديد في ترتيب أوائل مجموعة ${groupName}`,
         message: notifMessage,
         group: groupName,
         type: "rank",
@@ -331,32 +302,13 @@ export async function checkAndNotifyRankChanges(
         read: false,
       });
 
-      console.log(`✅ Rank notification sent for group ${groupName}`);
-
-      return {
-        status: "updated_and_notified",
-        promotions,
-        demotions,
-        message: notifMessage,
-        ranksCount: newRankedStudents.length,
-      };
-    }
-
-    // لم تتغير المراكز لكن نحدث الترتيب المخزن
-    await saveGroupRankings(groupName, newRankedStudents);
-    return {
-      status: "no_rank_changes",
-      ranksCount: newRankedStudents.length,
-    };
+      return { status: "updated_and_notified", promotions, demotions, message: notifMessage, ranksCount: newRankedStudents.length };
+    });
   } catch (error) {
-    console.error(`Error checking rank changes for group ${groupName}:`, error);
-    return {
-      status: "error",
-      error: error.message,
-    };
+    console.error(`Error checking rank changes for ${groupName}:`, error);
+    return { status: "error", error: error.message };
   }
 }
-
 /**
  * مزامنة جميع المجموعات
  */
@@ -377,12 +329,13 @@ export async function syncAllGroupsRankings(
 
   const results = {};
   for (const group of groups) {
-    results[group] = await checkAndNotifyRankChanges(
-      group,
-      null,
-      null,
-      forceSave,
-    );
+    if (forceSave) {
+      const ranks = await calculateCurrentGroupRankings(group);
+      await saveGroupRankings(group, ranks);
+      results[group] = { status: "initialized", ranksCount: ranks.length };
+    } else {
+      results[group] = await checkAndNotifyRankChanges(group);
+    }
   }
 
   return results;

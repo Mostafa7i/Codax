@@ -115,7 +115,7 @@ export default function OfflineHandler({ children, expired }) {
             </button>
             <button
               onClick={() => window.location.reload()}
-              className="w-full py-3 px-6 rounded-2xl font-bold bg-gray-800 hover:bg-gray-750 text-gray-300 hover:text-white border border-gray-700 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 px-6 rounded-2xl font-bold bg-gray-800 hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-700 transition-all flex items-center justify-center gap-2"
             >
               <RotateCw size={16} />
               إعادة التحميل

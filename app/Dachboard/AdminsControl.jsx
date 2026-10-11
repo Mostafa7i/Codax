@@ -180,7 +180,7 @@ export default function AdminsControl() {
             <button
               type="submit"
               disabled={creating}
-              className="md:col-span-3 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg disabled:opacity-60 transition-all flex items-center justify-center gap-3"
+              className="md:col-span-3 px-8 py-4 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg disabled:opacity-60 transition-all flex items-center justify-center gap-3"
             >
               {creating ? <Loader2 className="w-6 h-6 animate-spin" /> : <Key className="w-6 h-6" />}
               {creating ? "جاري الإنشاء..." : "إنشاء أدمن جديد"}
@@ -226,7 +226,7 @@ export default function AdminsControl() {
                   className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
                       {admin.email[0].toUpperCase()}
                     </div>
                     <div>

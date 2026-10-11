@@ -7,6 +7,7 @@ import {
   Menu,
   X,
   Users,
+  ExternalLinkIcon,
 } from "lucide-react";
 import Link from "next/link";
 import LoadingLink from "../LoadingLink";
@@ -20,14 +21,14 @@ import { auth, db } from "@/app/services/firebaseConfig";
 import { useGroupContext } from "../../context/GroupContextProvider";
 import Notifications from "../Notifications/Notifications";
 import Logo from "../../../public/favicon.png";
+import { useStudentAuth } from "@/app/context/StudentAuthContext";
 
 export default function NavBar({ currentUser }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-
+  const { logoutStudent, authenticatedStudentId } = useStudentAuth() || {};
   const { selectedGroup } = useGroupContext();
   const pathname = usePathname();
-
   // الاستماع لحالة تسجيل دخول الأدمن
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -39,7 +40,7 @@ export default function NavBar({ currentUser }) {
       try {
         const q = query(
           collection(db, "admins"),
-          where("email", "==", user.email?.toLowerCase())
+          where("email", "==", user.email?.toLowerCase()),
         );
         const snap = await getDocs(q);
         if (!snap.empty) {
@@ -89,11 +90,11 @@ export default function NavBar({ currentUser }) {
     pathname === "/pages/main";
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-2xl bg-slate-950/80 border-b border-indigo-500/15 shadow-[0_10px_35px_rgba(0,0,0,0.5)] transition-all">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xs  border-b border-indigo-500/15 shadow-[0_10px_35px_rgba(0,0,0,0.5)] transition-all">
       {/* شريط الإضاءة العلوي الرفيع */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-indigo-500 via-purple-500 to-transparent opacity-80" />
+      <div className="h-0.5 w-full bg-linear-to-r from-transparent via-indigo-500  to-transparent opacity-80" />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* ─── الشعار (Logo & Branding) ─── */}
           <div className="flex items-center gap-3.5">
@@ -102,7 +103,7 @@ export default function NavBar({ currentUser }) {
               className="group relative flex items-center gap-3 p-1.5 rounded-2xl transition-all"
             >
               <div className="relative">
-                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-indigo-600 to-pink-600 opacity-40 blur-sm group-hover:opacity-80 transition duration-300" />
+                <div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-indigo-600 to-pink-600 opacity-40 blur-sm group-hover:opacity-80 transition duration-300" />
                 <Image
                   src={Logo}
                   width={46}
@@ -114,7 +115,7 @@ export default function NavBar({ currentUser }) {
               </div>
 
               <div className="flex flex-col">
-                <span className="bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-300 bg-clip-text text-2xl font-black tracking-wider text-transparent transition-all group-hover:from-indigo-200 group-hover:to-pink-200">
+                <span className="bg-linear-to-r from-indigo-300 via-purple-200 to-pink-300 bg-clip-text text-2xl font-black tracking-wider text-transparent transition-all group-hover:from-indigo-200 group-hover:to-pink-200">
                   CODAX
                 </span>
                 <span className="text-[10px] font-bold text-indigo-400/80 -mt-1 tracking-widest uppercase hidden sm:block">
@@ -131,7 +132,7 @@ export default function NavBar({ currentUser }) {
               href="/"
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
                 isActive("/") && pathname === "/"
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30"
+                  ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30"
                   : "text-slate-300 hover:text-white hover:bg-slate-800/60"
               }`}
             >
@@ -144,7 +145,7 @@ export default function NavBar({ currentUser }) {
               href="/pages/main"
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
                 isActive("/pages/main")
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30"
+                  ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30"
                   : "text-slate-300 hover:text-white hover:bg-slate-800/60"
               }`}
               spinnerColor="#a5b4fc"
@@ -152,6 +153,7 @@ export default function NavBar({ currentUser }) {
               <Users className="w-4 h-4" />
               <span>منصة الطلاب</span>
             </LoadingLink>
+       
 
             {/* رابط لوحة تحكم الأدمن (إذا كان أدمن) */}
             {(currentUser || isAdmin) && (
@@ -159,7 +161,7 @@ export default function NavBar({ currentUser }) {
                 href="/admin"
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
                   isActive("/admin")
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30"
+                    ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30"
                     : "text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 border border-amber-500/20"
                 }`}
               >
@@ -168,7 +170,15 @@ export default function NavBar({ currentUser }) {
               </Link>
             )}
           </nav>
-
+          {authenticatedStudentId && (
+            <button
+              onClick={logoutStudent}
+              className="flex items-center justify-center cursor-pointer bg-red-500/80 gap-2 px-2 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 hover:text-white hover:bg-red-800/60"
+            >
+              <ExternalLinkIcon className="w-3 h-3" />
+              <span> خروج</span>
+            </button>
+          )}
           {/* ─── الجانب الأيسر (الإشعارات وقائمة الموبايل) ─── */}
           <div className="flex items-center gap-3">
             {/* الإشعارات (تظهر فقط عند فتح المجموعات واختيار مجموعة) */}
@@ -205,12 +215,13 @@ export default function NavBar({ currentUser }) {
             >
               <nav className="flex flex-col gap-2 p-2 rounded-3xl bg-slate-900/90 border border-slate-800/80 backdrop-blur-xl shadow-2xl">
                 {/* الرئيسية */}
+
                 <Link
                   href="/"
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${
                     isActive("/") && pathname === "/"
-                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30"
+                      ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30"
                       : "text-slate-300 hover:text-white hover:bg-slate-800/60"
                   }`}
                 >
@@ -226,7 +237,7 @@ export default function NavBar({ currentUser }) {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${
                     isActive("/pages/main")
-                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30"
+                      ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30"
                       : "text-slate-300 hover:text-white hover:bg-slate-800/60"
                   }`}
                   spinnerColor="#a5b4fc"
@@ -244,7 +255,7 @@ export default function NavBar({ currentUser }) {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${
                       isActive("/admin")
-                        ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30"
+                        ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30"
                         : "text-amber-300 hover:bg-amber-500/10 border border-amber-500/20"
                     }`}
                   >

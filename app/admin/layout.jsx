@@ -42,6 +42,7 @@ import {
   Banknote,
   Award,
   Home,
+  Sparkles,
 } from "lucide-react";
 // ── AdminGuard: يفحص Firebase Auth + Firestore admins collection ──────────────
 function AdminGuard({ children }) {
@@ -223,6 +224,10 @@ function DashboardLayout({ children }) {
     if (pathname === "/admin/zip-files" && typeof window !== "undefined") {
       setUnreadTasksSubmissions(0);
     }
+    if (pathname === "/admin/reactions" && typeof window !== "undefined") {
+      setLikesUnread(0);
+      setDislikesUnread(0);
+    }
   }, [pathname]);
 
   const notificationsCount = likesUnread + dislikesUnread;
@@ -261,6 +266,16 @@ function DashboardLayout({ children }) {
         notify: unreadTasksSubmissions,
       },
       { name: "عجلة الحظ", href: "/admin/lucky-wheel", icon: Banknote },
+      {
+        name: "ميزات التلعيب والنقاط",
+        href: "/admin/gamification-features",
+        icon: Sparkles,
+      },
+      {
+        name: "سجل العجلة والمتجر",
+        href: "/admin/gamification-activity",
+        icon: Activity,
+      },
       { name: "الحسابات", href: "/admin/installments", icon: Banknote },
       {
         name: "طلبات النقاط",

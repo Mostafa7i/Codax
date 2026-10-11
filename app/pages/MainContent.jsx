@@ -131,8 +131,8 @@ const GroupDetailsModal = memo(function GroupDetailsModal({
           >
             <X className="w-4 h-4" />
           </button>
-          <h2 className="font-black text-center text-xl text-white">
-            مجموعة {selectedGroup}
+          <h2 className="font-black text-center  text-white">
+           تفاصيل مجموعة <span className={`${status ? "text-green-500" : "text-red-500"} capitalize`}>{selectedGroup} </span>
           </h2>
         </div>
 
@@ -367,23 +367,24 @@ export default function MainContent() {
   }
 
   return (
-    <div className="space-y-5 w-full mx-auto" dir="rtl">
+    <div className="space-y-3 w-full mx-auto" dir="rtl">
       {/* ── Action buttons ── */}
       <div className="flex flex-wrap justify-center gap-2.5">
         <button
           onClick={() => setShowStatsModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 hover:bg-indigo-500/20 transition-all active:scale-95"
+          className="flex cursor-pointer relative items-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 hover:bg-indigo-500/20 transition-all active:scale-95"
         >
+          <span className="absolute  right-0 -top-1 animate-pulse shadow-2xl shadow-red-700 px-1 text-[10px] bg-green-600/50 rounded-2xl">جديد ✨</span>
           <BarChart3 className="w-4 h-4" />
-          إحصائيات المجموعة
+          إحصائيات
         </button>
 
         <button
           onClick={() => setOpenDetails(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm bg-slate-800/60 border border-slate-700/50 text-slate-300 hover:bg-slate-800 transition-all active:scale-95"
+          className="flex cursor-pointer items-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm bg-slate-800/60 border border-slate-700/50 text-slate-300 hover:bg-slate-800 transition-all active:scale-95"
         >
           <MessageSquareWarning className="w-4 h-4" />
-          تفاصيل المجموعة
+         
         </button>
       </div>
 

@@ -1,10 +1,16 @@
 "use client";
-import React, { useState, useEffect, useCallback, lazy, Suspense, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  lazy,
+  Suspense,
+  useRef,
+} from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import {
   Users,
   ClipboardList,
-  SmilePlus,
   BookOpenText,
   Gift,
   Sparkles,
@@ -12,20 +18,8 @@ import {
   UserCheck,
   Lock,
 } from "lucide-react";
-import Swal from "sweetalert2";
 
-import {
-  doc,
-  updateDoc,
-  getDocs,
-  collection,
-  query,
-  where,
-  getDoc,
-  addDoc,
-  increment,
-  serverTimestamp,
-} from "firebase/firestore";
+import { getDocs, collection, query, where } from "firebase/firestore";
 import { db } from "@/app/services/firebaseConfig";
 import { useGroupContext } from "@/app/context/GroupContextProvider";
 import { useStudentAuth } from "@/app/context/StudentAuthContext";
@@ -40,7 +34,6 @@ import LuckyWheelModal from "@/app/components/LuckyWheelModal";
 // Tabs
 import OverviewTab from "./tabs/OverviewTab";
 import TasksTab from "./tabs/TasksTab";
-import ReactionsTab from "./tabs/ReactionsTab";
 import ExamTab from "./tabs/ExamTab";
 import GiftTab from "./tabs/GiftTab";
 import RegistrationDataTab from "./tabs/RegistrationDataTab";
@@ -86,7 +79,7 @@ const StudentDetails = () => {
   const { groupStatuses } = useGroupContext();
   const status = groupStatuses ? groupStatuses[profile.studentGroup] : null;
 
-   const sectionRef = useRef(null);
+  const sectionRef = useRef(null);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -168,7 +161,7 @@ const StudentDetails = () => {
       if (trimmedEntered === studentPass) {
         setAuthAttempts(0);
         setAuthLockedUntil(null);
-        await authenticateStudent(studentId, trimmedEntered, rememberAuthMe);
+        await authenticateStudent(studentId, trimmedEntered, true);
         setIsAuthorized(true);
         setShowAuthModal(false);
         setAuthErrorMessage("");
@@ -208,126 +201,16 @@ const StudentDetails = () => {
     router.push("/pages/main");
   }, [router]);
 
-  // التفاعلات
-  const handleViewReactions = async (
-    targetId,
-    targetName,
-    isPerfectStudentFromState,
-  ) => {
-    const currentStudentDocRef = doc(db, "students", profile.studentDocId);
-    const currentStudentSnap = await getDoc(currentStudentDocRef);
-    const currentStudentData = currentStudentSnap.data();
-    const studentName = currentStudentData?.name || "بدون اسم";
-    const studentIdVal = currentStudentData?.id;
+  const handleStore = () => {
+    setActiveTab("store");
 
-    const q = query(collection(db, "students"), where("id", "==", targetId));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return;
-
-    const targetData = snapshot.docs[0].data();
-    const likedBy = targetData.likedBy || [];
-    const dislikedBy = targetData.dislikedBy || [];
-
-    if (likedBy.length === 0 && dislikedBy.length === 0) {
-      Swal.fire({
-        icon: "info",
-        title: `تفاعلات علي (${targetName})`,
-        text: "لا توجد أي تفاعلات لعرضها.",
-        confirmButtonText: "حسناً",
+    requestAnimationFrame(() => {
+      sectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
-      return;
-    }
-
-    const isPerfect = isPerfectStudentFromState;
-    const deduction = isPerfect ? 5 : 10;
-
-    if ((currentStudentData.score ?? 0) < deduction) {
-      Swal.fire({
-        icon: "error",
-        title: "رصيد غير كافٍ",
-        text: `يجب أن تمتلك ${deduction} نقطة على الأقل لرؤية من قام بالتفاعل معك.`,
-      });
-      return;
-    }
-
-    const { isConfirmed } = await Swal.fire({
-      icon: "info",
-      title: isPerfect ? "🎉 خصم للطلاب المثاليين" : "تنبيه",
-      html: isPerfect
-        ? `<div style="color:green; font-weight:bold; text-align:center;">
-           🎉 لأنك طالب مثالي 👑 لديك خصم 50%. سيتم خصم ${deduction} نقطة من نقاطك.
-         </div>`
-        : `سيتم خصم ${deduction} نقطة من نقاطك (${currentStudentData.score}) لرؤية من قام بالتفاعل معك وستصبح نقاطك ${
-            currentStudentData.score - deduction
-          }.`,
-      confirmButtonText: "موافق",
-      cancelButtonText: "إلغاء",
-      showCancelButton: true,
-    });
-
-    if (!isConfirmed) return;
-
-    await updateDoc(currentStudentDocRef, { score: increment(-deduction) });
-
-    await addDoc(collection(db, "reactionViewLogs"), {
-      studentId: studentIdVal,
-      studentName,
-      targetId,
-      targetName,
-      timestamp: serverTimestamp(),
-      deduction,
-    });
-
-    const allIds = [
-      ...new Set([
-        ...likedBy.map((entry) => entry.likerId),
-        ...dislikedBy.map((entry) => entry.dislikerId),
-      ]),
-    ];
-
-    const namesMap = {};
-    const studentsSnapshot = await getDocs(collection(db, "students"));
-    studentsSnapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      if (allIds.includes(data.id)) {
-        namesMap[data.id] = data.name;
-      }
-    });
-
-    const likesList = likedBy.map((entry) => {
-      const name = namesMap[entry.likerId] || `ID: ${entry.likerId}`;
-      return `<li>${name} - محاضرة ${entry.lectureNumber}</li>`;
-    });
-
-    const dislikesList = dislikedBy.map((entry) => {
-      const name = namesMap[entry.dislikerId] || `ID: ${entry.dislikerId}`;
-      return `<li>${name} - محاضرة ${entry.lectureNumber}</li>`;
-    });
-
-    Swal.fire({
-      title: `تفاعلات على ${targetName}`,
-      html: `
-      <div style="text-align: right">
-        <b>الإعجابات:</b>
-        <ul>${likesList.length ? likesList.join("") : "<li>لا يوجد</li>"}</ul>
-        <b>الرفض:</b>
-        <ul>${dislikesList.length ? dislikesList.join("") : "<li>لا يوجد</li>"}</ul>
-      </div>
-    `,
-      confirmButtonText: "حسناً",
     });
   };
-  
-const handleStore = () => {
-  setActiveTab("store");
-
-  requestAnimationFrame(() => {
-    sectionRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  });
-};
 
   // شاشات التحميل والخطأ
   if (profile.loading) {
@@ -344,7 +227,7 @@ const handleStore = () => {
         <p className="text-red-500 font-bold mb-4">{profile.error}</p>
         <button
           onClick={() => router.push("/pages/main")}
-          className="px-6 py-2 bg-indigo-600 text-white rounded-xl font-medium"
+          className="px-6 py-2 bg-indigo-600 text-slate-100 rounded-xl font-medium"
         >
           العودة للرئيسية
         </button>
@@ -366,16 +249,16 @@ const handleStore = () => {
         <div className="w-20 h-20 bg-indigo-500/10 rounded-3xl flex items-center justify-center text-indigo-600 mb-4 border border-indigo-500/20 shadow-inner">
           <Lock className="w-10 h-10" />
         </div>
-        <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-2">
+        <h2 className="text-2xl font-black text-slate-100 mb-2">
           هذا الحساب محمي بكلمة مرور
         </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mb-6">
+        <p className="text-slate-400 text-sm max-w-md mb-6">
           لا يمكنك استعراض بيانات هذا الطالب إلا بعد إدخال كلمة المرور الصحيحة.
         </p>
 
         <button
           onClick={() => setShowAuthModal(true)}
-          className="px-8 py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition-all"
+          className="px-8 py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-slate-100 font-bold rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition-all"
         >
           أدخل كلمة المرور
         </button>
@@ -397,14 +280,12 @@ const handleStore = () => {
     );
   }
 
-  const { title: rankTitle, colorClass: rankColorClass } =
-    profile.getRankTitle();
+  const { title: rankTitle, colorClass: rankColorClass } = profile.getRankTitle();
   //
   const tabs = [
     { id: "overview", label: "نظرة عامة", icon: Users },
     { id: "registrationData", label: "البيانات الشخصية", icon: UserCheck },
     { id: "tasks", label: "المهام", icon: ClipboardList },
-    { id: "React", label: "التفاعلات", icon: SmilePlus },
     { id: "Exam", label: "الاختبار", icon: BookOpenText },
     { id: "Gift", label: "الهدايا", icon: Gift },
     { id: "pointsRequest", label: "طلب نقاط", icon: Sparkles },
@@ -413,7 +294,7 @@ const handleStore = () => {
 
   return (
     <div
-      className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 font-(--font-primary)"
+      className="min-h-screen bg-linear-to-br  from-gray-900 via-gray-900 to-gray-900 font-(--font-primary)"
       dir="rtl"
     >
       <div className="container mx-auto px-3 py-6 md:py-10 max-w-5xl">
@@ -450,6 +331,8 @@ const handleStore = () => {
             <OverviewTab
               studentData={profile.studentData}
               studentId={studentId}
+              studentDocId={profile.studentDocId}
+              isPerfectStudent={profile.isPerfectStudent}
               state={{
                 totalScore: profile.studentData.score || 0,
                 average: profile.average,
@@ -478,15 +361,15 @@ const handleStore = () => {
             />
           )}
 
-      {activeTab === "store" && (
-  <div ref={sectionRef}>
-    <StoreTab
-      studentData={profile.studentData}
-      studentDocId={profile.studentDocId}
-      onOpenLuckyWheel={() => setShowLuckyWheel(true)}
-    />
-  </div>
-)}
+          {activeTab === "store" && (
+            <div ref={sectionRef}>
+              <StoreTab
+                studentData={profile.studentData}
+                studentDocId={profile.studentDocId}
+                onOpenLuckyWheel={() => setShowLuckyWheel(true)}
+              />
+            </div>
+          )}
 
           {activeTab === "tasks" && (
             <TasksTab
@@ -498,14 +381,6 @@ const handleStore = () => {
               toggleGithubButton={profile.toggleGithubButton}
               expandedTask={expandedTask}
               setExpandedTask={setExpandedTask}
-            />
-          )}
-
-          {activeTab === "React" && (
-            <ReactionsTab
-              studentData={profile.studentData}
-              isPerfectStudent={profile.isPerfectStudent}
-              onViewReactions={handleViewReactions}
             />
           )}
 
@@ -591,11 +466,15 @@ const handleStore = () => {
           open={showLuckyWheel}
           onClose={() => setShowLuckyWheel(false)}
           studentDocId={profile.studentDocId}
+          studentName={profile.studentData?.name || "طالب"}
           studentScore={profile.studentData?.score || 0}
           reserveAttendanceCount={profile.reserveAttendanceCount}
           lastSpinTimestamp={profile.studentData?.lastSpinTimestamp}
           paidSpinsCount={profile.studentData?.wheelPaidSpins || 0}
           bonusSpinCount={profile.studentData?.wheelBonusSpins || 0}
+          greenCardsCount={profile.studentData?.greenCards || 0}
+          blueCardsCount={profile.studentData?.blueCards || 0}
+          studentGroup={profile.studentGroup || ""}
           onSpinSuccess={() => {}}
         />
       </div>

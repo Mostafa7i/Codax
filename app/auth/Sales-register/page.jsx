@@ -52,7 +52,7 @@ const GoogleIcon = () => (
 );
 
 // ── Main Component ─────────────────────────────────────────────────────
-export default function page() {
+export default function Page() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
@@ -169,13 +169,13 @@ export default function page() {
           <motion.div
             animate={{ scale: [1, 1.06, 1] }}
             transition={{ duration: 2.5, repeat: Infinity }}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2.5 rounded-full text-sm font-bold shadow-2xl mb-4"
+            className="inline-flex items-center gap-2 bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-2.5 rounded-full text-sm font-bold shadow-2xl mb-4"
             style={{ boxShadow: "0 0 40px rgba(99,102,241,0.4)" }}
           >
             <Sparkles className="w-5 h-5" />
             نظام السيليز - CodaX
           </motion.div>
-          <h1 className="text-3xl font-extrabold mb-2 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold mb-2 bg-linear-to-r from-white to-gray-400 bg-clip-text text-transparent">
             انضم للعمل كسيلز
           </h1>
           <p className="text-gray-500 text-sm leading-relaxed">

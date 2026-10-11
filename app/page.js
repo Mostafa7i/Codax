@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div
       dir="rtl"
-      className="min-h-screen bg-[#060912] text-slate-200 overflow-x-hidden relative selection:bg-indigo-500/30 selection:text-white"
+      className="min-h-svh bg-[#060912] text-slate-200 overflow-x-hidden relative selection:bg-indigo-500/30 selection:text-white"
     >
       {/* ═══════════════ Ambient Background ═══════════════ */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -114,3 +114,4 @@ export default function Home() {
     </div>
   );
 }
+

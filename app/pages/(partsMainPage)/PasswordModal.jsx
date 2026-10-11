@@ -12,8 +12,6 @@ const PasswordModal = ({
   handlePasswordSubmit,
   isLoading,
   errorMessage,
-  rememberMe,
-  setRememberMe,
 }) => {
   if (!showModal) return null;
 
@@ -56,6 +54,7 @@ const PasswordModal = ({
                   placeholder="كلمة المرور..."
                   className="w-full px-4 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
                   disabled={isLoading}
+                  autoFocus
                 />
                 <button
                   onClick={() => setShowPassword(!showPassword)}
@@ -65,16 +64,6 @@ const PasswordModal = ({
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-
-              <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
-                />
-                تذكر كلمة المرور
-              </label>
 
               {errorMessage && (
                 <p className="text-red-600 dark:text-red-400 text-sm text-center font-medium">

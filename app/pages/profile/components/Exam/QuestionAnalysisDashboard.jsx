@@ -155,7 +155,7 @@ const QuestionAnalysisDashboard = ({ examId: propExamId }) => {
   return (
     <div className={propExamId ? "" : "max-w-7xl mx-auto p-6 bg-gray-100 min-h-screen"} dir="rtl">
       {!propExamId && (
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+        <div className="bg-slate-800 p-6 rounded-lg shadow-md mb-8">
           <h1 className="sm:text-3xl font-bold text-gray-800 mb-4 flex items-center">
             <BarChart2 className="ml-3 text-indigo-500" size={32} />
             لوحة تحليل جودة الأسئلة
@@ -171,7 +171,7 @@ const QuestionAnalysisDashboard = ({ examId: propExamId }) => {
                 <option key={exam.id} value={exam.id}>{exam.title}</option>
               ))}
             </select>
-            <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2 disabled:bg-gray-400" disabled={loading || !examId}>
+            <button type="submit" className="text-slate-100 px-6 py-2 rounded-lg hover:flex items-center gap-2 disabled:bg-gray-400" disabled={loading || !examId}>
               {loading ? <Loader className="animate-spin" size={20} /> : <RefreshCw size={20} />}
               <span>{loading ? "جاري التحليل..." : "عرض التحليل"}</span>
             </button>
@@ -204,7 +204,7 @@ const QuestionAnalysisDashboard = ({ examId: propExamId }) => {
           {/* قائمة الأسئلة مع الرسوم البيانية */}
           <div className="space-y-6">
             {analysisData.detailedAnalysis.map((item, index) => (
-              <div key={item.id} className="bg-white p-6 rounded-lg shadow-md">
+              <div key={item.id} className="bg-slate-800 p-6 rounded-lg shadow-md">
                 <h3 className="text-sm sm:text-lg font-bold text-gray-800 mb-1">السؤال {index + 1}: {item.text}</h3>
                 <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-4">نسبة الإجابات الصحيحة: {item.correctPercentage.toFixed(1)}%</p>
                 
@@ -244,7 +244,7 @@ const QuestionAnalysisDashboard = ({ examId: propExamId }) => {
 const HighlightCard = ({ icon, title, question }) => {
   if (!question) return null;
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-slate-800 p-6 rounded-lg shadow-md">
       <div className="flex items-center mb-2">
         {icon}
         <h2 className="text-xl font-bold text-gray-800 mr-3">{title}</h2>

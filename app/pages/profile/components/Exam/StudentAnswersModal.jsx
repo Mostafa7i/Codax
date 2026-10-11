@@ -19,11 +19,11 @@ const StudentAnswersModal = ({ studentResult, questions, onClose }) => {
       dir="rtl"
     >
       <div
-        className="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col"
+        className="bg-slate-800 rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* رأس النافذة */}
-        <div className="p-6 border-b sticky top-0 bg-white z-10">
+        <div className="p-6 border-b sticky top-0 bg-slate-800 z-10">
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold text-gray-800">

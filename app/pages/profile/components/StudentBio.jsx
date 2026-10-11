@@ -216,7 +216,7 @@ const StudentBio = ({ studentId }) => {
     >
       {/* الهيدر */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center sm:text-right">
+        <h1 className="text-3xl sm:text-4xl font-bold text-slate-100 text-center sm:text-right">
           {studentData.name}
         </h1>
 
@@ -224,7 +224,7 @@ const StudentBio = ({ studentId }) => {
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="flex items-center gap-4 bg-linear-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 p-2 rounded-3xl shadow-xl"
+          className="flex items-center gap-4 bg-linear-to-r from-indigo-900/50 to-purple-900/50 p-2 rounded-3xl shadow-xl"
         >
           <RankIcon />
           <div className="text-right flex flex-col gap-2 items-center">
@@ -254,7 +254,7 @@ const StudentBio = ({ studentId }) => {
                 <span className="animate-pulse">😡</span>
               )}
             </span>{" "}
-            <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
+            <p className="text-3xl font-bold text-indigo-400">
               {rankDisplay}
             </p>
           </div>
@@ -271,8 +271,8 @@ const StudentBio = ({ studentId }) => {
         transition={{ delay: 0.3 }}
         className="mt-8 space-y-5"
       >
-        <fieldset className="border border-gray-300 dark:border-gray-600 rounded-2xl p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
-          <legend className="px-4 text-lg font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
+        <fieldset className="border border-gray-600 rounded-2xl p-2 bg-gray-800/70 backdrop-blur-sm">
+          <legend className="px-4 text-lg font-bold text-indigo-400 flex items-center gap-2">
             نبذة عنك <span className="text-xs text-gray-400">(اختياري)</span>
           </legend>
 
@@ -282,7 +282,7 @@ const StudentBio = ({ studentId }) => {
             placeholder="مثال: مبرمج ويب "
             maxLength={maxLength}
             rows={1}
-            className="w-full resize-none bg-transparent outline-none text-gray-800 dark:text-gray-200 placeholder-gray-500 text-md"
+            className="w-full resize-none bg-transparent outline-none text-gray-200 placeholder-gray-500 text-md"
             disabled={isSaving}
           />
         </fieldset>
@@ -317,7 +317,7 @@ const StudentBio = ({ studentId }) => {
             </button>
 
             {isSaving && (
-              <div className="flex items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400">
+              <div className="flex items-center gap-2 text-sm font-medium text-indigo-400">
                 <Loader2 className="w-5 h-5 animate-spin" />
                 <span>جاري الحفظ التلقائي...</span>
               </div>

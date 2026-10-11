@@ -21,14 +21,17 @@ import {
   Star,
   CalendarPlus,
   Shield,
+  Leaf,
   CheckCircle,
   AlertCircle,
   Search,
   Eye,
   ArrowLeft,
+  CreditCard,
 } from "lucide-react";
 import { useGroupContext } from "@/app/context/GroupContextProvider";
 import { useRouter } from "next/navigation";
+import { sendCardCelebrationNotification } from "@/app/utils/notificationHelpers";
 
 const GiftAdmin = () => {
   const [giftType, setGiftType] = useState("attendance");
@@ -43,7 +46,8 @@ const GiftAdmin = () => {
   const [allStudents, setAllStudents] = useState([]);
   const [groupStudentCount, setGroupStudentCount] = useState(0);
 
-  const { availableGroups, selectedGroup, setSelectedGroup } = useGroupContext();
+  const { availableGroups, selectedGroup, setSelectedGroup } =
+    useGroupContext();
   const router = useRouter();
 
   // جلب كل الطلاب
@@ -81,6 +85,10 @@ const GiftAdmin = () => {
       base += `لقد حصلت على (${giftAmount}) حضور احتياطي كمكافأة! 🎉\nعمل رائع، استمر على ذلك 😊`;
     } else if (giftType === "points") {
       base += `لقد حصلت على (${giftAmount}) نقطة إضافية كمكافأة! 🌟\nعمل رائع، استمر على ذلك 😊`;
+    } else if (giftType === "green_card") {
+      base += `لقد حصلت على (${giftAmount}) Green Card 🟩!\nاستخدمها داخل عجلة الحظ لتصبح كل جوائزها إطارات أسطورية دائمة يحددها الأدمن. ✨`;
+    } else if (giftType === "blue_card") {
+      base += `لقد حصلت على (${giftAmount}) Blue Card 🟦!\nاستخدمها داخل عجلة الحظ لتصبح كل جوائزها إطارات مؤقتة مميزة ومحددة المدة! ⏱️✨`;
     } else {
       base += `لقد حصلت على (${giftAmount}) بطاقة VIP كمكافأة! 🏆\nعمل رائع، استمر على ذلك 😊`;
     }
@@ -91,7 +99,7 @@ const GiftAdmin = () => {
   const searchResults = useMemo(() => {
     if (searchTerm.length < 2) return [];
     return allStudents.filter((s) =>
-      s.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [searchTerm, allStudents]);
 
@@ -119,7 +127,10 @@ const GiftAdmin = () => {
       if (sendMode === "group") {
         if (!selectedGroup) throw new Error("اختر مجموعة أولاً");
 
-        const q = query(collection(db, "students"), where("group", "==", selectedGroup));
+        const q = query(
+          collection(db, "students"),
+          where("group", "==", selectedGroup),
+        );
         const snap = await getDocs(q);
         if (snap.empty) throw new Error("لا يوجد طلاب في هذه المجموعة");
 
@@ -136,14 +147,20 @@ const GiftAdmin = () => {
 
         snap.forEach((d) => batch.update(d.ref, { gift: payload }));
 
-        setStatus({ type: "success", msg: `تم إرسال المكافأة لـ ${snap.size} طالب بنجاح!` });
+        setStatus({
+          type: "success",
+          msg: `تم إرسال المكافأة لـ ${snap.size} طالب بنجاح!`,
+        });
       } else {
         if (!selectedStudent) throw new Error("اختر طالبًا أولاً");
 
         batch.set(giftLogRef, {
           ...payload,
           targetType: "student",
-          targetValue: { id: selectedStudent.id || selectedStudent.docId, name: selectedStudent.name },
+          targetValue: {
+            id: selectedStudent.id || selectedStudent.docId,
+            name: selectedStudent.name,
+          },
           sentAt: serverTimestamp(),
           recipientIds: [selectedStudent.id || selectedStudent.docId],
         });
@@ -151,10 +168,32 @@ const GiftAdmin = () => {
         const studentRef = doc(db, "students", selectedStudent.docId);
         batch.update(studentRef, { gift: payload });
 
-        setStatus({ type: "success", msg: `تم إرسال المكافأة للطالب ${selectedStudent.name} بنجاح!` });
+        setStatus({
+          type: "success",
+          msg: `تم إرسال المكافأة للطالب ${selectedStudent.name} بنجاح!`,
+        });
       }
 
       await batch.commit();
+
+      // إرسال إشعار احتفال جماعي عند إرسال Green Card أو Blue Card
+      if (giftType === "green_card" || giftType === "blue_card") {
+        if (sendMode === "group") {
+          await sendCardCelebrationNotification({
+            group: selectedGroup,
+            studentName: "جميع أبطال المجموعة",
+            cardType: giftType,
+            amount: Number(giftAmount) || 1,
+          });
+        } else if (selectedStudent) {
+          await sendCardCelebrationNotification({
+            group: selectedStudent.group,
+            studentName: selectedStudent.name,
+            cardType: giftType,
+            amount: Number(giftAmount) || 1,
+          });
+        }
+      }
     } catch (err) {
       console.error(err);
       setStatus({ type: "error", msg: err.message || "حدث خطأ أثناء الإرسال" });
@@ -170,7 +209,10 @@ const GiftAdmin = () => {
 
     setLoading(true);
     try {
-      const q = query(collection(db, "students"), where("group", "==", selectedGroup));
+      const q = query(
+        collection(db, "students"),
+        where("group", "==", selectedGroup),
+      );
       const snap = await getDocs(q);
       if (snap.empty) throw new Error("لا يوجد طلاب");
 
@@ -178,7 +220,10 @@ const GiftAdmin = () => {
       snap.forEach((d) => batch.update(d.ref, { gift: deleteField() }));
       await batch.commit();
 
-      setStatus({ type: "success", msg: `تم سحب المكافأة من ${snap.size} طالب` });
+      setStatus({
+        type: "success",
+        msg: `تم سحب المكافأة من ${snap.size} طالب`,
+      });
     } catch (err) {
       setStatus({ type: "error", msg: err.message });
     } finally {
@@ -187,7 +232,7 @@ const GiftAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
@@ -196,7 +241,7 @@ const GiftAdmin = () => {
           </h1>
           <button
             onClick={() => router.push("/admin/gifts-log")}
-            className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:shadow-lg transition transform hover:scale-105"
+            className="flex items-center gap-2 px-5 py-3 bg-linear-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:shadow-lg transition transform hover:scale-105"
           >
             <ArrowLeft size={20} />
             لوحة السجل
@@ -209,7 +254,9 @@ const GiftAdmin = () => {
             <button
               onClick={() => setSendMode("group")}
               className={`flex-1 py-3 rounded-lg flex items-center justify-center gap-2 transition ${
-                sendMode === "group" ? "bg-purple-600 text-white shadow-md" : "text-gray-600 dark:text-gray-300"
+                sendMode === "group"
+                  ? "bg-purple-600 text-white shadow-md"
+                  : "text-gray-600 dark:text-gray-300"
               }`}
             >
               <Users size={20} />
@@ -218,7 +265,9 @@ const GiftAdmin = () => {
             <button
               onClick={() => setSendMode("student")}
               className={`flex-1 py-3 rounded-lg flex items-center justify-center gap-2 transition ${
-                sendMode === "student" ? "bg-purple-600 text-white shadow-md" : "text-gray-600 dark:text-gray-300"
+                sendMode === "student"
+                  ? "bg-purple-600 text-white shadow-md"
+                  : "text-gray-600 dark:text-gray-300"
               }`}
             >
               <User size={20} />
@@ -228,12 +277,31 @@ const GiftAdmin = () => {
 
           {/* نوع المكافأة */}
           <div className="space-y-4">
-            <label className="text-lg font-semibold text-gray-700 dark:text-gray-200">نوع المكافأة</label>
+            <label className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+              نوع المكافأة
+            </label>
             <div className="flex flex-wrap gap-4">
               {[
-                { value: "attendance", icon: CalendarPlus, label: "حضور احتياطي", color: "blue" },
+                {
+                  value: "attendance",
+                  icon: CalendarPlus,
+                  label: "حضور احتياطي",
+                  color: "blue",
+                },
                 { value: "points", icon: Star, label: "نقاط", color: "yellow" },
                 { value: "vip", icon: Shield, label: "VIP", color: "purple" },
+                {
+                  value: "green_card",
+                  icon: Leaf,
+                  label: "Green Card",
+                  color: "green",
+                },
+                {
+                  value: "blue_card",
+                  icon: CreditCard,
+                  label: "Blue Card",
+                  color: "sky",
+                },
               ].map((item) => (
                 <label
                   key={item.value}
@@ -251,7 +319,10 @@ const GiftAdmin = () => {
                     onChange={(e) => setGiftType(e.target.value)}
                     className="sr-only"
                   />
-                  <item.icon size={36} className={`text-${item.color}-600 mb-2`} />
+                  <item.icon
+                    size={36}
+                    className={`text-${item.color}-600 mb-2`}
+                  />
                   <span className="font-medium">{item.label}</span>
                 </label>
               ))}
@@ -265,7 +336,9 @@ const GiftAdmin = () => {
               type="number"
               min="1"
               value={giftAmount}
-              onChange={(e) => setGiftAmount(Math.max(1, Number(e.target.value) || 1))}
+              onChange={(e) =>
+                setGiftAmount(Math.max(1, Number(e.target.value) || 1))
+              }
               className="w-full px-4 py-3 text-lg border rounded-xl focus:ring-4 focus:ring-purple-500 dark:bg-gray-700"
             />
           </div>
@@ -273,7 +346,9 @@ const GiftAdmin = () => {
           {/* اختيار المجموعة أو الطالب */}
           {sendMode === "group" ? (
             <div>
-              <label className="block text-lg font-semibold mb-2">اختر المجموعة</label>
+              <label className="block text-lg font-semibold mb-2">
+                اختر المجموعة
+              </label>
               <select
                 value={selectedGroup || ""}
                 onChange={(e) => setSelectedGroup(e.target.value)}
@@ -282,16 +357,22 @@ const GiftAdmin = () => {
                 <option value="">-- اختر مجموعة --</option>
                 {availableGroups.map((g) => (
                   <option key={g} value={g}>
-                    {g} {groupStudentCount > 0 && `( ${groupStudentCount} طالب )`}
+                    {g}{" "}
+                    {groupStudentCount > 0 && `( ${groupStudentCount} طالب )`}
                   </option>
                 ))}
               </select>
             </div>
           ) : (
             <div className="relative">
-              <label className="block text-lg font-semibold mb-2">ابحث عن طالب</label>
+              <label className="block text-lg font-semibold mb-2">
+                ابحث عن طالب
+              </label>
               <div className="relative">
-                <Search className="absolute right-4 top-4 text-gray-400" size={22} />
+                <Search
+                  className="absolute right-4 top-4 text-gray-400"
+                  size={22}
+                />
                 <input
                   type="text"
                   value={searchTerm}
@@ -312,7 +393,6 @@ const GiftAdmin = () => {
                       onClick={() => {
                         setSelectedStudent(s);
                         setSearchTerm(s.name);
-                        setSearchResults([]);
                       }}
                       className="px-4 py-3 hover:bg-purple-100 dark:hover:bg-purple-900 cursor-pointer flex justify-between"
                     >
@@ -326,7 +406,9 @@ const GiftAdmin = () => {
               {selectedStudent && (
                 <div className="mt-3 p-4 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center gap-3">
                   <CheckCircle className="text-green-600" />
-                  <span className="font-medium">تم اختيار: {selectedStudent.name}</span>
+                  <span className="font-medium">
+                    تم اختيار: {selectedStudent.name}
+                  </span>
                 </div>
               )}
             </div>
@@ -355,7 +437,7 @@ const GiftAdmin = () => {
                 (sendMode === "group" && !selectedGroup) ||
                 (sendMode === "student" && !selectedStudent)
               }
-              className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 hover:shadow-xl disabled:opacity-60 transition"
+              className="flex-1 bg-linear-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 hover:shadow-xl disabled:opacity-60 transition"
             >
               {loading ? <Loader2 className="animate-spin" /> : <Send />}
               إرسال المكافأة
@@ -365,7 +447,7 @@ const GiftAdmin = () => {
               <button
                 onClick={handleRemoveGift}
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-red-600 to-rose-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 hover:shadow-xl transition"
+                className="flex-1 bg-linear-to-r from-red-600 to-rose-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 hover:shadow-xl transition"
               >
                 {loading ? <Loader2 className="animate-spin" /> : <Trash2 />}
                 سحب المكافأة

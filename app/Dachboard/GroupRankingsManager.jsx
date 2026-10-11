@@ -18,6 +18,7 @@ import {
 import Swal from "sweetalert2";
 import {
   getStoredGroupRankings,
+  saveGroupRankings,
   calculateCurrentGroupRankings,
   checkAndNotifyRankChanges,
   syncAllGroupsRankings,
@@ -114,7 +115,9 @@ export default function GroupRankingsManager({ selectedGroup, availableGroups = 
 
     setSyncing(true);
     try {
-      const res = await checkAndNotifyRankChanges(selectedGroup, null, null, true);
+      const ranks = await calculateCurrentGroupRankings(selectedGroup);
+      await saveGroupRankings(selectedGroup, ranks);
+      const res = { status: "initialized", ranksCount: ranks.length, message: `تم حفظ ترتيب طلاب مجموعة ${selectedGroup} الحالي كمرجع أساسي.` };
       await loadRankingsData();
       Swal.fire({
         icon: "success",

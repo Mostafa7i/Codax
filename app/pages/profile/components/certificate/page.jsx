@@ -112,8 +112,8 @@ const CodaxQR = ({ value, size = 140 }) => {
 // ─── Detail Row ───────────────────────────────────────────────────────────────
 
 const InfoRow = ({ icon: Icon, label, value, highlight, valueClass }) => (
-  <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700/50 last:border-0">
-    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm">
+  <div className="flex items-center justify-between py-3 border-b border-gray-700/50 last:border-0">
+    <div className="flex items-center gap-2 text-gray-400 text-sm">
       <Icon size={15} className="text-indigo-400" />
       <span>{label}</span>
     </div>
@@ -122,8 +122,8 @@ const InfoRow = ({ icon: Icon, label, value, highlight, valueClass }) => (
         valueClass
           ? valueClass
           : highlight
-            ? "text-green-600 dark:text-green-400"
-            : "text-gray-800 dark:text-gray-100"
+            ? "text-green-400"
+            : "text-gray-100"
       }`}
     >
       {value}
@@ -133,7 +133,7 @@ const InfoRow = ({ icon: Icon, label, value, highlight, valueClass }) => (
 
 // ─── Certificate Verification Page ───────────────────────────────────────────
 
-export default function page() {
+export default function Page() {
   const { certificateId } = useParams();
   const [status, setStatus] = useState("loading"); // loading | valid | invalid | error
   const [certData, setCertData] = useState(null);
@@ -340,7 +340,7 @@ export default function page() {
   // ── Loading ──────────────────────────────────────────────────────────────
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-slate-900 via-indigo-950 to-purple-950">
         <div className="flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-indigo-400 shadow-xl">
             <img
@@ -372,7 +372,7 @@ export default function page() {
           </p>
           <Link
             href="/"
-            className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition-colors"
+            className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 hover:bg-indigo-700 text-slate-100 rounded-xl text-sm font-medium transition-colors"
           >
             <Globe size={15} />
             الرئيسية
@@ -385,7 +385,7 @@ export default function page() {
   // ── Invalid ───────────────────────────────────────────────────────────────
   if (status === "invalid") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-red-950 to-gray-950 p-6">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-slate-900 via-red-950 to-gray-950 p-6">
         <div className="bg-gray-900/80 border border-red-500/40 backdrop-blur-sm rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
           {/* Logo */}
           <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-6 shadow-xl border-2 border-red-400/30">
@@ -400,7 +400,7 @@ export default function page() {
             <XCircle size={34} className="text-red-400" />
           </div>
 
-          <h1 className="text-2xl font-extrabold text-white mb-2">
+          <h1 className="text-2xl font-extrabold text-slate-100 mb-2">
             شهادة غير موجودة
           </h1>
           <p className="text-gray-400 text-sm mb-1">رقم الشهادة:</p>
@@ -415,7 +415,7 @@ export default function page() {
 
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-medium transition-all shadow-lg"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r hover:from-indigo-700 hover:to-purple-700 text-slate-100 rounded-xl font-medium transition-all shadow-lg"
           >
             <Globe size={16} />
             العودة للرئيسية
@@ -428,7 +428,7 @@ export default function page() {
   // ── Valid Certificate ─────────────────────────────────────────────────────
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950 flex items-center justify-center p-4 py-12"
+      className="min-h-screen bg-linear-to-br from-slate-900 via-indigo-950 to-purple-950 flex items-center justify-center p-4 py-12"
       dir="rtl"
     >
       {/* Background decorative blobs */}
@@ -440,22 +440,22 @@ export default function page() {
 
       <div className="relative w-full max-w-xl">
         {/* Card */}
-        <div className="bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="bg-gray-900/80 backdrop-blur-xl border border-slate-600/10 rounded-3xl overflow-hidden shadow-2xl">
           {/* Top gradient header */}
-          <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 p-6 text-center relative">
+          <div className="bg-linear-to-r from-green-500 via-emerald-500 to-teal-500 p-6 text-center relative">
             {/* Dots pattern */}
             <div
               className="absolute inset-0 opacity-20"
               style={{
                 backgroundImage:
-                  "radial-gradient(circle, white 1px, transparent 1px)",
+                  "radial-gradient(circle, rgba(148,163,184,0.35) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
               }}
             />
 
             <div className="relative">
               {/* Logo */}
-              <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-3 shadow-xl border-3 border-white/30">
+              <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-3 shadow-xl border-3 border-slate-600/30">
                 <img
                   src={codaxLogo}
                   alt="CodaX"
@@ -465,25 +465,25 @@ export default function page() {
 
               {/* Valid badge & Visitor counter */}
               <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
-                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-4 py-1.5">
-                  <BadgeCheck size={16} className="text-white" />
-                  <span className="text-white font-bold text-sm tracking-wide">
+                <div className="inline-flex items-center gap-2 bg-slate-800/20 backdrop-blur-sm border border-slate-600/30 rounded-full px-4 py-1.5">
+                  <BadgeCheck size={16} className="text-slate-100" />
+                  <span className="text-slate-100 font-bold text-sm tracking-wide">
                     VERIFIED CERTIFICATE
                   </span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1.5 text-white text-xs font-bold shadow-inner">
+                <div className="inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-sm border border-slate-600/20 rounded-full px-3 py-1.5 text-slate-100 text-xs font-bold shadow-inner">
                   <Eye size={14} className="text-purple-300" />
                   <span>{certData.viewsCount ?? 1} زيارة</span>
                 </div>
               </div>
 
               <div className="flex items-center justify-center gap-2">
-                <CheckCircle size={28} className="text-white drop-shadow" />
-                <h1 className="text-2xl font-extrabold text-white drop-shadow">
+                <CheckCircle size={28} className="text-slate-100 drop-shadow" />
+                <h1 className="text-2xl font-extrabold text-slate-100 drop-shadow">
                   الشهادة موثقة ✓
                 </h1>
               </div>
-              <p className="text-white/80 text-sm mt-1">
+              <p className="text-slate-100/80 text-sm mt-1">
                 تم التحقق بنجاح من سجلات CodaX
               </p>
             </div>
@@ -494,7 +494,7 @@ export default function page() {
             {/* Student name highlight */}
             <div className="text-center">
               <p className="text-gray-400 text-sm mb-1">تُمنح هذه الشهادة لـ</p>
-              <h2 className="text-2xl font-extrabold text-white">
+              <h2 className="text-2xl font-extrabold text-slate-100">
                 {certData.studentName}
               </h2>
               <p className="text-indigo-300 text-sm mt-1">
@@ -508,7 +508,7 @@ export default function page() {
             </div>
 
             {/* General Certificate Details */}
-            <div className="bg-gray-800/60 rounded-2xl p-4 border border-white/5 space-y-0.5">
+            <div className="bg-gray-800/60 rounded-2xl p-4 border border-slate-600/5 space-y-0.5">
               <h3 className="text-xs font-bold text-gray-400 mb-2 pb-1 border-b border-gray-700/50">
                 بيانات الشهادة والدورة
               </h3>
@@ -561,10 +561,10 @@ export default function page() {
 
             {/* GitHub Links Section */}
             {certData.showGithubButton && (
-              <div className="bg-gray-800/60 rounded-2xl p-4 border border-white/5">
+              <div className="bg-gray-800/60 rounded-2xl p-4 border border-slate-600/5">
                 <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-700/50">
                   <Github size={18} className="text-indigo-400" />
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-100">
                     روابط GitHub والمشاريع
                   </h3>
                 </div>
@@ -577,15 +577,15 @@ export default function page() {
                         href={isValidUrl(link.url) ? link.url : "#"}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between p-2.5 rounded-xl bg-gray-900/60 hover:bg-indigo-950/40 border border-gray-700/50 transition-colors group"
+                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-indigo-950/40 border border-gray-700/50 transition-colors group"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
                           <Github
                             size={16}
-                            className="text-gray-400 group-hover:text-indigo-400 flex-shrink-0"
+                            className="group-hover:text-indigo-400 flex-shrink-0"
                           />
                           <div className="min-w-0">
-                            <p className="text-xs font-bold text-gray-200 group-hover:text-indigo-300 truncate">
+                            <p className="text-xs font-bold group-hover:text-indigo-300 truncate">
                               {link.title || `مشروع ${idx + 1}`}
                             </p>
                             <p className="text-[10px] text-gray-500 font-mono truncate dir-ltr text-left">
@@ -595,7 +595,7 @@ export default function page() {
                         </div>
                         <ExternalLink
                           size={14}
-                          className="text-gray-500 group-hover:text-indigo-400 flex-shrink-0 mr-2"
+                          className="group-hover:text-indigo-400 flex-shrink-0 mr-2"
                         />
                       </a>
                     ))}
@@ -610,7 +610,7 @@ export default function page() {
             )}
 
             {/* QR Code */}
-            <div className="flex flex-col items-center bg-white rounded-2xl p-5 border border-gray-100">
+            <div className="flex flex-col items-center bg-slate-800 rounded-2xl p-5 border border-gray-100">
               <CodaxQR value={verifyUrl} size={150} />
               <p className="text-gray-400 text-xs text-center mt-3 font-mono break-all">
                 {verifyUrl}
@@ -635,7 +635,7 @@ export default function page() {
           <div className="px-6 pb-6 text-center">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-indigo-400 transition-colors"
+              className="inline-flex items-center gap-2 text-sm hover:text-indigo-400 transition-colors"
             >
               <Globe size={14} />
               codax-dev.web.app

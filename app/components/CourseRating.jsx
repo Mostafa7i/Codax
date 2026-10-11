@@ -89,7 +89,7 @@ const CourseRating = ({ courseId = "general-course", setOpenModel }) => {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.12),transparent_70%)] rounded-3xl" />
 
         <div className="relative">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-[0_0_40px_-5px_rgba(251,191,36,0.5)]">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-[0_0_40px_-5px_rgba(251,191,36,0.5)]">
             <CheckCircle2 className="w-10 h-10 text-black" strokeWidth={2.5} />
           </div>
 
@@ -119,7 +119,7 @@ const CourseRating = ({ courseId = "general-course", setOpenModel }) => {
 
       <div className="relative bg-slate-900/95 border border-slate-700/60 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-xl">
         {/* Top gold line */}
-        <div className="h-1 bg-gradient-to-l from-amber-500 via-yellow-400 to-orange-500" />
+        <div className="h-1 bg-linear-to-l from-amber-500 via-yellow-400 to-orange-500" />
 
         {/* Close button */}
         {setOpenModel && (
@@ -141,7 +141,7 @@ const CourseRating = ({ courseId = "general-course", setOpenModel }) => {
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-white">
               قيّم{" "}
-              <span className="bg-gradient-to-l from-amber-300 to-orange-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-l from-amber-300 to-orange-400 bg-clip-text text-transparent">
                 تجربتك
               </span>
             </h2>
@@ -236,7 +236,7 @@ const CourseRating = ({ courseId = "general-course", setOpenModel }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-l from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold text-sm shadow-lg shadow-amber-500/25 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-linear-to-l from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold text-sm shadow-lg shadow-amber-500/25 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
             >
               {loading ? (
                 <>

@@ -44,15 +44,15 @@ export function StatCard({ icon: Icon, label, value, suffix, color }) {
   return (
     <motion.div
       whileHover={{ y: -6, scale: 1.04 }}
-      className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md"
+      className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-slate-950/20 border border-white/15 backdrop-blur-lg shadow-xl"
     >
-      <div className={`p-3 rounded-xl bg-gradient-to-br ${color}`}>
+      <div className={`p-3 rounded-xl bg-linear-to-br ${color} shadow-md`}>
         <Icon className="w-6 h-6 text-white" />
       </div>
-      <p className="text-3xl font-black text-white">
+      <p className="text-3xl font-black text-white drop-shadow-md">
         <Counter to={value} suffix={suffix} />
       </p>
-      <p className="text-slate-400 text-sm font-medium text-center">{label}</p>
+      <p className="text-slate-200 text-sm font-semibold text-center drop-shadow-xs">{label}</p>
     </motion.div>
   );
 }

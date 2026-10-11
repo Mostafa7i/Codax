@@ -170,7 +170,7 @@ export default function PointsRequestsAdmin() {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 shadow-lg mb-3">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 shadow-lg mb-3">
             <Coins className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
@@ -224,7 +224,7 @@ export default function PointsRequestsAdmin() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all border-2 ${
                   activeTab === tab.key
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md"
+                    ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md"
                     : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-indigo-300"
                 }`}
               >
@@ -266,7 +266,7 @@ export default function PointsRequestsAdmin() {
                 {/* Card header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                       {req.studentName?.[0] || "?"}
                     </div>
                     <div>
@@ -357,7 +357,7 @@ export default function PointsRequestsAdmin() {
                         <button
                           onClick={() => handleApprove(req)}
                           disabled={!!processing}
-                          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-xl shadow disabled:opacity-60 transition-all"
+                          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-linear-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-xl shadow disabled:opacity-60 transition-all"
                         >
                           {processing === req.id ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -369,7 +369,7 @@ export default function PointsRequestsAdmin() {
                         <button
                           onClick={() => handleReject(req)}
                           disabled={!!processing}
-                          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-bold rounded-xl shadow disabled:opacity-60 transition-all"
+                          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-linear-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-bold rounded-xl shadow disabled:opacity-60 transition-all"
                         >
                           {processing === req.id ? (
                             <Loader2 className="w-4 h-4 animate-spin" />

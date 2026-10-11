@@ -125,10 +125,26 @@ export const DEFAULT_WHEEL_SECTORS = [
   },
 ];
 
+export const DEFAULT_BLUE_CARD_ITEMS = [
+  { borderId: "cosmic_galaxy", durationDays: 3 },
+  { borderId: "dragon_emperor", durationDays: 3 },
+  { borderId: "aurora_borealis", durationDays: 7 },
+  { borderId: "rgb_rainbow", durationDays: 1 },
+];
+
 export const DEFAULT_WHEEL_CONFIG = {
   cooldownHours: 24,
   isActive: true,
   sectors: DEFAULT_WHEEL_SECTORS,
+  // إطارات عجلة Green Card الخاصة (دائمة). يمكن للأدمن تعديلها من لوحة العجلة.
+  greenCardBorderIds: [
+    "emerald_crystal",
+    "cyber_neon",
+    "fire_flame",
+    "golden_champion",
+  ],
+  // إطارات عجلة Blue Card الخاصة (مؤقتة بمدة محددة). يمكن للأدمن اختيار الإطارات وتحديد مدة كل إطار بالأيام.
+  blueCardItems: DEFAULT_BLUE_CARD_ITEMS,
 };
 
 /**
@@ -145,7 +161,10 @@ export function mergeWheelSectors(savedSectors) {
     ...(savedById.get(sector.id) || {}),
   }));
   const customSectors = savedSectors.filter(
-    (sector) => !DEFAULT_WHEEL_SECTORS.some((defaultSector) => defaultSector.id === sector.id)
+    (sector) =>
+      !DEFAULT_WHEEL_SECTORS.some(
+        (defaultSector) => defaultSector.id === sector.id,
+      ),
   );
 
   return [...mergedDefaults, ...customSectors];
@@ -162,7 +181,7 @@ export function getWeightedSectorIndex(sectors) {
 
   const totalPercentage = enabledList.reduce(
     (sum, s) => sum + Number(s.percentage || 0),
-    0
+    0,
   );
 
   let random = Math.random() * totalPercentage;
@@ -185,7 +204,21 @@ export async function getLuckyWheelConfig() {
     const ref = doc(db, "settings", "luckyWheel");
     const snap = await getDoc(ref);
     if (snap.exists()) {
-      return { ...DEFAULT_WHEEL_CONFIG, ...snap.data(), sectors: mergeWheelSectors(snap.data().sectors) };
+      const data = snap.data();
+      return {
+        ...DEFAULT_WHEEL_CONFIG,
+        ...data,
+        sectors:
+          Array.isArray(data.sectors) && data.sectors.length > 0
+            ? data.sectors
+            : DEFAULT_WHEEL_SECTORS,
+        greenCardBorderIds: Array.isArray(data.greenCardBorderIds)
+          ? data.greenCardBorderIds
+          : DEFAULT_WHEEL_CONFIG.greenCardBorderIds,
+        blueCardItems: Array.isArray(data.blueCardItems)
+          ? data.blueCardItems
+          : DEFAULT_WHEEL_CONFIG.blueCardItems,
+      };
     }
     return DEFAULT_WHEEL_CONFIG;
   } catch (err) {
@@ -214,7 +247,21 @@ export function subscribeLuckyWheelConfig(onUpdate) {
     ref,
     (snap) => {
       if (snap.exists()) {
-        onUpdate({ ...DEFAULT_WHEEL_CONFIG, ...snap.data(), sectors: mergeWheelSectors(snap.data().sectors) });
+        const data = snap.data();
+        onUpdate({
+          ...DEFAULT_WHEEL_CONFIG,
+          ...data,
+          sectors:
+            Array.isArray(data.sectors) && data.sectors.length > 0
+              ? data.sectors
+              : DEFAULT_WHEEL_SECTORS,
+          greenCardBorderIds: Array.isArray(data.greenCardBorderIds)
+            ? data.greenCardBorderIds
+            : DEFAULT_WHEEL_CONFIG.greenCardBorderIds,
+          blueCardItems: Array.isArray(data.blueCardItems)
+            ? data.blueCardItems
+            : DEFAULT_WHEEL_CONFIG.blueCardItems,
+        });
       } else {
         onUpdate(DEFAULT_WHEEL_CONFIG);
       }
@@ -222,6 +269,6 @@ export function subscribeLuckyWheelConfig(onUpdate) {
     (err) => {
       console.error("Error subscribing to lucky wheel config:", err);
       onUpdate(DEFAULT_WHEEL_CONFIG);
-    }
+    },
   );
 }

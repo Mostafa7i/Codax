@@ -227,14 +227,14 @@ const StudentsLinksList = () => {
       {/* ملخص الإحصائيات السريعة */}
       {selectedGroup && students.length > 0 && (
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="p-4 bg-gradient-to-br from-violet-500/5 to-indigo-500/5 dark:from-violet-500/10 dark:to-indigo-500/10 rounded-2xl border border-violet-500/10 flex items-center justify-between">
+          <div className="p-4 bg-linear-to-br from-violet-500/5 to-indigo-500/5 dark:from-violet-500/10 dark:to-indigo-500/10 rounded-2xl border border-violet-500/10 flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400">الطلاب الذين رفعوا</p>
               <h4 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{students.length}</h4>
             </div>
             <Users className="w-8 h-8 text-violet-500 opacity-60" />
           </div>
-          <div className="p-4 bg-gradient-to-br from-blue-500/5 to-teal-500/5 dark:from-blue-500/10 dark:to-teal-500/10 rounded-2xl border border-blue-500/10 flex items-center justify-between">
+          <div className="p-4 bg-linear-to-br from-blue-500/5 to-teal-500/5 dark:from-blue-500/10 dark:to-teal-500/10 rounded-2xl border border-blue-500/10 flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400">إجمالي الروابط</p>
               <h4 className="text-2xl font-bold text-gray-800 dark:text-white mt-1">{totalLinksCount}</h4>
@@ -278,7 +278,7 @@ const StudentsLinksList = () => {
                   className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full bg-gradient-to-tr ${getAvatarColor(student.name)} text-white flex items-center justify-center font-bold text-sm shadow-inner`}>
+                    <div className={`w-10 h-10 rounded-full bg-linear-to-tr ${getAvatarColor(student.name)} text-white flex items-center justify-center font-bold text-sm shadow-inner`}>
                       {initials}
                     </div>
                     <div>
@@ -324,7 +324,7 @@ const StudentsLinksList = () => {
                     >
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full bg-gradient-to-tr ${getAvatarColor(student.name)} text-white flex items-center justify-center font-bold text-sm shadow-inner shrink-0`}>
+                          <div className={`w-10 h-10 rounded-full bg-linear-to-tr ${getAvatarColor(student.name)} text-white flex items-center justify-center font-bold text-sm shadow-inner shrink-0`}>
                             {initials}
                           </div>
                           <div>
@@ -411,7 +411,7 @@ const StudentsLinksList = () => {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full bg-gradient-to-tr ${getAvatarColor(selectedStudent.name)} text-white flex items-center justify-center font-bold text-sm shadow-inner`}>
+                <div className={`w-10 h-10 rounded-full bg-linear-to-tr ${getAvatarColor(selectedStudent.name)} text-white flex items-center justify-center font-bold text-sm shadow-inner`}>
                   {selectedStudent.name.split(" ").slice(0, 2).map(n => n[0]).join("")}
                 </div>
                 <div>

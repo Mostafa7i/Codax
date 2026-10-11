@@ -34,33 +34,6 @@ export const getStudentDocId = async (studentId) => {
   return snapshot.docs[0].id;
 };
 
-/**
- * جلب كلمة مرور الطالب بواسطة رقم ID
- */
-export async function fetchStudentPassword(studentId) {
-  if (!studentId) return null;
-  try {
-    const studentsRef = collection(db, "students");
-    const q = query(studentsRef, where("id", "==", Number(studentId)));
-    const snapshot = await getDocs(q);
-
-    if (!snapshot.empty) {
-      return snapshot.docs[0].data().password || null;
-    }
-
-    // محاولة البحث كـ String
-    const docRef = doc(db, "students", String(studentId));
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return docSnap.data().password || null;
-    }
-
-    return null;
-  } catch (error) {
-    console.error("Error fetching student password:", error);
-    return null;
-  }
-}
 
 /**
  * رفع الصورة على Cloudinary

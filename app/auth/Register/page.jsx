@@ -125,6 +125,241 @@ const FloatInput = ({
   </div>
 );
 
+// ─── Countries config ─────────────────────────────────────────────
+const COUNTRIES = [
+  {
+    code: "EG",
+    dialCode: "+20",
+    flag: "🇪🇬",
+    name: "مصر",
+    placeholder: "01XXXXXXXXX",
+    maxLength: 11,
+    // 010, 011, 012, 015 + 8 أرقام = 11 رقم بدون كود الدولة
+    validate: (n) => /^01[0125]\d{8}$/.test(n),
+    hint: "11 رقماً يبدأ بـ 010 أو 011 أو 012 أو 015",
+  },
+  {
+    code: "SA",
+    dialCode: "+966",
+    flag: "🇸🇦",
+    name: "السعودية",
+    placeholder: "05XXXXXXXX",
+    maxLength: 10,
+    // 05X + 7 أرقام = 10 أرقام بدون كود الدولة
+    validate: (n) => /^05[0-9]\d{7}$/.test(n),
+    hint: "10 أرقام تبدأ بـ 05",
+  },
+  {
+    code: "MA",
+    dialCode: "+212",
+    flag: "🇲🇦",
+    name: "المغرب",
+    placeholder: "06XXXXXXXX",
+    maxLength: 10,
+    // 06X أو 07X + 7 أرقام = 10 أرقام
+    validate: (n) => /^0[67]\d{8}$/.test(n),
+    hint: "10 أرقام تبدأ بـ 06 أو 07",
+  },
+  {
+    code: "TN",
+    dialCode: "+216",
+    flag: "🇹🇳",
+    name: "تونس",
+    placeholder: "XXXXXXXX",
+    maxLength: 8,
+    // 8 أرقام، تبدأ بـ 2,5,7,9
+    validate: (n) => /^[2579]\d{7}$/.test(n),
+    hint: "8 أرقام تبدأ بـ 2 أو 5 أو 7 أو 9",
+  },
+  {
+    code: "IQ",
+    dialCode: "+964",
+    flag: "🇮🇶",
+    name: "العراق",
+    placeholder: "07XXXXXXXXX",
+    maxLength: 11,
+    // 07X + 8 أرقام = 11 رقم
+    validate: (n) => /^07[3-9]\d{8}$/.test(n),
+    hint: "11 رقماً تبدأ بـ 07",
+  },
+  {
+    code: "SY",
+    dialCode: "+963",
+    flag: "🇸🇾",
+    name: "سوريا",
+    placeholder: "09XXXXXXXX",
+    maxLength: 10,
+    // 09X + 7 أرقام = 10 أرقام
+    validate: (n) => /^09[1-9]\d{7}$/.test(n),
+    hint: "10 أرقام تبدأ بـ 09",
+  },
+  {
+    code: "DZ",
+    dialCode: "+213",
+    flag: "🇩🇿",
+    name: "الجزائر",
+    placeholder: "05XXXXXXXX",
+    maxLength: 10,
+    // 05X أو 06X أو 07X + 7 أرقام = 10 أرقام
+    validate: (n) => /^0[5-7]\d{8}$/.test(n),
+    hint: "10 أرقام تبدأ بـ 05 أو 06 أو 07",
+  },
+  {
+    code: "US",
+    dialCode: "+1",
+    flag: "🇺🇸",
+    name: "أمريكا",
+    placeholder: "XXXXXXXXXX",
+    maxLength: 10,
+    // 10 أرقام، أول رقم 2–9، ثاني رقم 0–8
+    validate: (n) => /^[2-9][0-8][0-9]\d{7}$/.test(n),
+    hint: "10 أرقام (كود المنطقة + الرقم)",
+  },
+  {
+    code: "SD",
+    dialCode: "+249",
+    flag: "🇸🇩",
+    name: "السودان",
+    placeholder: "09XXXXXXXX",
+    maxLength: 10,
+    // 09X + 7 أرقام = 10 أرقام
+    validate: (n) => /^09[0-9]\d{7}$/.test(n),
+    hint: "10 أرقام تبدأ بـ 09",
+  },
+];
+
+// ─── Phone Input with Country Selector ───────────────────────────
+const PhoneInput = ({ value, country, onPhoneChange, onCountryChange, error }) => {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef(null);
+  const selected = COUNTRIES.find((c) => c.code === country) || COUNTRIES[0];
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div className="relative w-full mt-6" ref={wrapRef}>
+      {/* Label */}
+      <label className="block text-sm font-bold text-gray-500 dark:text-gray-400 mb-1.5 text-right">
+        رقم الموبايل (واتساب) *
+      </label>
+
+      {/* Input row */}
+      <div
+        className={`flex items-center border rounded-xl overflow-hidden transition-all duration-200 ${
+          error
+            ? "border-red-500 ring-2 ring-red-400/30"
+            : "border-gray-300 dark:border-gray-600 focus-within:ring-2 focus-within:ring-indigo-400/40 focus-within:border-indigo-500"
+        }`}
+      >
+        {/* Country picker button */}
+        <button
+          type="button"
+          onClick={() => setOpen((p) => !p)}
+          className="flex items-center gap-1.5 px-3 py-3.5 bg-gray-50 dark:bg-gray-800 border-l border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shrink-0 min-w-[90px] justify-center"
+        >
+          <span className="text-xl leading-none">{selected.flag}</span>
+          <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{selected.dialCode}</span>
+          <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        </button>
+
+        {/* Phone number input */}
+        <input
+          type="tel"
+          value={value}
+          onChange={(e) => {
+            const num = e.target.value.replace(/[^0-9]/g, "").slice(0, selected.maxLength);
+            onPhoneChange(num);
+          }}
+          placeholder={selected.placeholder}
+          dir="ltr"
+          className="flex-1 bg-transparent pt-3.5 pb-3.5 px-4 text-base text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none font-mono"
+        />
+      </div>
+
+      {/* Hint */}
+      <p className="mt-1 text-[11px] text-gray-400 text-right">
+        {selected.flag} {selected.name}: {selected.hint}
+      </p>
+
+      {/* Error */}
+      {error && (
+        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 justify-end">
+          <span>{error}</span>
+          <span>⚠</span>
+        </p>
+      )}
+
+      {/* Dropdown */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 top-full mt-1 w-full rounded-xl shadow-2xl overflow-hidden"
+            style={{
+              background: "rgba(15,15,30,0.97)",
+              border: "1px solid rgba(99,102,241,0.3)",
+              backdropFilter: "blur(12px)",
+              maxHeight: "260px",
+              overflowY: "auto",
+            }}
+          >
+            {COUNTRIES.map((c, i) => (
+              <button
+                key={c.code}
+                type="button"
+                onClick={() => {
+                  onCountryChange(c.code);
+                  onPhoneChange("");
+                  setOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 transition-colors text-right"
+                style={{
+                  background:
+                    c.code === country
+                      ? "rgba(99,102,241,0.25)"
+                      : i % 2 === 0
+                      ? "rgba(255,255,255,0.02)"
+                      : "transparent",
+                  color: c.code === country ? "#818cf8" : "#e5e7eb",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "rgba(99,102,241,0.18)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background =
+                    c.code === country
+                      ? "rgba(99,102,241,0.25)"
+                      : i % 2 === 0
+                      ? "rgba(255,255,255,0.02)"
+                      : "transparent")
+                }
+              >
+                <span className="text-2xl leading-none shrink-0">{c.flag}</span>
+                <div className="flex flex-col items-start flex-1 min-w-0">
+                  <span className="text-sm font-bold truncate">{c.name}</span>
+                  <span className="text-xs text-gray-400 font-mono">{c.dialCode} · {c.hint}</span>
+                </div>
+                {c.code === country && (
+                  <Check className="w-4 h-4 text-indigo-400 shrink-0" />
+                )}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 // ─── Sales Rep Autocomplete ───────────────────────────────────────────
 const SalesAutocomplete = ({ value, onChange }) => {
   const [reps, setReps] = useState([]);
@@ -512,7 +747,7 @@ const ReferrersModal = ({ onClose }) => {
 };
 
 // ─── Main Component ───────────────────────────────────────────────
-export default function page() {
+export default function Page() {
   const navigate = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [loadingCodax, setLoadingCodax] = useState(false);
@@ -524,6 +759,7 @@ export default function page() {
   const [showAlert, setShowAlert] = useState(false);
   const [activeTab, setActiveTab] = useState("student");
   const [isPhoneAlreadyRegistered, setIsPhoneAlreadyRegistered] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("EG");
 
   const [formData, setFormData] = useState({
     arabicName: "",
@@ -572,10 +808,11 @@ export default function page() {
     }
     if (step === 3) {
       const phoneClean = formData.phone.trim();
+      const countryConfig = COUNTRIES.find((c) => c.code === selectedCountry) || COUNTRIES[0];
       if (!phoneClean) {
         errors.phone = "رقم الهاتف مطلوب";
-      } else if (!/^01[0125]\d{8}$/.test(phoneClean)) {
-        errors.phone = "رقم الموبايل غير صحيح، يجب أن يكون 11 رقماً ويبدأ بـ (010 أو 011 أو 012 أو 015)";
+      } else if (!countryConfig.validate(phoneClean)) {
+        errors.phone = `رقم الموبايل غير صحيح — ${countryConfig.flag} ${countryConfig.name}: ${countryConfig.hint}`;
       }
       if (!formData.email) errors.email = "البريد الإلكتروني مطلوب";
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
@@ -594,13 +831,6 @@ export default function page() {
     }
     if (name === "englishName") {
       setFormData({ ...formData, [name]: value.replace(/[^A-Za-z\s]/g, "") });
-      return;
-    }
-    if (name === "phone") {
-      const num = value.replace(/[^0-9]/g, "").slice(0, 11);
-      setFormData({ ...formData, [name]: num });
-      setIsPhoneAlreadyRegistered(false);
-      if (fieldErrors.phone) setFieldErrors({ ...fieldErrors, phone: "" });
       return;
     }
     if (name === "age") {
@@ -645,14 +875,18 @@ export default function page() {
     setError("");
     try {
       const arabicName = formData.arabicName.trim();
-      const phone = formData.phone.trim();
+      const countryConfig = COUNTRIES.find((c) => c.code === selectedCountry) || COUNTRIES[0];
+      // الرقم المحلي (بدون كود دولة) — للحفظ كما أدخله المستخدم
+      const phoneLocal = formData.phone.trim();
+      // الرقم الدولي الكامل — للحفظ في Firestore
+      const phoneIntl = countryConfig.dialCode + phoneLocal;
       const track = formData.track;
       const studentsRef = collection(db, "NewStudents");
 
-      // 1. فحص هل الطالب مسجل في نفس التراك
+      // 1. فحص هل الطالب مسجل في نفس التراك (بالرقم الدولي أو المحلي)
       const dupQ = query(
         studentsRef,
-        where("phone", "==", phone),
+        where("phone", "==", phoneIntl),
         where("track", "==", track),
         where("arabicName", "==", arabicName),
       );
@@ -664,7 +898,7 @@ export default function page() {
       }
 
       // 2. فحص هل رقم الهاتف مسجل في قائمة الطلاب الجدد
-      const phoneQ = query(studentsRef, where("phone", "==", phone));
+      const phoneQ = query(studentsRef, where("phone", "==", phoneIntl));
       const phoneSnap = await getDocs(phoneQ);
       if (!phoneSnap.empty) {
         // اسمح بالتسجيل لو كل السجلات برقم الهاتف ده مرفوضة
@@ -683,7 +917,7 @@ export default function page() {
       try {
         const activeStudentQ = query(
           collection(db, "students"),
-          where("id", "==", Number(phone))
+          where("id", "==", Number(phoneLocal))
         );
         const activeSnap = await getDocs(activeStudentQ);
         if (!activeSnap.empty) {
@@ -699,7 +933,10 @@ export default function page() {
       await addDoc(studentsRef, {
         ...formData,
         arabicName,
-        phone,
+        phone: phoneIntl,
+        phoneLocal,
+        country: selectedCountry,
+        countryDialCode: countryConfig.dialCode,
         registrationDate: new Date().toISOString(),
         read: false,
       });
@@ -963,17 +1200,20 @@ export default function page() {
           transition={{ duration: 0.3 }}
           className="space-y-1"
         >
-          <FloatInput
-            id="phone"
-            name="phone"
-            type="tel"
-            label="رقم الموبايل (واتساب) *"
+          <PhoneInput
             value={formData.phone}
-            onChange={handleChange}
+            country={selectedCountry}
+            onPhoneChange={(num) => {
+              setFormData((prev) => ({ ...prev, phone: num }));
+              setIsPhoneAlreadyRegistered(false);
+              if (fieldErrors.phone) setFieldErrors((prev) => ({ ...prev, phone: "" }));
+            }}
+            onCountryChange={(code) => {
+              setSelectedCountry(code);
+              setFormData((prev) => ({ ...prev, phone: "" }));
+              if (fieldErrors.phone) setFieldErrors((prev) => ({ ...prev, phone: "" }));
+            }}
             error={fieldErrors.phone || phoneError}
-            dir="ltr"
-            maxLength={11}
-            placeholder="01XXXXXXXXX"
           />
           <FloatInput
             id="email"

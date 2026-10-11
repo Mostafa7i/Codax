@@ -545,7 +545,7 @@ function ImprovedStudentModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* ─── 1. Header الشامل ─── */}
-        <div className="relative bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white p-5 shrink-0">
+        <div className="relative bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white p-5 shrink-0">
           <button
             onClick={() => setShowModal(false)}
             className="absolute left-4 top-4 p-2 rounded-full hover:bg-white/20 transition-colors z-10 text-white/80 hover:text-white"
@@ -1195,7 +1195,7 @@ function ImprovedStudentModal({
             type="button"
             onClick={handleSaveChanges}
             disabled={loading}
-            className="flex-1 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white py-3 rounded-2xl font-black transition-all shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 flex items-center justify-center gap-2 text-sm disabled:opacity-50 active:scale-98"
+            className="flex-1 bg-linear-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white py-3 rounded-2xl font-black transition-all shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 flex items-center justify-center gap-2 text-sm disabled:opacity-50 active:scale-98"
           >
             <Save className="w-4 h-4" />
             <span>حفظ جميع التعديلات</span>

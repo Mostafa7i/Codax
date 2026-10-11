@@ -382,7 +382,7 @@ const ZipFilesAdmin = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-2">
-            <div className="w-14 h-14 bg-gradient-to-br from-violet-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/25">
+            <div className="w-14 h-14 bg-linear-to-br from-violet-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/25">
               <FileArchive className="w-7 h-7 text-white" />
             </div>
             <div>
@@ -661,7 +661,7 @@ const ZipFilesAdmin = () => {
                   className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md hover:border-violet-200 dark:hover:border-violet-800/50 transition-all duration-200 overflow-hidden"
                 >
                   {/* Card Header */}
-                  <div className="bg-gradient-to-br from-violet-500 to-indigo-600 p-4">
+                  <div className="bg-linear-to-br from-violet-500 to-indigo-600 p-4">
                     <div className="flex items-start justify-between">
                       <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
                         <FileArchive className="w-5 h-5 text-white" />
@@ -745,7 +745,7 @@ const ZipFilesAdmin = () => {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleDownload(student)}
-                        className="flex items-center justify-center gap-1.5 flex-1 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-md"
+                        className="flex items-center justify-center gap-1.5 flex-1 py-2 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-md"
                       >
                         <Download className="w-3.5 h-3.5" />
                         {student.type === "link" ? "فتح" : "تنزيل"}
@@ -915,7 +915,7 @@ const ZipFilesAdmin = () => {
           {/* Modal Box */}
           <div className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-10">
             {/* Header */}
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-5">
+            <div className="bg-linear-to-r from-amber-500 to-orange-500 p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -1000,7 +1000,7 @@ const ZipFilesAdmin = () => {
               <button
                 onClick={handleSaveGrade}
                 disabled={saving || gradeInput === ""}
-                className="flex-1 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-2xl text-sm transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-3 bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-2xl text-sm transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? "جاري الحفظ..." : "حفظ الدرجة والملاحظات"}
               </button>

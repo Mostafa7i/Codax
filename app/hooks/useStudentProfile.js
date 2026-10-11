@@ -17,6 +17,10 @@ import {
   calculateAttendancePercentage,
   buildGroupMasterTasks,
   syncStudentTasksWithMaster,
+  calculateBoostPercentage,
+  TASK_WEIGHT,
+  ATTENDANCE_WEIGHT,
+  MAX_COMBINED_SCORE,
 } from "@/app/components/calculations";
 import {
   updateStudentEnglishName,
@@ -24,8 +28,9 @@ import {
   updateStudentCity,
   updateStudentStudyMethod,
   updateStudentPassword,
-  useStudentReserveAttendance,
+  useStudentReserveAttendance as consumeReserveAttendance,
 } from "@/app/services/studentService";
+import { isBorderUnlocked } from "@/app/utils/avatarDecorations";
 import Swal from "sweetalert2";
 
 export function useStudentProfile(studentId) {
@@ -115,6 +120,19 @@ export function useStudentProfile(studentId) {
           setLastQuestionStatus(data.lastQuestionStatus || "");
           setProfilePic(data.profilePic || "/favicon.png");
           setReserveAttendanceCount(data.reserveAttendance || 0);
+
+          // تنظيف تلقائي إذا كان الإطار النشط مؤقتاً وانتهت مدته
+          if (
+            data.activeBorder &&
+            data.activeBorder !== "default" &&
+            !isBorderUnlocked(data.activeBorder, data)
+          ) {
+            updateDoc(doc(db, "students", studentDoc.id), {
+              activeBorder: "default",
+            }).catch((err) => {
+              console.warn("Auto-cleanup expired border error:", err);
+            });
+          }
 
           setStudentData({ ...data, reserveUsageCount: 0 });
           setError(null);
@@ -459,13 +477,13 @@ export function useStudentProfile(studentId) {
       );
       const extraPoints =
         typeof studentData.score === "number" ? studentData.score : 0;
-      const boostPercentage = Math.min(Math.floor(extraPoints / 40), 5);
+      const boostPercentage = calculateBoostPercentage(extraPoints);
       const combinedScoreWithoutBoost = Math.round(
-        newAverage * 0.6 + newAttendancePercentage * 0.4,
+        newAverage * TASK_WEIGHT + newAttendancePercentage * ATTENDANCE_WEIGHT,
       );
       const newCombined = Math.min(
         combinedScoreWithoutBoost + boostPercentage,
-        100,
+        MAX_COMBINED_SCORE,
       );
 
       setTotalLectures(latestLecture);
@@ -683,7 +701,7 @@ export function useStudentProfile(studentId) {
 
     setIsProcessingReserve(true);
     try {
-      await useStudentReserveAttendance({
+      await consumeReserveAttendance({
         studentDocId,
         studentId,
         absences,

@@ -23,6 +23,38 @@ function getNotificationBadge(title = "", message = "") {
   const text = `${title} ${message}`.toLowerCase();
 
   if (
+    text.includes("green card") ||
+    text.includes("greencard") ||
+    text.includes("green_card")
+  ) {
+    return {
+      type: "green_card_celebration",
+      label: "Green Card أسطورية 🟩👑",
+      icon: Sparkles,
+      gradient: "from-emerald-500 via-teal-500 to-green-600",
+      bgSoft: "bg-emerald-500/15 text-emerald-300 border-emerald-500/40",
+      accent: "text-emerald-300",
+      dot: "bg-emerald-400",
+    };
+  }
+
+  if (
+    text.includes("blue card") ||
+    text.includes("bluecard") ||
+    text.includes("blue_card")
+  ) {
+    return {
+      type: "blue_card_celebration",
+      label: "Blue Card مميزة 🟦✨",
+      icon: Sparkles,
+      gradient: "from-sky-500 via-blue-600 to-indigo-600",
+      bgSoft: "bg-sky-500/15 text-sky-300 border-sky-500/40",
+      accent: "text-sky-300",
+      dot: "bg-sky-400",
+    };
+  }
+
+  if (
     text.includes("اختبار") ||
     text.includes("امتحان") ||
     text.includes("exam") ||
@@ -439,7 +471,7 @@ const Notifications = ({ studentGroup }) => {
 
         {/* بادج العداد المتوهج */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1.5 -left-1.5 flex h-5 min-w-[20px] px-1 items-center justify-center rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 text-[11px] font-black text-white shadow-lg shadow-rose-500/50 border border-slate-950 animate-pulse">
+          <span className="absolute -top-1.5 -left-1.5 flex h-5 min-w-[20px] px-1 items-center justify-center rounded-full bg-linear-to-r from-rose-500 via-pink-500 to-amber-500 text-[11px] font-black text-white shadow-lg shadow-rose-500/50 border border-slate-950 animate-pulse">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
@@ -480,12 +512,12 @@ const Notifications = ({ studentGroup }) => {
               "
             >
               {/* شريط الإضاءة العلوي */}
-              <div className="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+              <div className="h-1 w-full bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500" />
 
               {/* ─── Header ─── */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-md">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/30">
+                  <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/30">
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <div>
@@ -580,14 +612,14 @@ const Notifications = ({ studentGroup }) => {
                           onClick={() => markSingleAsRead(notif.id)}
                           className={`group relative p-3.5 rounded-2xl transition-all duration-200 cursor-pointer border ${
                             isUnread
-                              ? "bg-gradient-to-r from-indigo-950/40 via-slate-900/90 to-purple-950/30 border-indigo-500/30 shadow-md shadow-indigo-950/20 hover:border-indigo-400/50"
+                              ? "bg-linear-to-r from-indigo-950/40 via-slate-900/90 to-purple-950/30 border-indigo-500/30 shadow-md shadow-indigo-950/20 hover:border-indigo-400/50"
                               : "bg-slate-900/30 hover:bg-slate-800/50 border-slate-800/50 text-slate-400"
                           }`}
                         >
                           <div className="flex items-start gap-3">
                             {/* أيقونة الفئة */}
                             <div
-                              className={`w-10 h-10 rounded-2xl shrink-0 flex items-center justify-center shadow-md bg-gradient-to-br ${badge.gradient} text-white`}
+                              className={`w-10 h-10 rounded-2xl shrink-0 flex items-center justify-center shadow-md bg-linear-to-br ${badge.gradient} text-white`}
                             >
                               <IconComponent className="w-5 h-5" />
                             </div>

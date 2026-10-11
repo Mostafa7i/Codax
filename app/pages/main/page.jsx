@@ -30,6 +30,8 @@ import TasksDedline from "../pageContent/TasksDedline";
 import StRankingTask from "../pageContent/StRankingTask";
 import StTesting from "../pageContent/StTesting";
 
+import SpotlightBanner from "@/app/components/features/SpotlightBanner";
+
 const Particles = dynamic(() => import("@/app/components/Particles"), {
   ssr: false,
   loading: () => null,
@@ -68,7 +70,7 @@ const GroupCard = memo(function GroupCard({ group, isSelected, onSelect }) {
       onClick={() => onSelect(group)}
       className={`relative p-4 rounded-2xl flex flex-col items-center justify-center gap-2 border transition-all duration-200 active:scale-95 ${
         isSelected
-          ? "bg-gradient-to-br from-indigo-600 to-indigo-700 border-indigo-400/50 text-white shadow-lg shadow-indigo-500/20 font-bold"
+          ? "bg-linear-to-br from-indigo-600 to-indigo-700 border-indigo-400/50 text-white shadow-lg shadow-indigo-500/20 font-bold"
           : "bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-indigo-500/10 hover:border-indigo-500/30"
       }`}
     >
@@ -293,7 +295,7 @@ export default function Page() {
   return (
     <div
       dir="rtl"
-      className="min-h-screen bg-[#060912] text-slate-200 relative overflow-x-hidden px-2 py-4 sm:p-4 md:p-6"
+      className="min-h-svh bg-[#060912] text-slate-200 relative overflow-x-hidden px-2 py-4"
     >
       {/* Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -325,6 +327,11 @@ export default function Page() {
       </div>
 
       <div className="relative z-10 max-w-full mx-auto">
+        {/* Spotlight / Star of the Day Banner */}
+        <div className="mb-6">
+          <SpotlightBanner />
+        </div>
+
         {/* Error */}
         <AnimatePresence>
           {error && (
@@ -353,13 +360,13 @@ export default function Page() {
         </AnimatePresence>
 
         {/* Group selector trigger */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-4">
           <button
             type="button"
             onClick={() => setShowGroupSelector((p) => !p)}
             disabled={isLoadingGroups || isNavigationLoading}
             aria-expanded={showGroupSelector}
-            className="flex items-center justify-between gap-3 px-6 py-3.5 rounded-2xl font-bold border border-indigo-500/35 bg-indigo-500/10 text-slate-200 hover:bg-indigo-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[260px] shadow-lg shadow-indigo-500/10 active:scale-[0.98]"
+            className="flex items-center justify-between gap-3 py-2 cursor-pointer px-3 rounded-2xl font-bold border border-indigo-500/35 bg-indigo-500/10 text-slate-200 hover:bg-indigo-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[260px] shadow-lg shadow-indigo-500/10 active:scale-[0.98]"
           >
             <div className="flex items-center gap-2.5">
               {isNavigationLoading ? (
@@ -367,7 +374,7 @@ export default function Page() {
               ) : (
                 <Users className="w-5 h-5 text-indigo-400" />
               )}
-              <span className="text-sm md:text-base">{groupButtonText}</span>
+              <span className="text-sm md:text-base capitalize">{groupButtonText}</span>
             </div>
             {!isLoadingGroups && !isNavigationLoading && (
               <ChevronDown
@@ -448,7 +455,7 @@ export default function Page() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60]"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-60"
             >
               <div className="bg-slate-900 border border-slate-700/50 rounded-3xl p-8 shadow-2xl">
                 <div className="flex items-center gap-4">
@@ -467,7 +474,7 @@ export default function Page() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 flex justify-center"
+            className="mb-4 flex justify-center"
           >
             <PremiumNav
               items={navigationItems}

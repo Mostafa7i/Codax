@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { CreditCard } from "lucide-react";
+import { getEffectiveActiveBorder } from "@/app/utils/avatarDecorations";
 
 const UploadProfilePic = lazy(() =>
   import("./UploadProfilePic")
@@ -41,7 +42,7 @@ export default function StudentHeader({
           <UploadProfilePic
             studentId={studentData?.id}
             currentProfilePic={profilePic}
-            activeBorder={studentData?.activeBorder}
+            activeBorder={getEffectiveActiveBorder(studentData)}
             onUploadSuccess={onUploadSuccess}
           />
         </Suspense>
@@ -52,7 +53,7 @@ export default function StudentHeader({
             <button
               type="button"
               onClick={onOpenLuckyWheel}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-linear-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-slate-950 font-black text-xs shadow-md hover:shadow-amber-500/25 hover:scale-105 active:scale-95 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-linear-to-r from-amber-600 to-yellow-500 text-slate-100 font-black text-xs shadow-md hover:shadow-amber-500/25 hover:scale-105 active:scale-95 transition-all"
             >
               <span>🎡</span>
               <span>عجلة الحظ اليومية</span>
@@ -63,7 +64,7 @@ export default function StudentHeader({
             <button
               type="button"
               onClick={onOpenStore}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 hover:border-amber-400/60 font-bold text-xs shadow-sm hover:scale-105 active:scale-95 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full hover:bg-slate-700 text-amber-300 border hover:border-amber-400/60 font-bold text-xs shadow-sm hover:scale-105 active:scale-95 transition-all"
             >
               <span>🛍️</span>
               <span>متجر التخصيص</span>
@@ -78,13 +79,9 @@ export default function StudentHeader({
           isPerfectStudent ? "bg-yellow-500" : ""
         } mb-3 bg-transparent p-2 md:p-4 w-full max-w-4xl mx-auto rounded-xl shadow-lg ${
           state.attendancePercentage >= 100 && state.average >= 99
-            ? "bg-linear-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 border-2 border-yellow-300 dark:border-yellow-700"
+            ? "bg-linear-to-r from-yellow-900/20 to-amber-900/20 border-2 border-yellow-700"
             : ""
-        } ${
-          state.combinedScore < 60
-            ? "border-red-500 dark:border-red-700 border-blink"
-            : ""
-        }`}
+        } ${state.combinedScore < 60 ? "border-red-700 border-blink" : ""}`}
       >
         {studentDocId && (
           <Suspense fallback={null}>
@@ -97,7 +94,7 @@ export default function StudentHeader({
           <div>
             <Suspense
               fallback={
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mt-2" />
+                <div className="h-6 bg-gray-700 rounded animate-pulse mt-2" />
               }
             >
               <StudentBio studentId={studentData?.id} />

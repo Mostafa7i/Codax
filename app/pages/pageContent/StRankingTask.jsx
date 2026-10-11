@@ -105,7 +105,7 @@ const handleCapture = async () => {
       {/* Header + Capture Button */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-l from-orange-400 to-amber-300 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-bold bg-linear-to-l from-orange-400 to-amber-300 bg-clip-text text-transparent">
             أوائل التاسك
           </h1>
           <p className="text-slate-400 text-sm mt-1">
@@ -117,7 +117,7 @@ const handleCapture = async () => {
           <button
             onClick={handleCapture}
             disabled={isCapturing}
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-60 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-orange-500/25 transition-all active:scale-95 text-sm sm:text-base"
+            className="flex items-center justify-center gap-2 bg-linear-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-60 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-orange-500/25 transition-all active:scale-95 text-sm sm:text-base"
           >
             {isCapturing ? (
               <>
@@ -143,7 +143,7 @@ const handleCapture = async () => {
         className="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-3xl overflow-hidden shadow-2xl"
       >
         {/* Decorative top bar */}
-        <div className="h-1.5 bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-400"></div>
+        <div className="h-1.5 bg-linear-to-r from-orange-500 via-amber-400 to-yellow-400"></div>
 
         <div className="p-2.5 sm:p-7">
           {/* Title inside capture area */}
@@ -257,7 +257,7 @@ const handleCapture = async () => {
                       <p className="text-white font-semibold text-[11px] sm:text-base text-center line-clamp-2 w-full px-0.5 mb-1 leading-tight h-7 sm:h-auto flex items-center justify-center">
                         {top3[2].name}
                       </p>
-                      <div className="mt-2 sm:mt-3 w-full h-10 sm:h-16 bg-gradient-to-t from-orange-900 to-amber-700 rounded-t-xl flex items-end justify-center pb-1.5 sm:pb-2">
+                      <div className="mt-2 sm:mt-3 w-full h-10 sm:h-16 bg-linear-to-t from-orange-900 to-amber-700 rounded-t-xl flex items-end justify-center pb-1.5 sm:pb-2">
                         <span className="text-white/90 font-bold text-sm sm:text-lg">3</span>
                       </div>
                     </motion.div>

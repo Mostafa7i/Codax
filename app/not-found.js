@@ -8,7 +8,7 @@ export default function NotFound() {
   return (
     <div
       dir="rtl"
-      className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden bg-[#060912] text-slate-200 px-4"
+      className="relative min-h-dvh flex items-center justify-center overflow-hidden bg-[#060912] text-slate-200 px-4"
     >
       {/* ── Ambient Background ── */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -66,7 +66,7 @@ export default function NotFound() {
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative text-[7rem] sm:text-[9rem] font-black leading-none tracking-tighter bg-gradient-to-l from-violet-400 via-purple-400 to-pink-500 bg-clip-text text-transparent"
+            className="relative text-[7rem] sm:text-[9rem] font-black leading-none tracking-tighter bg-linear-to-l from-violet-400 via-purple-400 to-pink-500 bg-clip-text text-transparent"
           >
             404
           </motion.h1>
@@ -111,7 +111,7 @@ export default function NotFound() {
         >
           <Link
             href="/"
-            className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-l from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition-all active:scale-[0.98]"
+            className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-linear-to-l from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30 transition-all active:scale-[0.98]"
           >
             <Home className="w-4 h-4" />
             الصفحة الرئيسية

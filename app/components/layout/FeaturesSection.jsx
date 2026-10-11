@@ -102,7 +102,7 @@ function FeaturesSection() {
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-3">
             لماذا{" "}
-            <span className="bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-l from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               CodaX
             </span>
             ؟
@@ -140,18 +140,18 @@ function FeaturesSection() {
               >
                 {/* hover wash */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${track.gradient} opacity-0 group-hover:opacity-[0.07] transition-opacity duration-500`}
+                  className={`absolute inset-0 bg-linear-to-br ${track.gradient} opacity-0 group-hover:opacity-[0.07] transition-opacity duration-500`}
                 />
 
                 {/* top accent line */}
                 <div
-                  className={`absolute top-0 inset-x-0 h-[2px] bg-gradient-to-l ${track.accentLine} opacity-70`}
+                  className={`absolute top-0 inset-x-0 h-[2px] bg-linear-to-l ${track.accentLine} opacity-70`}
                 />
 
                 <div className="relative z-10">
                   <div className="flex items-center gap-4 mb-4">
                     <div
-                      className={`p-3 rounded-2xl bg-gradient-to-br ${track.gradient} shadow-lg`}
+                      className={`p-3 rounded-2xl bg-linear-to-br ${track.gradient} shadow-lg`}
                     >
                       <Icon className="w-6 h-6 text-white" />
                     </div>

@@ -1,8 +1,10 @@
-'use client';
+"use client";
 
 import React, { useMemo, memo } from "react";
 import { motion } from "framer-motion";
 import StudentCardContent from "./StudentCardContent";
+import { LatestLectureProvider } from "@/app/context/LatestLectureContext copy";
+import GroupContextProvider from "@/app/context/GroupContextProvider";
 
 const StudentCard = memo(function StudentCard({
   student,
@@ -36,17 +38,17 @@ const StudentCard = memo(function StudentCard({
 
   const cardClasses = useMemo(() => {
     const base =
-      "relative rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl";
+      "relative rounded-2xl backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl flex flex-col h-full";
 
     const border = getBorderColor(student);
 
     let bg = "bg-slate-900/70 border-slate-700/40";
     if (cardConfig.isPerfectStudent) {
       bg =
-        "bg-gradient-to-br from-amber-900/25 via-slate-900/80 to-indigo-900/20";
+        "bg-linear-to-br from-amber-900/25 via-slate-900/80 to-indigo-900/20";
     } else if (cardConfig.isFirst) {
       bg =
-        "bg-gradient-to-br from-yellow-900/20 via-slate-900/80 to-slate-900/90";
+        "bg-linear-to-br from-yellow-900/20 via-slate-900/80 to-slate-900/90";
     }
 
     return `${base} ${border} ${bg}`;
@@ -70,12 +72,12 @@ const StudentCard = memo(function StudentCard({
       {/* خط ذهبي علوي للـ Top 3 */}
       {cardConfig.isTopPerformer && (
         <div
-          className={`absolute top-0 inset-x-0 h-0.5 ${
+          className={`absolute top-0 inset-x-0 h-0.5 rounded-t-2xl ${
             student.rank === 1
               ? "bg-linear-to-l from-transparent via-yellow-400 to-transparent"
               : student.rank === 2
-              ? "bg-linear-to-l from-transparent via-slate-300 to-transparent"
-              : "bg-linear-to-l from-transparent via-amber-600 to-transparent"
+                ? "bg-linear-to-l from-transparent via-slate-300 to-transparent"
+                : "bg-linear-to-l from-transparent via-amber-600 to-transparent"
           }`}
         />
       )}
@@ -87,15 +89,19 @@ const StudentCard = memo(function StudentCard({
         </div>
       )}
 
-      <div className="p-3 text-slate-200 relative z-10">
-        <StudentCardContent
-          student={student}
-          allStudents={allStudents}
-          openPasswordModal={openPasswordModal}
-          openImageModal={openImageModal}
-          totalLecturesForGroup={totalLecturesForGroup}
-          cardConfig={cardConfig}
-        />
+      <div className="p-3 text-slate-200 relative z-10 flex flex-col flex-1 h-full">
+        <GroupContextProvider>
+          <LatestLectureProvider>
+            <StudentCardContent
+              student={student}
+              allStudents={allStudents}
+              openPasswordModal={openPasswordModal}
+              openImageModal={openImageModal}
+              totalLecturesForGroup={totalLecturesForGroup}
+              cardConfig={cardConfig}
+            />
+          </LatestLectureProvider>
+        </GroupContextProvider>
       </div>
     </motion.div>
   );

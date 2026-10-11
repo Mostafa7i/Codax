@@ -9,6 +9,7 @@ import React, {
 import { auth, db } from "@/app/services/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 
 const StudentAuthContext = createContext(null);
 
@@ -32,6 +33,9 @@ export function StudentAuthProvider({ children }) {
   const [authenticatedStudentId, setAuthenticatedStudentId] = useState(null);
   const [authTokens, setAuthTokens] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const navgite = useRouter()
+
 
   // التحقق من صلاحيات الأدمن والاستماع لتغيرات الجلسة
   useEffect(() => {
@@ -200,10 +204,12 @@ export function StudentAuthProvider({ children }) {
   const logoutStudent = useCallback(() => {
     setAuthenticatedStudentId(null);
     setAuthTokens({});
+    
     if (typeof window !== "undefined") {
       localStorage.removeItem("codax_auth_token");
       localStorage.removeItem("codax_auth_id");
     }
+    navgite.push("/pages/main")
   }, []);
 
   return (

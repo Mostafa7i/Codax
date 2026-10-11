@@ -503,7 +503,7 @@ const CertificateCard = ({ student, groupLecturesMap, onToggleFullStack }) => {
               </h3>
 
               {isFull && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-black bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-sm">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-black bg-linear-to-r from-purple-500 to-indigo-600 text-white shadow-sm">
                   <Sparkles size={11} />
                   Full-Stack 🌟
                 </span>
@@ -579,7 +579,7 @@ const CertificateCard = ({ student, groupLecturesMap, onToggleFullStack }) => {
 
         {/* Multi-Track / Full-Stack Mode Switcher Button */}
         {(student.isMultiTrack || isFull) && (
-          <div className="p-2.5 rounded-2xl bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-purple-500/20 flex items-center justify-between gap-3">
+          <div className="p-2.5 rounded-2xl bg-linear-to-r from-purple-500/10 to-indigo-500/10 border border-purple-500/20 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Sparkles size={16} className="text-purple-500" />
               <div>
@@ -617,7 +617,7 @@ const CertificateCard = ({ student, groupLecturesMap, onToggleFullStack }) => {
               <Eye size={15} />
             </div>
             <span>عدد الزيارات:</span>
-            <span className="font-mono text-sm font-black bg-gray-850 px-2.5 py-0.5 rounded-lg border border-purple-200 dark:border-purple-700 text-purple-800 dark:text-purple-200 shadow-xs">
+            <span className="font-mono text-sm font-black bg-gray-900 px-2.5 py-0.5 rounded-lg border border-purple-200 dark:border-purple-700 text-purple-800 dark:text-purple-200 shadow-xs">
               {student.viewsCount || 0} زيارة
             </span>
           </div>

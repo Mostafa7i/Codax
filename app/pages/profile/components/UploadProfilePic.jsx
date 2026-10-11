@@ -151,7 +151,7 @@ const UploadProfilePic = ({
   return (
     <div className="w-full flex flex-col items-center space-y-4">
       {!hasPhoto && (
-        <h4 className="font-bold text-gray-700 dark:text-gray-300 text-sm tracking-wide">
+        <h4 className="font-bold text-gray-300 text-sm tracking-wide">
           تحديث صورة الحساب
         </h4>
       )}
@@ -164,12 +164,12 @@ const UploadProfilePic = ({
         onDrop={handleDrop}
         className={`relative w-28 h-28 rounded-full cursor-pointer select-none group transition-all duration-500 ease-out ${
           isDragging
-            ? "scale-105 ring-4 ring-indigo-500 ring-offset-4 dark:ring-offset-gray-900 border-dashed"
+            ? "scale-105 ring-4 ring-indigo-500 ring-offset-4 ring-offset-gray-900 border-dashed"
             : activeBorder && activeBorder !== "default"
               ? `${borderConfig.ringClass} ${borderConfig.glowClass || ""} ${
                   borderConfig.animationClass || borderConfig.pulseClass || ""
                 } hover:scale-[1.04]`
-              : "ring-2 ring-indigo-500/30 dark:ring-indigo-400/20 hover:ring-indigo-500 dark:hover:ring-indigo-400 hover:shadow-lg hover:shadow-indigo-500/10 hover:scale-[1.02]"
+              : "ring-2 hover:ring-indigo-400 hover:shadow-lg hover:shadow-indigo-500/10 hover:scale-[1.02]"
         }`}
       >
         <AvatarFrame frameStyle={borderConfig.frameStyle} size={112}>
@@ -184,26 +184,26 @@ const UploadProfilePic = ({
         </AvatarFrame>
 
         {!uploading && (
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] rounded-full opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-all duration-300 ease-out">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] rounded-full opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-slate-100 transition-all duration-300 ease-out">
             <Camera
               size={22}
-              className="text-white/90 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+              className="text-slate-100/90 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
             />
-            <span className="text-[10px] text-white/90 font-bold mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="text-[10px] text-slate-100/90 font-bold mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               تغيير الصورة
             </span>
           </div>
         )}
 
         {isDragging && (
-          <div className="absolute inset-0 bg-indigo-600/70 backdrop-blur-[2px] rounded-full flex flex-col items-center justify-center text-white animate-pulse">
-            <UploadCloud size={28} className="text-white" />
+          <div className="absolute inset-0 bg-indigo-600/70 backdrop-blur-[2px] rounded-full flex flex-col items-center justify-center text-slate-100 animate-pulse">
+            <UploadCloud size={28} className="text-slate-100" />
             <span className="text-[9px] font-bold mt-1">أفلت الصورة هنا</span>
           </div>
         )}
 
         {uploading && (
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-[1px] rounded-full flex flex-col items-center justify-center text-white">
+          <div className="absolute inset-0 bg-black/75 backdrop-blur-[1px] rounded-full flex flex-col items-center justify-center text-slate-100">
             <Loader2 size={24} className="text-indigo-400 animate-spin" />
             <span className="text-[10px] font-bold mt-1.5 text-indigo-200 animate-pulse">
               جاري الرفع...
@@ -212,7 +212,7 @@ const UploadProfilePic = ({
         )}
 
         {preview && !uploading && (
-          <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-1 shadow-md animate-bounce ring-2 ring-white dark:ring-gray-800">
+          <div className="absolute -top-1 -right-1 bg-emerald-500 text-slate-100 rounded-full p-1 shadow-md animate-bounce ring-2 ring-gray-800">
             <Check size={12} strokeWidth={3} />
           </div>
         )}
@@ -229,15 +229,15 @@ const UploadProfilePic = ({
 
       <div className="text-center">
         {!preview ? (
-          <p className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+          <p className="text-[11px] text-gray-500 font-medium">
             اسحب صورتك وأفلتها هنا أو انقر للتصفح
           </p>
         ) : (
-          <p className="text-[11px] text-emerald-500 dark:text-emerald-400 font-bold animate-pulse">
+          <p className="text-[11px] text-emerald-400 font-bold animate-pulse">
             تم اختيار صورة جديدة! اضغط حفظ للتأكيد
           </p>
         )}
-        <p className="text-[9px] text-gray-400 dark:text-gray-600 mt-0.5">
+        <p className="text-[9px] text-gray-600 mt-0.5">
           مسموح بصيغ JPG, PNG حتى 3 ميجابايت
         </p>
       </div>
@@ -248,7 +248,7 @@ const UploadProfilePic = ({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="w-full p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-1.5 justify-center"
+            className="w-full p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold flex items-center gap-1.5 justify-center"
           >
             <AlertCircle size={14} className="shrink-0" />
             <span>{error}</span>
@@ -267,7 +267,7 @@ const UploadProfilePic = ({
             <button
               onClick={handleUpload}
               disabled={uploading}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-linear-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-indigo-500/25 active:scale-95 transition-all duration-200"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-linear-to-r hover:from-indigo-600 hover:to-indigo-700 text-slate-100 rounded-xl text-xs font-bold shadow-md hover:shadow-indigo-500/25 active:scale-95 transition-all duration-200"
             >
               <Check size={14} />
               <span>حفظ الصورة</span>
@@ -275,7 +275,7 @@ const UploadProfilePic = ({
             <button
               onClick={handleCancel}
               disabled={uploading}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 border border-gray-200 dark:border-gray-700 hover:border-red-500 dark:hover:border-red-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/15 text-gray-500 dark:text-gray-400 rounded-xl text-xs font-bold active:scale-95 transition-all duration-200"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 border hover:border-red-500 hover:hover:bg-red-950/15 text-gray-400 rounded-xl text-xs font-bold active:scale-95 transition-all duration-200"
             >
               <X size={14} />
               <span>إلغاء</span>

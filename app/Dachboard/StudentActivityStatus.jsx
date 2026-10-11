@@ -143,7 +143,7 @@ const StudentActivityStatus = () => {
   if (loading) {
     return (
       <div
-        className="min-h-screen bg-gradient-to-br from-indigo-50 via-violet-50 to-fuchsia-50 flex flex-col items-center justify-center gap-6"
+        className="min-h-screen bg-linear-to-br from-indigo-50 via-violet-50 to-fuchsia-50 flex flex-col items-center justify-center gap-6"
         dir="rtl"
       >
         <div className="relative">
@@ -161,13 +161,13 @@ const StudentActivityStatus = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-indigo-50 via-violet-50 to-fuchsia-50 p-4 sm:p-6 lg:p-8"
+      className="min-h-screen bg-linear-to-br from-indigo-50 via-violet-50 to-fuchsia-50 p-4 sm:p-6 lg:p-8"
       dir="rtl"
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10 mt-4">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-indigo-700 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold bg-linear-to-r from-indigo-700 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent tracking-tight">
             حالة نشاط الطلاب
           </h1>
           <p className="mt-3 text-lg text-slate-500 font-medium">
@@ -291,10 +291,10 @@ const StudentActivityStatus = () => {
                   <div
                     className={`h-1.5 w-full ${
                       st.key === "online"
-                        ? "bg-gradient-to-r from-emerald-400 to-teal-500"
+                        ? "bg-linear-to-r from-emerald-400 to-teal-500"
                         : st.key === "recent"
-                        ? "bg-gradient-to-r from-amber-400 to-orange-500"
-                        : "bg-gradient-to-r from-slate-300 to-slate-400"
+                        ? "bg-linear-to-r from-amber-400 to-orange-500"
+                        : "bg-linear-to-r from-slate-300 to-slate-400"
                     }`}
                   />
 

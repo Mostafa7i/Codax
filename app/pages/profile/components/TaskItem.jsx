@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { CircularProgressTask } from "@/app/pages/(partsMainPage)/CircularProgress";
 import Swal from "sweetalert2";
+import TaskResubmitAction from "@/app/components/features/TaskResubmitAction";
 
 const SUPABASE_URL = "https://mgmujpcryjhrwatmdzhw.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -44,6 +45,9 @@ const MAX_FILE_SIZE = 20 * 1024 * 1024;
 export default function TaskItem({
   studentId,
   studentDocId,
+  studentName,
+  studentScore,
+  taskIndex,
   task,
   isExpanded,
   onToggle,
@@ -496,7 +500,7 @@ export default function TaskItem({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800/90 rounded-2xl border border-gray-100 dark:border-gray-700/80 shadow-sm overflow-hidden transition-all duration-200">
+    <div className="bg-gray-800/90 rounded-2xl border border-gray-700/80 shadow-sm overflow-hidden transition-all duration-200">
       <div
         onClick={onToggle}
         className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-900 transition-colors"
@@ -504,19 +508,19 @@ export default function TaskItem({
         <div className="flex items-center gap-3 min-w-0">
           <button
             type="button"
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition shrink-0 p-1"
+            className="hover:text-gray-200 transition shrink-0 p-1"
           >
             <ChevronDown
               size={20}
-              className={`transition-transform duration-200 ${isExpanded ? "rotate-180 text-indigo-600 dark:text-indigo-400" : ""}`}
+              className={`transition-transform duration-200 ${isExpanded ? "rotate-180 text-indigo-400" : ""}`}
             />
           </button>
           <div className="min-w-0">
-            <h4 className="font-bold text-sm md:text-base text-gray-900 dark:text-white truncate">
+            <h4 className="font-bold text-sm md:text-base text-slate-100 truncate">
               {taskTitle}
             </h4>
             {task?.description && (
-              <p className="text-xs text-gray-400 dark:text-gray-500 line-clamp-1 mt-0.5">
+              <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
                 {task.description}
               </p>
             )}
@@ -524,7 +528,7 @@ export default function TaskItem({
         </div>
         <div className="flex items-center gap-2.5 shrink-0 mr-2">
           {isLocked ? (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 flex items-center gap-1 border border-gray-200 dark:border-gray-700 shadow-xs">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-gray-800 text-gray-400 flex items-center gap-1 border border-gray-700 shadow-xs">
               <span>🔒</span> مقفول (مُعفى)
             </span>
           ) : isExam ? (
@@ -533,7 +537,7 @@ export default function TaskItem({
                 <CircularProgressTask task={task} />
               </div>
             ) : (
-              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 flex items-center gap-1 border border-slate-700">
                 <BookOpen size={13} className="text-slate-500" /> لم يدخل
               </span>
             )
@@ -542,12 +546,12 @@ export default function TaskItem({
               <CircularProgressTask task={task} />
             </div>
           ) : isSubmitted || hasSubmittedContent ? (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center gap-1 border border-amber-200/80 dark:border-amber-800/50 shadow-xs">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-900/30 text-amber-400 flex items-center gap-1 border border-amber-800/50 shadow-xs">
               <Clock size={13} className="text-amber-500 animate-pulse" /> جاري
               المراجعة
             </span>
           ) : (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 flex items-center gap-1 border border-rose-200/80 dark:border-rose-800/40">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-rose-900/20 text-rose-400 flex items-center gap-1 border border-rose-800/40">
               <AlertCircle size={13} className="text-rose-500" /> لم يسلم
             </span>
           )}
@@ -556,30 +560,27 @@ export default function TaskItem({
 
       {isExpanded && (
         <div
-          className="p-4 md:p-5 border-t border-gray-100 dark:border-gray-700/60 bg-slate-50/50 dark:bg-gray-900/40 space-y-4 text-sm"
+          className="p-4 md:p-5 border-t border-gray-700/60 bg-gray-900/40 space-y-4 text-sm"
           dir="rtl"
         >
           {task?.description && (
-            <div className="bg-white dark:bg-gray-800 p-3.5 rounded-xl border border-gray-100 dark:border-gray-700">
-              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">
+            <div className="bg-gray-800 p-3.5 rounded-xl border border-gray-700">
+              <span className="text-xs font-bold text-gray-400 block mb-1">
                 تفاصيل ومطلوب المهمة:
               </span>
-              <p className="text-gray-700 dark:text-gray-300 text-xs md:text-sm leading-relaxed">
+              <p className="text-gray-300 text-xs md:text-sm leading-relaxed">
                 {task.description}
               </p>
             </div>
           )}
 
           {(task?.notes || task?.feedback) && (
-            <div className="bg-indigo-50/70 dark:bg-indigo-950/40 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-800/60">
-              <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5 mb-1">
-                <Sparkles
-                  size={14}
-                  className="text-indigo-600 dark:text-indigo-400"
-                />
+            <div className="bg-indigo-950/40 p-3.5 rounded-xl border border-indigo-800/60">
+              <span className="text-xs font-bold text-indigo-300 flex items-center gap-1.5 mb-1">
+                <Sparkles size={14} className="text-indigo-400" />
                 ملاحظات المدرب:
               </span>
-              <p className="text-xs md:text-sm text-gray-800 dark:text-gray-200 leading-relaxed font-medium">
+              <p className="text-xs md:text-sm text-gray-200 leading-relaxed font-medium">
                 {task.notes || task.feedback}
               </p>
             </div>
@@ -588,21 +589,18 @@ export default function TaskItem({
           {/* قسم المكافأة — فقط للمهام التي قيّمها الأدمن بعد تفعيل النظام */}
           {isGraded && rewardSystemActive && (
             <div
-              className={`rounded-xl border p-4 ${alreadyClaimed ? "bg-violet-50/60 dark:bg-violet-950/20 border-violet-200 dark:border-violet-800/50" : rewardPoints > 0 ? "bg-linear-to-br from-amber-50 to-yellow-50/60 dark:from-amber-950/30 dark:to-yellow-950/20 border-amber-200 dark:border-amber-800/50" : "bg-gray-50 dark:bg-gray-800/60 border-gray-200 dark:border-gray-700"}`}
+              className={`rounded-xl border p-4 ${alreadyClaimed ? "border-violet-800/50" : rewardPoints > 0 ? "bg-linear-to-br from-amber-950/30 to-yellow-950/20 border-amber-800/50" : "bg-gray-800/60 border-gray-700"}`}
             >
               {alreadyClaimed ? (
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center shrink-0">
-                    <CheckCircle2
-                      size={18}
-                      className="text-violet-600 dark:text-violet-400"
-                    />
+                  <div className="w-9 h-9 rounded-xl bg-violet-900/40 flex items-center justify-center shrink-0">
+                    <CheckCircle2 size={18} className="text-violet-400" />
                   </div>
                   <div>
-                    <p className="font-bold text-sm text-violet-700 dark:text-violet-300">
+                    <p className="font-bold text-sm text-violet-300">
                       تم استلام مكافئة التاسك ✅
                     </p>
-                    <p className="text-xs text-violet-500 dark:text-violet-400 mt-0.5">
+                    <p className="text-xs text-violet-400 mt-0.5">
                       أُضيفت {task?.rewardPoints || rewardPoints} نقطة إلى رصيدك
                     </p>
                   </div>
@@ -610,14 +608,11 @@ export default function TaskItem({
               ) : rewardPoints > 0 ? (
                 <div className="flex items-center justify-between gap-3 flex-wrap">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">
-                      <Gift
-                        size={18}
-                        className="text-amber-600 dark:text-amber-400"
-                      />
+                    <div className="w-9 h-9 rounded-xl bg-amber-900/40 flex items-center justify-center shrink-0">
+                      <Gift size={18} className="text-amber-400" />
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
+                      <p className="font-bold text-sm text-amber-300 flex items-center gap-1.5">
                         مكافأة متاحة!
                         <span className="flex items-center gap-0.5">
                           {Array.from({ length: rewardPoints > 2 ? 5 : 2 }).map(
@@ -631,7 +626,7 @@ export default function TaskItem({
                           )}
                         </span>
                       </p>
-                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+                      <p className="text-xs text-amber-400 mt-0.5">
                         درجتك {numScore}% تمنحك{" "}
                         <span className="font-black">{rewardPoints} نقطة</span>{" "}
                         مكافأة 🎁
@@ -642,7 +637,7 @@ export default function TaskItem({
                     type="button"
                     onClick={handleClaimReward}
                     disabled={isClaiming}
-                    className="shrink-0 flex items-center gap-2 px-4 py-2 bg-linear-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold text-xs rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="shrink-0 flex items-center gap-2 px-4 py-2 bg-linear-to-r hover:from-amber-600 hover:to-yellow-600 text-slate-100 font-bold text-xs rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {isClaiming ? (
                       <RefreshCw size={13} className="animate-spin" />
@@ -654,17 +649,14 @@ export default function TaskItem({
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-                    <XCircle
-                      size={18}
-                      className="text-gray-400 dark:text-gray-500"
-                    />
+                  <div className="w-9 h-9 rounded-xl bg-gray-700 flex items-center justify-center shrink-0">
+                    <XCircle size={18} className="text-gray-500" />
                   </div>
                   <div>
-                    <p className="font-bold text-sm text-gray-500 dark:text-gray-400">
+                    <p className="font-bold text-sm text-gray-400">
                       ليس هناك مكافأة
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 mt-0.5">
                       المكافأة تتطلب درجة 90% أو أعلى
                     </p>
                   </div>
@@ -673,38 +665,51 @@ export default function TaskItem({
             </div>
           )}
 
+          {/* طلب مراجعة التاسك */}
+          {!isExam && !isLocked && (
+            <TaskResubmitAction
+              task={task}
+              taskIndex={taskIndex}
+              studentDocId={studentDocId}
+              studentId={studentId}
+              studentName={studentName}
+              studentScore={studentScore}
+              onResubmitSuccess={() => setShowReplaceForm(false)}
+            />
+          )}
+
           {isLocked ? (
-            <div className="bg-gray-50 dark:bg-gray-800/80 p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-center space-y-2">
-              <div className="w-10 h-10 mx-auto rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-lg">
+            <div className="bg-gray-800/80 p-4 rounded-xl border border-dashed border-gray-700 text-center space-y-2">
+              <div className="w-10 h-10 mx-auto rounded-full bg-gray-700 flex items-center justify-center text-lg">
                 🔒
               </div>
-              <h5 className="font-bold text-sm text-gray-700 dark:text-gray-200">
+              <h5 className="font-bold text-sm text-gray-200">
                 هذه المهمة مقفولة وغير مطلوبة منك حالياً
               </h5>
-              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
+              <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
                 هذه المهمة كانت ضمن المحاضرات السابقة وغير مفعلة لحسابك، ولا
                 تحتسب في نسبة إنجازك أو متوسط درجاتك. في حال رغبتك في تسليمها،
                 يمكنك طلب تفعيلها من المشرف.
               </p>
             </div>
           ) : isExam ? (
-            <div className="bg-linear-to-br from-indigo-50/80 to-purple-50/60 dark:from-indigo-950/30 dark:to-purple-950/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800/40 space-y-2.5">
+            <div className="bg-linear-to-br from-indigo-950/30 to-purple-950/20 p-4 rounded-xl border border-indigo-800/40 space-y-2.5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300 font-bold text-xs sm:text-sm">
+                <div className="flex items-center gap-2 text-indigo-300 font-bold text-xs sm:text-sm">
                   <BookOpen size={16} />
                   <span>اختبار إلكتروني رسمي</span>
                 </div>
                 {isGraded ? (
-                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/40">
+                  <span className="text-xs font-bold text-emerald-400 bg-emerald-900/30 px-2.5 py-0.5 rounded-full border border-emerald-800/40">
                     تم التقييم بنجاح
                   </span>
                 ) : (
-                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 bg-white/80 dark:bg-gray-800 px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">
+                  <span className="text-xs font-bold text-slate-400 bg-gray-800 px-2.5 py-0.5 rounded-full border border-slate-700">
                     لم يتم الدخول بعد
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+              <p className="text-xs text-gray-300 leading-relaxed">
                 {isGraded
                   ? "تم رصد تقييم هذا الاختبار تلقائياً فور إنهائه عبر منصة الاختبارات."
                   : "هذا اختبار إلكتروني؛ يتم أداؤه ورصد نتيجته تلقائياً عبر تبويب الاختبارات بدون الحاجة لرفع أي ملفات أو روابط."}
@@ -713,10 +718,10 @@ export default function TaskItem({
           ) : (
             <>
               {isSubmitted && !showReplaceForm && (
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800/60 shadow-sm space-y-3">
-                  <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-3">
+                <div className="bg-gray-800 p-4 rounded-xl border border-emerald-800/60 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between border-b border-gray-700 pb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-900/40 flex items-center justify-center text-emerald-400">
                         {task.submittedFile ? (
                           <FileArchive size={16} />
                         ) : (
@@ -724,7 +729,7 @@ export default function TaskItem({
                         )}
                       </div>
                       <div>
-                        <h5 className="font-bold text-sm text-gray-800 dark:text-white">
+                        <h5 className="font-bold text-sm text-slate-100">
                           {task.submittedFile
                             ? "ملف مضغوط مسلّم"
                             : "رابط مشروع مسلّم"}
@@ -740,7 +745,7 @@ export default function TaskItem({
                       <button
                         type="button"
                         onClick={() => setShowReplaceForm(true)}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg text-xs font-bold transition"
+                        className="flex items-center gap-1 px-3 py-1.5 hover:bg-gray-600 text-gray-200 rounded-lg text-xs font-bold transition"
                       >
                         <RefreshCw size={12} /> إعادة التسليم
                       </button>
@@ -748,7 +753,7 @@ export default function TaskItem({
                         type="button"
                         onClick={handleDeleteSubmission}
                         disabled={isDeleting}
-                        className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-800/40 transition disabled:opacity-50"
+                        className="p-1.5 text-red-500 hover:bg-red-900/30 rounded-lg border border-red-800/40 transition disabled:opacity-50"
                         title="حذف التسليم"
                       >
                         <Trash2 size={14} />
@@ -758,7 +763,7 @@ export default function TaskItem({
                   {task.submittedFile && (
                     <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                       <div className="min-w-0">
-                        <p className="font-bold text-xs text-gray-700 dark:text-gray-300 truncate">
+                        <p className="font-bold text-xs text-gray-300 truncate">
                           {task.submittedFile.name || "archive.zip"}
                         </p>
                         <span className="text-[11px] text-gray-400">
@@ -773,7 +778,7 @@ export default function TaskItem({
                             task.submittedFile.name,
                           )
                         }
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition shadow-sm"
+                        className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-indigo-700 text-slate-100 rounded-lg text-xs font-bold transition shadow-sm"
                       >
                         <Download size={13} /> تحميل الملف
                       </button>
@@ -785,7 +790,7 @@ export default function TaskItem({
                         href={task.submittedLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs font-mono text-indigo-600 dark:text-indigo-400 hover:underline break-all max-w-[80%]"
+                        className="text-xs font-mono text-indigo-400 hover:underline break-all max-w-[80%]"
                         dir="ltr"
                       >
                         {task.submittedLink}
@@ -794,18 +799,19 @@ export default function TaskItem({
                         href={task.submittedLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition shadow-sm"
+                        className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-indigo-700 text-slate-100 rounded-lg text-xs font-bold transition shadow-sm"
                       >
                         <ExternalLink size={13} /> فتح الرابط
                       </a>
                     </div>
                   )}
                   {!isGraded && (
-                    <div className="mt-2 text-[11px] text-amber-600 dark:text-amber-400 bg-amber-50/60 dark:bg-amber-950/30 px-3 py-1.5 rounded-lg border border-amber-200/50 dark:border-amber-800/30 flex items-center gap-1.5">
+                    <div className="mt-2 text-[11px] text-amber-400 bg-amber-950/30 px-3 py-1.5 rounded-lg border border-amber-800/30 flex items-center gap-1.5">
                       <Clock size={12} className="shrink-0" />
                       <span>
-                        تم استلام تسليمك بنجاح وهو قيد المراجعة والتقييم من قِبل
-                        المدرب.
+                        {task?.reviewRequested
+                          ? "تم تقديم طلب مراجعة هذه المهمة وتصفير درجتها بنجاح، وهي قيد المراجعة وإعادة التقييم من قِبل المدرب."
+                          : "تم استلام تسليمك بنجاح وهو قيد المراجعة والتقييم من قِبل المدرب."}
                       </span>
                     </div>
                   )}
@@ -813,29 +819,20 @@ export default function TaskItem({
               )}
 
               {(!isSubmitted || showReplaceForm) && (
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 space-y-4">
+                <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 space-y-4">
                   <div className="flex items-center justify-between">
-                    <h5 className="font-bold text-sm text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                      <Upload
-                        size={16}
-                        className="text-indigo-600 dark:text-indigo-400"
-                      />
+                    <h5 className="font-bold text-sm text-gray-200 flex items-center gap-2">
+                      <Upload size={16} className="text-indigo-400" />
                       {isSubmitted ? "إعادة تسليم المهمة" : "تسليم المهمة"}
                     </h5>
                     {adminSubmissionType === "file" ? (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 rounded-xl text-xs font-bold border border-indigo-200/80 dark:border-indigo-800/50">
-                        <FileArchive
-                          size={14}
-                          className="text-indigo-600 dark:text-indigo-400"
-                        />
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-950/50 text-indigo-300 rounded-xl text-xs font-bold border border-indigo-800/50">
+                        <FileArchive size={14} className="text-indigo-400" />
                         <span>مطلوب: ملف مضغوط (.zip, .rar)</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 rounded-xl text-xs font-bold border border-purple-200/80 dark:border-purple-800/50">
-                        <LinkIcon
-                          size={14}
-                          className="text-purple-600 dark:text-purple-400"
-                        />
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-950/50 text-purple-300 rounded-xl text-xs font-bold border border-purple-800/50">
+                        <LinkIcon size={14} className="text-purple-400" />
                         <span>مطلوب: رابط خارجي (GitHub / Live Link)</span>
                       </div>
                     )}
@@ -856,12 +853,12 @@ export default function TaskItem({
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isUploading}
-                          className="w-full border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-indigo-400 dark:hover:border-indigo-500 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 rounded-xl py-6 flex flex-col items-center justify-center gap-2 transition group"
+                          className="w-full border-2 border-dashed hover:border-indigo-500 hover:bg-indigo-950/20 rounded-xl py-6 flex flex-col items-center justify-center gap-2 transition group"
                         >
-                          <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
+                          <div className="w-10 h-10 rounded-xl bg-indigo-900/40 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
                             <Upload size={20} />
                           </div>
-                          <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                          <span className="text-xs font-bold text-gray-300">
                             اضغط لاختيار ملف مضغوط (.zip, .rar, .7z)
                           </span>
                           <span className="text-[10px] text-gray-400">
@@ -869,18 +866,18 @@ export default function TaskItem({
                           </span>
                         </button>
                       ) : (
-                        <div className="p-3 bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/50 rounded-xl space-y-3">
+                        <div className="p-3 bg-indigo-950/30 border border-indigo-800/50 rounded-xl space-y-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 min-w-0">
                               <FileArchive
                                 size={20}
-                                className="text-indigo-600 dark:text-indigo-400 shrink-0"
+                                className="text-indigo-400 shrink-0"
                               />
                               <div className="min-w-0">
-                                <p className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">
+                                <p className="text-xs font-bold text-gray-200 truncate">
                                   {selectedFile.name}
                                 </p>
-                                <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                                <p className="text-[10px] text-gray-400">
                                   {formatSize(selectedFile.size)}
                                 </p>
                               </div>
@@ -889,18 +886,18 @@ export default function TaskItem({
                               type="button"
                               onClick={clearSelectedFile}
                               disabled={isUploading}
-                              className="p-1 text-gray-400 hover:text-red-500 transition"
+                              className="p-1 hover:text-red-500 transition"
                             >
                               <X size={16} />
                             </button>
                           </div>
                           {isUploading && (
                             <div>
-                              <div className="flex justify-between text-[11px] font-bold text-indigo-600 dark:text-indigo-400 mb-1">
+                              <div className="flex justify-between text-[11px] font-bold text-indigo-400 mb-1">
                                 <span>جاري الرفع إلى الخادم...</span>
                                 <span>{uploadProgress}%</span>
                               </div>
-                              <div className="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                              <div className="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
                                 <div
                                   className="bg-indigo-600 h-full transition-all duration-200"
                                   style={{ width: `${uploadProgress}%` }}
@@ -912,7 +909,7 @@ export default function TaskItem({
                             type="button"
                             onClick={handleUploadFileSubmission}
                             disabled={isUploading}
-                            className="w-full py-2 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-60"
+                            className="w-full py-2 bg-linear-to-r hover:from-indigo-700 hover:to-purple-700 text-slate-100 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-60"
                           >
                             {isUploading ? (
                               <>
@@ -937,7 +934,7 @@ export default function TaskItem({
                   {submissionType === "link" && (
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-gray-600 dark:text-gray-300 block mb-1">
+                        <label className="text-xs font-bold text-gray-300 block mb-1">
                           رابط المشروع أو كود GitHub:
                         </label>
                         <div className="relative">
@@ -948,7 +945,7 @@ export default function TaskItem({
                             placeholder="https://github.com/username/project"
                             dir="ltr"
                             disabled={isUploading}
-                            className="w-full px-3 py-2 pl-9 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                            className="w-full px-3 py-2 pl-9 rounded-xl border border-gray-700 bg-gray-900 text-gray-200 text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                           />
                           <LinkIcon
                             size={14}
@@ -960,7 +957,7 @@ export default function TaskItem({
                         type="button"
                         onClick={handleSubmitLink}
                         disabled={isUploading || !linkInput.trim()}
-                        className="w-full py-2 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-60"
+                        className="w-full py-2 bg-linear-to-r hover:from-indigo-700 hover:to-purple-700 text-slate-100 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-60"
                       >
                         {isUploading ? (
                           <>
@@ -978,13 +975,13 @@ export default function TaskItem({
                   )}
 
                   {statusError && (
-                    <div className="p-2.5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 text-red-600 dark:text-red-400 text-xs flex items-center gap-2">
+                    <div className="p-2.5 rounded-lg bg-red-900/20 border border-red-800/40 text-red-400 text-xs flex items-center gap-2">
                       <AlertCircle size={14} className="shrink-0" />
                       <span>{statusError}</span>
                     </div>
                   )}
                   {statusSuccess && (
-                    <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+                    <div className="p-2.5 rounded-lg bg-emerald-900/20 border border-emerald-800/40 text-emerald-400 text-xs flex items-center gap-2">
                       <CheckCircle2 size={14} className="shrink-0" />
                       <span>{statusSuccess}</span>
                     </div>
@@ -993,7 +990,7 @@ export default function TaskItem({
                     <button
                       type="button"
                       onClick={() => setShowReplaceForm(false)}
-                      className="w-full py-1.5 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-medium"
+                      className="w-full py-1.5 text-xs hover:text-gray-200 font-medium"
                     >
                       إلغاء والاحتفاظ بالتسليم الحالي
                     </button>

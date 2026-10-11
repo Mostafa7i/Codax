@@ -156,36 +156,36 @@ export default function CertificateTab({
           isEligible
             ? "bg-linear-to-br from-emerald-500 via-green-500 to-teal-600"
             : "bg-linear-to-br from-gray-600 via-slate-600 to-gray-700"
-        } text-white shadow-xl`}
+        } text-slate-100 shadow-xl`}
       >
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(148,163,184,0.35) 1px, transparent 1px)",
             backgroundSize: "22px 22px",
           }}
         />
         <div className="relative flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/40 shadow-lg shrink-0">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-slate-600/40 shadow-lg shrink-0">
             <img src="/favicon.png" alt="CodaX" className="w-full h-full object-cover" />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               {isEligible ? (
                 <>
-                  <BadgeCheck size={18} className="text-white" />
+                  <BadgeCheck size={18} className="text-slate-100" />
                   <span className="font-extrabold text-lg">الشهادة موثّقة ✓</span>
                 </>
               ) : (
                 <>
-                  <Award size={18} className="text-white/70" />
-                  <span className="font-extrabold text-lg text-white/90">
+                  <Award size={18} className="text-slate-100/70" />
+                  <span className="font-extrabold text-lg text-slate-100/90">
                     الشهادة غير مفعّلة بعد
                   </span>
                 </>
               )}
             </div>
-            <p className="text-white/75 text-sm">
+            <p className="text-slate-100/75 text-sm">
               {isEligible
                 ? `مبروك ${studentData?.name}! تم اجتياز دورة CodaX بنجاح`
                 : "استيفِ الشروط لتفعيل شهادتك"}
@@ -207,7 +207,7 @@ export default function CertificateTab({
                 cy="22"
                 r="18"
                 fill="none"
-                stroke="white"
+                stroke="#e2e8f0"
                 strokeWidth="4"
                 strokeDasharray={`${(metCount / conditions.length) * 113} 113`}
                 strokeLinecap="round"
@@ -223,8 +223,8 @@ export default function CertificateTab({
       {/* ── Conditions checklist + QR ──────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Conditions */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-5 shadow-sm space-y-3">
-          <h3 className="font-bold text-gray-800 dark:text-white text-sm flex items-center gap-2">
+        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5 shadow-sm space-y-3">
+          <h3 className="font-bold text-slate-100 text-sm flex items-center gap-2">
             <ShieldCheck size={16} className="text-indigo-500" />
             شروط استحقاق الشهادة
           </h3>
@@ -233,8 +233,8 @@ export default function CertificateTab({
               key={i}
               className={`flex items-center gap-3 p-3 rounded-xl text-sm font-medium ${
                 cond.ok
-                  ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300"
-                  : "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
+                  ? "bg-green-900/20 text-green-300"
+                  : "bg-red-900/20 text-red-400"
               }`}
             >
               {cond.ok ? (
@@ -247,7 +247,7 @@ export default function CertificateTab({
           ))}
 
           {/* Certificate metadata rows */}
-          <div className="pt-3 border-t border-gray-100 dark:border-gray-700 space-y-2">
+          <div className="pt-3 border-t border-gray-700 space-y-2">
             {[
               { icon: Award, label: "رقم الشهادة", value: certId },
               { icon: BookOpen, label: "الكورس", value: activeCertCourse },
@@ -257,13 +257,13 @@ export default function CertificateTab({
             ].map(({ icon: Icon, label, value }, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between text-xs py-1.5 border-b border-gray-50 dark:border-gray-700/40 last:border-0"
+                className="flex items-center justify-between text-xs py-1.5 border-b border-gray-700/40 last:border-0"
               >
-                <div className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500">
+                <div className="flex items-center gap-1.5 text-gray-500">
                   <Icon size={12} />
                   <span>{label}</span>
                 </div>
-                <span className="font-bold text-gray-700 dark:text-gray-200 font-mono text-right max-w-[55%] truncate">
+                <span className="font-bold text-gray-200 font-mono text-right max-w-[55%] truncate">
                   {value}
                 </span>
               </div>
@@ -272,11 +272,11 @@ export default function CertificateTab({
 
           {/* Certificate name */}
           {hasName && (
-            <div className="mt-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl p-3">
-              <p className="text-xs text-indigo-400 dark:text-indigo-400 font-medium mb-0.5">
+            <div className="mt-3 bg-indigo-900/20 border border-indigo-800 rounded-xl p-3">
+              <p className="text-xs text-indigo-400 font-medium mb-0.5">
                 الاسم في الشهادة
               </p>
-              <p className="font-extrabold text-indigo-800 dark:text-indigo-200 text-sm tracking-wide">
+              <p className="font-extrabold text-indigo-200 text-sm tracking-wide">
                 {certEnglishName}
               </p>
             </div>
@@ -284,8 +284,8 @@ export default function CertificateTab({
         </div>
 
         {/* QR panel */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-5 shadow-sm flex flex-col items-center gap-4">
-          <h3 className="font-bold text-gray-800 dark:text-white text-sm self-start flex items-center gap-2">
+        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5 shadow-sm flex flex-col items-center gap-4">
+          <h3 className="font-bold text-slate-100 text-sm self-start flex items-center gap-2">
             <Download size={16} className="text-indigo-500" />
             QR Code التحقق
           </h3>
@@ -294,8 +294,8 @@ export default function CertificateTab({
           <div
             className={`p-4 rounded-2xl border-2 ${
               isEligible
-                ? "border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/10"
-                : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/30 opacity-70"
+                ? "border-green-700 bg-green-900/10"
+                : "border-gray-700 bg-gray-900/30 opacity-70"
             }`}
           >
             <StudentCodaxQR value={verifyUrl} size={180} />
@@ -322,7 +322,7 @@ export default function CertificateTab({
             />
           </div>
 
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center font-mono break-all px-2">
+          <p className="text-xs text-gray-500 text-center font-mono break-all px-2">
             {verifyUrl}
           </p>
 
@@ -330,7 +330,7 @@ export default function CertificateTab({
           <div className="flex gap-2 w-full">
             <button
               onClick={() => downloadCertQR(canvasId, `QR-${certId}`)}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 transition-all"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-900/40 text-indigo-400 border border-indigo-800 transition-all"
             >
               <Download size={14} />
               تحميل QR
@@ -338,7 +338,7 @@ export default function CertificateTab({
 
             <button
               onClick={() => window.open(verifyUrl, "_blank")}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 transition-all"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-900/40 text-emerald-400 border border-emerald-800 transition-all"
             >
               <BadgeCheck size={14} />
               صفحة التحقق
@@ -346,7 +346,7 @@ export default function CertificateTab({
           </div>
 
           {!isEligible && (
-            <p className="text-xs text-amber-500 dark:text-amber-400 text-center bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3">
+            <p className="text-xs text-amber-400 text-center bg-amber-900/20 border border-amber-800 rounded-xl p-3">
               ⚠️ الـ QR موجود لكن صفحة التحقق ستظهر "غير مفعّلة" حتى يتم استيفاء الشروط
             </p>
           )}
@@ -374,13 +374,13 @@ export default function CertificateTab({
         ].map((tip, i) => (
           <div
             key={i}
-            className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4 shadow-sm"
+            className="bg-gray-800 rounded-2xl border border-gray-700 p-4 shadow-sm"
           >
             <div className="text-2xl mb-2">{tip.icon}</div>
-            <h4 className="font-bold text-gray-800 dark:text-white text-sm mb-1">
+            <h4 className="font-bold text-slate-100 text-sm mb-1">
               {tip.title}
             </h4>
-            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+            <p className="text-xs text-gray-400 leading-relaxed">
               {tip.desc}
             </p>
           </div>

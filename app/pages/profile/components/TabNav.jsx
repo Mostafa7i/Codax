@@ -23,10 +23,10 @@ export default function TabNav({
               onClick={() => onTabChange(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
                 isGlowing
-                  ? "bg-linear-to-r from-amber-500 via-rose-500 to-purple-600 hover:from-amber-600 hover:to-rose-600 text-white font-extrabold shadow-[0_0_25px_rgba(244,63,94,0.95)] border-2 border-amber-300 animate-pulse scale-105"
+                  ? "bg-linear-to-r via-rose-500 hover:from-amber-600 hover:to-rose-600 text-slate-100 font-extrabold shadow-[0_0_25px_rgba(244,63,94,0.95)] border-2 border-amber-300 animate-pulse scale-105"
                   : isActive
-                    ? "bg-linear-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 shadow-sm"
+                    ? "bg-linear-to-r from-indigo-500 to-purple-600 text-slate-100 shadow-lg shadow-indigo-500/30"
+                    : "bg-slate-800 text-gray-200 hover:bg-gray-700 border border-gray-700 shadow-sm"
               }`}
             >
               {Icon && (
@@ -42,7 +42,7 @@ export default function TabNav({
             {isExamTab && hasActiveExam && (
               <span className="absolute -top-2 -right-2 flex h-5 w-5 z-20 pointer-events-none">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-90" />
-                <span className="relative inline-flex rounded-full h-5 w-5 bg-rose-600 text-[10px] font-black text-white items-center justify-center shadow-lg border border-amber-300">
+                <span className="relative inline-flex rounded-full h-5 w-5 bg-rose-600 text-[10px] font-black text-slate-100 items-center justify-center shadow-lg border border-amber-300">
                   📝
                 </span>
               </span>

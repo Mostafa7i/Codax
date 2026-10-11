@@ -49,7 +49,7 @@ ChartJS.register(
 // 1. مكون StatCard مُحسّن
 // ------------------------------------------------------------------
 const StatCard = ({ icon, label, value, colorClass = "text-indigo-600" }) => (
-  <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition duration-300">
+  <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition duration-300">
     <div className="flex items-center justify-between">
       <div className={`p-3 rounded-full bg-opacity-10 ${colorClass.replace('text-', 'bg-')}`}>
         {React.cloneElement(icon, { className: colorClass, size: 32 })}
@@ -68,12 +68,12 @@ const RankBadge = ({ rank }) => {
   let icon = null;
 
   if (rank === 1) {
-    color = "bg-yellow-500 text-white";
+    color = "bg-yellow-500 text-slate-100";
     icon = <Award size={16} className="ml-1" />;
   } else if (rank === 2) {
-    color = "bg-gray-400 text-white";
+    color = "bg-gray-400 text-slate-100";
   } else if (rank === 3) {
-    color = "bg-amber-700 text-white";
+    color = "bg-amber-700 text-slate-100";
   }
 
   return (
@@ -252,7 +252,7 @@ const groups = useMemo(() => {
       {/* ------------------------------------------------------------------
           Header Section (Improved)
       ------------------------------------------------------------------ */}
-      <div className="bg-white p-6 sm:p-8 rounded-2xl mb-8 shadow-2xl border-t-4 border-indigo-600">
+      <div className="bg-slate-800 p-6 sm:p-8 rounded-2xl mb-8 shadow-2xl border-t-4 border-indigo-600">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 flex items-center">
           <BarChart className="ml-3 text-indigo-600" size={36} />
           لوحة تحليلات نتائج الامتحانات
@@ -268,7 +268,7 @@ const groups = useMemo(() => {
       ------------------------------------------------------------------ */}
       <form
         onSubmit={handleFetchClick}
-        className="bg-white p-6 rounded-xl shadow-lg mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 border border-gray-200"
+        className="bg-slate-800 p-6 rounded-xl shadow-lg mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 border border-gray-200"
       >
         <label htmlFor="examSelect" className="font-bold text-gray-700 text-lg sm:w-1/4">
           اختر الامتحان:
@@ -277,7 +277,7 @@ const groups = useMemo(() => {
           id="examSelect"
           value={examId}
           onChange={(e) => setExamId(e.target.value)}
-          className="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+          className="flex-grow p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
           disabled={initialLoad || availableExams.length === 0 || loading}
         >
           {initialLoad ? (
@@ -297,7 +297,7 @@ const groups = useMemo(() => {
         </select>
         <button
           type="submit"
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 flex items-center justify-center gap-2 transition duration-150 disabled:bg-gray-400 disabled:cursor-not-allowed sm:w-auto"
+          className="text-slate-100 px-6 py-3 rounded-lg font-semibold hover:flex items-center justify-center gap-2 transition duration-150 disabled:bg-gray-400 disabled:cursor-not-allowed sm:w-auto"
           disabled={loading || !examId}
         >
           {loading ? (
@@ -346,7 +346,7 @@ const groups = useMemo(() => {
           colorClass="text-red-600"
         />
       </div>
-        <details className="bg-white rounded-xl shadow-lg overflow-hidden my-6 border border-gray-200">
+        <details className="bg-slate-800 rounded-xl shadow-lg overflow-hidden my-6 border border-gray-200">
         <summary className="p-5 text-xl font-bold text-gray-800 cursor-pointer hover:bg-gray-50 transition duration-150 flex items-center justify-between">
           تحليل أداء الأسئلة
           <CheckCircle className="text-green-500" size={24} />
@@ -360,7 +360,7 @@ const groups = useMemo(() => {
           قسم الفلترة الجديد
       ------------------------------------------------------------------ */}
       {results.length > 0 && (
-        <div className="bg-white p-4 rounded-xl shadow-md mb-6 border border-gray-200 flex flex-col md:flex-row gap-4 items-center">
+        <div className="bg-slate-800 p-4 rounded-xl shadow-md mb-6 border border-gray-200 flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-grow w-full">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <input
@@ -394,7 +394,7 @@ const groups = useMemo(() => {
       {/* ------------------------------------------------------------------
           Results Table/Cards
       ------------------------------------------------------------------ */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+      <div className="bg-slate-800 rounded-xl shadow-lg overflow-hidden border border-gray-200">
         <div className="p-4 sm:p-6 border-b bg-gray-50">
           <h2 className="text-2xl font-bold text-gray-800">
             ترتيب الطلاب - امتحان:{" "}
@@ -438,7 +438,7 @@ const groups = useMemo(() => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-slate-800 divide-y divide-gray-200">
                   {sortedResults.map((result, index) => (
                     <tr
                       key={result.id}
@@ -490,7 +490,7 @@ const groups = useMemo(() => {
               {sortedResults.map((result, index) => (
                 <div
                   key={result.id}
-                  className="bg-white rounded-xl shadow-md p-4 border border-gray-200 hover:shadow-lg transition cursor-pointer"
+                  className="bg-slate-800 rounded-xl shadow-md p-4 border border-gray-200 hover:shadow-lg transition cursor-pointer"
                   onClick={() =>
                     setSelectedStudent({
                       ...result,
@@ -541,7 +541,7 @@ const groups = useMemo(() => {
       ------------------------------------------------------------------ */}
       {results.length > 0 && (
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200">
             <h3 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
               تقييم صعوبة الامتحان من الطلاب
             </h3>
@@ -561,7 +561,7 @@ const groups = useMemo(() => {
               }}
             />
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center border-b pb-2">
               <MessageSquare className="ml-2 text-indigo-600" /> ملاحظات الطلاب
             </h3>
